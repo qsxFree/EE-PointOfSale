@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class SceneManipulator {
      * @param fxmlName - the FXML file name.
      * @param title - to change the Title of the stage
      * */
-    public void changeScene(AnchorPane rootPane,String fxmlName,String title){
+    public void changeScene(Pane rootPane,String fxmlName,String title){
         root =  getFXML(fxmlName);
         stage = getStage(rootPane);
         stage.setTitle(title);
@@ -32,7 +33,7 @@ public class SceneManipulator {
      * @param fxmlName - the FXML file name.
      * @param title - to change the Title of the stage
      */
-    public void changeStage(AnchorPane rootPane,String fxmlName,String title){
+    public void changeStage(Pane rootPane,String fxmlName,String title){
         root =  getFXML(fxmlName);
         stage = getStage(rootPane);
         stage.close();
@@ -58,7 +59,7 @@ public class SceneManipulator {
     }
 
     /**
-     * A SceneManipulator method for opening FXML inside the AnchorPane
+     * A SceneManipulator method for opening FXML inside the Pane
      * @param parent - the anchor where the FXML file to be placed
      * @param fxmlName - the FXML file name.
      */
@@ -75,7 +76,7 @@ public class SceneManipulator {
      * To cloase a specific Stage bt passing the rootPane
      * @param rootPane
      */
-    public void closeStage(AnchorPane rootPane){
+    public void closeStage(Pane rootPane){
         stage = getStage(rootPane);
         stage.close();
     }
@@ -99,7 +100,7 @@ public class SceneManipulator {
      * @param rootPane
      * @return
      */
-    private Stage getStage(AnchorPane rootPane){
+    private Stage getStage(Pane rootPane){
         return (Stage) rootPane
                 .getScene()
                 .getWindow();
