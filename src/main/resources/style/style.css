@@ -1,0 +1,31 @@
+*{
+    -posWhite:#ffffff;
+    -posFocusBlue:#147696;
+    -posDarkBlue:#0b4457;
+    -posBaseBlue:#1ca8d6;
+    -posHighBlue:#1eb2e3;
+    -posNormalBlue:#1994bd;
+
+    -fx-text-fill:-posDarkBlue;
+}
+
+.root-Pane{
+    -fx-background-color: -posWhite;
+}
+
+.container-pane{
+    -fx-border-color: -posFocusBlue;
+    -fx-border-radius: 5px;
+}
+.text-input{
+    -fx-border-color: -posBaseBlue;
+    -fx-border-radius: 5px;
+
+    -fx-prompt-text-fill: -posBaseBlue;
+}
+.btn-important{
+    -fx-background-color:-posBaseBlue;
+    -fx-border-radius: 5px;
+    -fx-border-color:-posNormalBlue;
+    -fx-text-fill:-posWhite;
+}

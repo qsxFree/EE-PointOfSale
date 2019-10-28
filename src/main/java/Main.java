@@ -14,6 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSLogin.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
+        stage.setFullScreen(true);
         MiscInstances misc = new MiscInstances();
         stage.show();
     }
