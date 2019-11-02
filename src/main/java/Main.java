@@ -15,7 +15,7 @@ public class Main extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
         stage.setFullScreen(true);
-        MiscInstances misc = new MiscInstances();
+        //MiscInstances misc = new MiscInstances();
         stage.show();
     }
 
