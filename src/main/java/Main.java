@@ -1,6 +1,5 @@
 package main.java;
 
-import com.jfoenix.controls.JFXTreeTableView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,10 +17,6 @@ public class Main extends Application {
         stage.setFullScreen(true);
         //MiscInstances misc = new MiscInstances();
         stage.show();
-        JFXTreeTableView.getClassCssMetaData().forEach((e)->{
-            System.out.println(e.getProperty());
-
-        });
     }
 
     public static void main(String[] args) {

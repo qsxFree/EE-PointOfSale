@@ -21,12 +21,12 @@
          <children>
             <AnchorPane layoutX="32.0" layoutY="45.0" prefHeight="679.0" prefWidth="659.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="478.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <JFXTreeTableView editable="true" layoutX="22.0" layoutY="21.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+                  <JFXTreeTableView fx:id="ttvOrderList" editable="true" layoutX="22.0" layoutY="21.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                      <columns>
-                        <TreeTableColumn minWidth="329.0" prefWidth="329.0" text="Product Name/Item-Code/ID" />
-                        <TreeTableColumn maxWidth="96.0" minWidth="96.0" prefWidth="96.0" text="Unit Price" />
-                        <TreeTableColumn maxWidth="86.0" minWidth="86.0" prefWidth="86.0" text="Qty" />
-                        <TreeTableColumn maxWidth="111.0" minWidth="111.0" prefWidth="111.0" text="Total" />
+                        <TreeTableColumn fx:id="chProduct" minWidth="329.0" prefWidth="329.0" text="Product Name/Item-Code/ID" />
+                        <TreeTableColumn fx:id="chUnitPrice" maxWidth="96.0" minWidth="96.0" prefWidth="96.0" text="Unit Price" />
+                        <TreeTableColumn fx:id="chQuantity" maxWidth="86.0" minWidth="86.0" prefWidth="86.0" text="Qty" />
+                        <TreeTableColumn fx:id="chTotal" maxWidth="111.0" minWidth="111.0" prefWidth="111.0" text="Total" />
                      </columns>
                   </JFXTreeTableView>
                </children>
@@ -40,7 +40,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                            <children>
-                              <JFXButton contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="35.0" styleClass="icon-button" text="Button">
+                              <JFXButton fx:id="btnHome" contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="35.0" styleClass="icon-button" text="Button">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -52,7 +52,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </JFXButton>
-                              <Label prefHeight="20.0" prefWidth="315.0" text="12:59 PM - Wednesday, November 3, 2019">
+                              <Label fx:id="lblDate" prefHeight="20.0" prefWidth="315.0" text="12:59 PM - Wednesday, November 3, 2019">
                                  <HBox.margin>
                                     <Insets bottom="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -60,7 +60,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <ImageView fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="ivAdmin" fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/pos-admin.png" />
                                  </image>
@@ -68,7 +68,7 @@
                                     <Insets left="4.0" right="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <ImageView fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="ivGsmSignal" fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/pos-connection-medium.png" />
                                  </image>
@@ -76,7 +76,7 @@
                                     <Insets left="4.0" right="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <ImageView fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="ivRfidSignal" fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/pos-rfid-signal.png" />
                                  </image>
@@ -93,7 +93,7 @@
                            <children>
                               <VBox layoutX="3.0" layoutY="3.0" prefHeight="95.0" prefWidth="458.0" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                                  <children>
-                                    <Label prefHeight="13.0" prefWidth="458.0" styleClass="product-labels" text="PRODUCT NAME">
+                                    <Label fx:id="lblProductName" prefHeight="13.0" prefWidth="458.0" styleClass="product-labels" text="PRODUCT NAME">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
@@ -101,7 +101,7 @@
                                           <Insets left="15.0" right="15.0" top="10.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label prefHeight="10.0" prefWidth="426.0" styleClass="product-labels" text="Barcode Number">
+                                    <Label fx:id="lblBarcodeNumber" prefHeight="10.0" prefWidth="426.0" styleClass="product-labels" text="Barcode Number">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -109,7 +109,7 @@
                                           <Insets left="15.0" right="15.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label prefHeight="4.0" prefWidth="458.0" styleClass="product-labels" text="Unit Price">
+                                    <Label fx:id="lblUnitPrice" prefHeight="4.0" prefWidth="458.0" styleClass="product-labels" text="Unit Price">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -121,7 +121,7 @@
                               </VBox>
                               <HBox alignment="CENTER_LEFT" layoutX="3.0" layoutY="102.0" prefHeight="65.0" prefWidth="462.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <children>
-                                    <JFXButton focusTraversable="false" prefHeight="38.0" prefWidth="53.0" styleClass="product-buttons" text="-">
+                                    <JFXButton fx:id="btnSubtract" focusTraversable="false" onAction="#btnQuantityChangerOnAction" prefHeight="38.0" prefWidth="53.0" styleClass="product-buttons" text="-">
                                        <HBox.margin>
                                           <Insets bottom="10.0" left="15.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -129,7 +129,7 @@
                                           <Font name="System Bold" size="24.0" />
                                        </font>
                                     </JFXButton>
-                                    <TextField alignment="CENTER" focusTraversable="false" prefHeight="52.0" prefWidth="60.0" styleClass="product-buttons">
+                                    <TextField fx:id="tfQuantity" alignment="CENTER" focusTraversable="false" prefHeight="52.0" prefWidth="60.0" styleClass="product-buttons">
                                        <HBox.margin>
                                           <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -137,7 +137,7 @@
                                           <Font name="System Bold" size="18.0" />
                                        </font>
                                     </TextField>
-                                    <JFXButton focusTraversable="false" prefHeight="38.0" prefWidth="53.0" styleClass="product-buttons" text="+">
+                                    <JFXButton fx:id="btnAdd" focusTraversable="false" onAction="#btnQuantityChangerOnAction" prefHeight="38.0" prefWidth="53.0" styleClass="product-buttons" text="+">
                                        <font>
                                           <Font name="System Bold" size="24.0" />
                                        </font>
@@ -145,7 +145,7 @@
                                           <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </JFXButton>
-                                    <JFXButton prefHeight="52.0" prefWidth="125.0" styleClass="btn-danger" text="Remove">
+                                    <JFXButton fx:id="btnRemove" onAction="#btnRemove" prefHeight="52.0" prefWidth="125.0" styleClass="btn-danger" text="Remove">
                                        <HBox.margin>
                                           <Insets left="116.0" />
                                        </HBox.margin>
@@ -166,7 +166,7 @@
                                           <Insets bottom="2.0" />
                                        </VBox.margin>
                                        <children>
-                                          <JFXButton alignment="CENTER" contentDisplay="TOP" prefHeight="114.0" prefWidth="131.0" text="More Actions">
+                                          <JFXButton fx:id="btnMoreAction" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="More Actions">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -181,7 +181,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton alignment="CENTER" contentDisplay="TOP" prefHeight="114.0" prefWidth="131.0" text="Calculator">
+                                          <JFXButton fx:id="btnCalculator" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Calculator">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -196,7 +196,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" prefHeight="114.0" prefWidth="131.0" text="Add Credits">
+                                          <JFXButton fx:id="btnAddCredits" alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Add Credits">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -215,7 +215,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER" layoutX="10.0" layoutY="11.0" minHeight="-Infinity" prefHeight="114.0" prefWidth="200.0">
                                        <children>
-                                          <JFXButton alignment="CENTER" contentDisplay="TOP" prefHeight="114.0" prefWidth="131.0" text="Remove All">
+                                          <JFXButton fx:id="btnRemoveAll" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Remove All">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -230,7 +230,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton alignment="CENTER" contentDisplay="TOP" prefHeight="114.0" prefWidth="131.0" text="Price Inquiry">
+                                          <JFXButton fx:id="btnPriceInquiry" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Price Inquiry">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -245,7 +245,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" prefHeight="114.0" prefWidth="131.0" text="Scan Item">
+                                          <JFXButton fx:id="btnScanItem" alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Scan Item">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -279,7 +279,7 @@
                                                 <Insets left="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="25">
+                                          <Label fx:id="lblNumberItem" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="25">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -302,7 +302,7 @@
                                                 <Insets left="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="339.0">
+                                          <Label fx:id="lblSubtotal" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="339.0">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -325,7 +325,7 @@
                                                 <Insets left="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="0.0">
+                                          <Label fx:id="lblDiscount" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="0.0">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -348,7 +348,7 @@
                                                 <Insets left="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="7.80">
+                                          <Label fx:id="lblTax" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="7.80">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -371,7 +371,7 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label prefHeight="50.0" prefWidth="211.0" text="337.75">
+                                          <Label fx:id="lblTotal" prefHeight="50.0" prefWidth="211.0" text="337.75">
                                              <font>
                                                 <Font name="System Bold" size="32.0" />
                                              </font>
@@ -379,7 +379,7 @@
                                                 <Insets left="10.0" top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <JFXButton prefHeight="55.0" prefWidth="171.0" styleClass="btn-high" text="Checkout">
+                                          <JFXButton fx:id="btnCheckout" onAction="#btnCheckoutOnAction" prefHeight="55.0" prefWidth="171.0" styleClass="btn-high" text="Checkout">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
