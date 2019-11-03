@@ -1,5 +1,6 @@
 package main.java;
 
+import com.jfoenix.controls.JFXTreeTableView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,12 +12,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSLogin.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSCashier.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
         stage.setFullScreen(true);
         //MiscInstances misc = new MiscInstances();
         stage.show();
+        JFXTreeTableView.getClassCssMetaData().forEach((e)->{
+            System.out.println(e.getProperty());
+
+        });
     }
 
     public static void main(String[] args) {
