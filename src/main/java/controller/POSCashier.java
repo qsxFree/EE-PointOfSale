@@ -2,6 +2,10 @@ package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,9 +14,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import main.java.misc.InputRestrictor;
 
 import java.net.URL;
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class POSCashier implements Initializable {
@@ -111,12 +121,14 @@ public class POSCashier implements Initializable {
     private JFXButton btnCheckout;
 
 
+
     /*************************************************/
     /*************** EVENT HANDLERS ******************/
     /*************************************************/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(this.tfQuantity);
+        realTimeClock();
     }
 
     @FXML
@@ -145,6 +157,22 @@ public class POSCashier implements Initializable {
     @FXML
     void btnRemove(ActionEvent event) {
 
+    }
+
+
+    /*************************************************/
+    /*********** FUNCTIONS AND PROCEDURES ************/
+    /*************************************************/
+
+    private void realTimeClock(){
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            LocalDateTime currentTime = LocalDateTime.now();
+            lblDate.setText(currentTime.format(DateTimeFormatter.ofPattern("hh:mm a EEE, MMM dd, yyyy")));
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
     }
 
 
