@@ -84,11 +84,19 @@
 }
 .tree-table-view:focused .tree-table-row-cell:selected{
     -fx-background-color:-posImportant;
-    -fx-table-cell-border:-posImportant;
+
 }
 
 .tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell{
     -fx-text-fill: -posWhite;
+}
+.tree-table-view .tree-table-row-cell{
+    -fx-font-size: 12px;
+
+    -fx-font-weight: bolder;
+}
+.center-cell-item{
+    -fx-alignment: CENTER;
 }
 
 

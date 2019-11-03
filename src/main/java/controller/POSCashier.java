@@ -2,18 +2,25 @@ package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import main.java.data.entity.ProductOrder;
 import main.java.misc.InputRestrictor;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -29,19 +36,23 @@ public class POSCashier implements Initializable {
     private StackPane rootPane;
 
     @FXML
-    private JFXTreeTableView<?> ttvOrderList;
+    private JFXTreeTableView<ProductOrder> ttvOrderList;
 
     @FXML
-    private TreeTableColumn<?, ?> chProduct;
+    private TreeTableColumn<ProductOrder, String> chProduct;
 
     @FXML
-    private TreeTableColumn<?, ?> chUnitPrice;
+    private TreeTableColumn<ProductOrder, String> chProductID;
+
 
     @FXML
-    private TreeTableColumn<?, ?> chQuantity;
+    private TreeTableColumn<ProductOrder, Double> chUnitPrice;
 
     @FXML
-    private TreeTableColumn<?, ?> chTotal;
+    private TreeTableColumn<ProductOrder, Integer> chQuantity;
+
+    @FXML
+    private TreeTableColumn<ProductOrder, Double> chTotal;
 
     @FXML
     private JFXButton btnHome;
@@ -116,6 +127,16 @@ public class POSCashier implements Initializable {
     private JFXButton btnCheckout;
 
 
+    /*************************************************/
+    /****************** VARIABLES ********************/
+    /*************************************************/
+
+    private ObservableList<ProductOrder> productList = FXCollections.observableArrayList(
+            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0),
+            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0),
+            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0),
+            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0)
+    );
 
     /*************************************************/
     /*************** EVENT HANDLERS ******************/
@@ -124,6 +145,15 @@ public class POSCashier implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(this.tfQuantity);
         realTimeClock();
+        chProductID.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("productID"));
+        chProduct.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("product"));
+        chUnitPrice.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("unitPrice"));
+        chQuantity.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Integer>("quantity"));
+        chTotal.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("total"));
+
+        TreeItem <ProductOrder>dataItem = new RecursiveTreeItem<ProductOrder>(productList, RecursiveTreeObject::getChildren);
+        ttvOrderList.setRoot(dataItem);
+        ttvOrderList.setShowRoot(false);
     }
 
     @FXML

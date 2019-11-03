@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,20 +15,23 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane fx:id="rootPane" prefHeight="679.0" prefWidth="1137.0" styleClass="root-Pane" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCashier">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
          <children>
             <AnchorPane layoutX="32.0" layoutY="45.0" prefHeight="679.0" prefWidth="659.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="478.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <JFXTreeTableView fx:id="ttvOrderList" editable="true" layoutX="22.0" layoutY="21.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+                  <JFXTreeTableView fx:id="ttvOrderList" editable="true" layoutX="15.0" layoutY="15.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                      <columns>
-                        <TreeTableColumn fx:id="chProduct" minWidth="329.0" prefWidth="329.0" text="Product Name/Item-Code/ID" />
-                        <TreeTableColumn fx:id="chUnitPrice" maxWidth="96.0" minWidth="96.0" prefWidth="96.0" text="Unit Price" />
-                        <TreeTableColumn fx:id="chQuantity" maxWidth="86.0" minWidth="86.0" prefWidth="86.0" text="Qty" />
-                        <TreeTableColumn fx:id="chTotal" maxWidth="111.0" minWidth="111.0" prefWidth="111.0" text="Total" />
+                        <TreeTableColumn fx:id="chProductID" maxWidth="185.0" minWidth="69.0" prefWidth="118.0" styleClass="center-cell-item" text="Product ID" />
+                        <TreeTableColumn fx:id="chProduct" maxWidth="267.0" minWidth="69.0" prefWidth="263.0" styleClass="center-cell-item" text="Product" />
+                        <TreeTableColumn fx:id="chUnitPrice" maxWidth="217.0" minWidth="69.0" prefWidth="93.0" styleClass="center-cell-item" text="Unit Price" />
+                        <TreeTableColumn fx:id="chQuantity" maxWidth="199.0" minWidth="19.0" prefWidth="73.0" styleClass="center-cell-item" text="Qty" />
+                        <TreeTableColumn fx:id="chTotal" maxWidth="228.0" minWidth="78.0" prefWidth="78.0" styleClass="center-cell-item" text="Total" />
                      </columns>
+                     <columnResizePolicy>
+                        <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
                   </JFXTreeTableView>
                </children>
             </AnchorPane>
