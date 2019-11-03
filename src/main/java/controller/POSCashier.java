@@ -18,6 +18,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.data.entity.ProductOrder;
@@ -132,10 +135,10 @@ public class POSCashier implements Initializable {
     /*************************************************/
 
     private ObservableList<ProductOrder> productList = FXCollections.observableArrayList(
-            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0),
-            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0),
-            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0),
-            new ProductOrder("1234567891245-21","KOPIKO",60.0,2,120.0)
+            new ProductOrder("324578126572-21","KOPIKO BROWN",60.0,2,120.0),
+            new ProductOrder("123456789124-22","GREATASTE WHITE",56.0,2,112.0),
+            new ProductOrder("123456789125-23","NESCAFE ORIGINAL",62.0,1,62.0),
+            new ProductOrder("123456791245-24","KOPIKO BLACK",58.0,4,232.0)
     );
 
     /*************************************************/
@@ -154,6 +157,9 @@ public class POSCashier implements Initializable {
         TreeItem <ProductOrder>dataItem = new RecursiveTreeItem<ProductOrder>(productList, RecursiveTreeObject::getChildren);
         ttvOrderList.setRoot(dataItem);
         ttvOrderList.setShowRoot(false);
+
+        countTotal();
+        countItems();
     }
 
     @FXML
@@ -184,6 +190,18 @@ public class POSCashier implements Initializable {
 
     }
 
+    @FXML
+    void ttvOrderOnKeyReleased(KeyEvent event) {
+        if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN)
+            populateProductInformation();
+    }
+
+    @FXML
+    void ttvOrderOnMouseClicked(MouseEvent event) {
+        populateProductInformation();
+
+    }
+
 
     /*************************************************/
     /*********** FUNCTIONS AND PROCEDURES ************/
@@ -200,5 +218,32 @@ public class POSCashier implements Initializable {
         clock.play();
     }
 
+    private void populateProductInformation(){
+        var treeItem = ttvOrderList.getSelectionModel().getSelectedItem();
+        if (treeItem!=null){
+            var prod = treeItem.getValue();
+            lblProductName.setText("Product: "+prod.getProduct());
+            lblBarcodeNumber.setText("Product ID: "+prod.getProductID());
+            lblUnitPrice.setText("Unit Price: "+prod.getUnitPrice());
+            tfQuantity.setText(prod.getQuantity()+"");
+        }
+    }
 
+    private double total = 0;
+    private void countTotal(){
+
+        productList.forEach((e)->{
+            total+=e.getTotal();
+        });
+
+        lblTotal.setText(total+"");
+    }
+
+    private int items = 0;
+    private void countItems(){
+        productList.forEach((e)->{
+            items+=e.getQuantity();
+        });
+        lblNumberItem.setText(items+"");
+    }
 }

@@ -21,7 +21,7 @@
          <children>
             <AnchorPane layoutX="32.0" layoutY="45.0" prefHeight="679.0" prefWidth="659.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="478.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <JFXTreeTableView fx:id="ttvOrderList" editable="true" layoutX="15.0" layoutY="15.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+                  <JFXTreeTableView fx:id="ttvOrderList" editable="true" layoutX="15.0" layoutY="15.0" onKeyReleased="#ttvOrderOnKeyReleased" onMouseClicked="#ttvOrderOnMouseClicked" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                      <columns>
                         <TreeTableColumn fx:id="chProductID" maxWidth="185.0" minWidth="69.0" prefWidth="118.0" styleClass="center-cell-item" text="Product ID" />
                         <TreeTableColumn fx:id="chProduct" maxWidth="267.0" minWidth="69.0" prefWidth="263.0" styleClass="center-cell-item" text="Product" />
@@ -97,7 +97,7 @@
                            <children>
                               <VBox layoutX="3.0" layoutY="3.0" prefHeight="95.0" prefWidth="458.0" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                                  <children>
-                                    <Label fx:id="lblProductName" prefHeight="13.0" prefWidth="458.0" styleClass="product-labels" text="PRODUCT NAME">
+                                    <Label fx:id="lblProductName" prefHeight="13.0" prefWidth="458.0" styleClass="product-labels" text="PRODUCT:">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
@@ -105,7 +105,7 @@
                                           <Insets left="15.0" right="15.0" top="10.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label fx:id="lblBarcodeNumber" prefHeight="10.0" prefWidth="426.0" styleClass="product-labels" text="Barcode Number">
+                                    <Label fx:id="lblBarcodeNumber" prefHeight="10.0" prefWidth="426.0" styleClass="product-labels" text="Product ID: ">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -113,7 +113,7 @@
                                           <Insets left="15.0" right="15.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label fx:id="lblUnitPrice" prefHeight="4.0" prefWidth="458.0" styleClass="product-labels" text="Unit Price">
+                                    <Label fx:id="lblUnitPrice" prefHeight="4.0" prefWidth="458.0" styleClass="product-labels" text="Unit Price:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -283,7 +283,7 @@
                                                 <Insets left="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label fx:id="lblNumberItem" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="25">
+                                          <Label fx:id="lblNumberItem" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="0">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
