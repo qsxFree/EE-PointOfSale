@@ -141,6 +141,9 @@ public class POSCashier implements Initializable {
             new ProductOrder("123456791245-24","KOPIKO BLACK",58.0,4,232.0)
     );
 
+    private double total = 0;
+    private int items = 0;
+    private ProductOrder selectedProduct = null;
     /*************************************************/
     /*************** EVENT HANDLERS ******************/
     /*************************************************/
@@ -174,7 +177,9 @@ public class POSCashier implements Initializable {
 
     @FXML
     void btnQuantityChangerOnAction(ActionEvent event) {
-        if (tfQuantity.getText().isEmpty() && tfQuantity.getText().equals("0"))
+        if (tfQuantity.getText().isEmpty())
+            return;
+        else if (tfQuantity.getText().equals("0") && event.getSource().equals(btnSubtract))
             return;
 
         var x = Integer.parseInt(tfQuantity.getText());
@@ -187,7 +192,14 @@ public class POSCashier implements Initializable {
 
     @FXML
     void btnRemove(ActionEvent event) {
-
+        String id[] =lblBarcodeNumber.getText().split(": ");
+        if (id.length>1){
+            productList.forEach(e->{
+                if (e.getProductID().equals(id[1]))
+                    selectedProduct = e;
+            });
+            productList.remove(selectedProduct);
+        }
     }
 
     @FXML
@@ -229,9 +241,8 @@ public class POSCashier implements Initializable {
         }
     }
 
-    private double total = 0;
-    private void countTotal(){
 
+    private void countTotal(){
         productList.forEach((e)->{
             total+=e.getTotal();
         });
@@ -239,11 +250,11 @@ public class POSCashier implements Initializable {
         lblTotal.setText(total+"");
     }
 
-    private int items = 0;
     private void countItems(){
         productList.forEach((e)->{
             items+=e.getQuantity();
         });
         lblNumberItem.setText(items+"");
     }
+
 }
