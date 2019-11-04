@@ -199,6 +199,12 @@ public class POSCashier implements Initializable {
                     selectedProduct = e;
             });
             productList.remove(selectedProduct);
+            lblProductName.setText("Product: ");
+            lblBarcodeNumber.setText("Product ID: ");
+            lblUnitPrice.setText("Unit Price: ");
+            tfQuantity.setText("");
+            countTotal();
+            countItems();
         }
     }
 
@@ -241,8 +247,8 @@ public class POSCashier implements Initializable {
         }
     }
 
-
     private void countTotal(){
+        total = 0;
         productList.forEach((e)->{
             total+=e.getTotal();
         });
@@ -251,6 +257,7 @@ public class POSCashier implements Initializable {
     }
 
     private void countItems(){
+        items = 0;
         productList.forEach((e)->{
             items+=e.getQuantity();
         });
