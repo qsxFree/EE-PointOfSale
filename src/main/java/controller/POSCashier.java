@@ -11,7 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -21,10 +23,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.data.entity.ProductOrder;
+import main.java.misc.DirectoryHandler;
 import main.java.misc.InputRestrictor;
+
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -130,11 +136,14 @@ public class POSCashier implements Initializable {
     private JFXButton btnCheckout;
 
 
+
+
+
     /*************************************************/
     /****************** VARIABLES ********************/
     /*************************************************/
 
-    private ObservableList<ProductOrder> productList = FXCollections.observableArrayList(
+    private static ObservableList<ProductOrder> productList = FXCollections.observableArrayList(
             new ProductOrder("324578126572-21","KOPIKO BROWN",60.0,2,120.0),
             new ProductOrder("123456789124-22","GREATASTE WHITE",56.0,2,112.0),
             new ProductOrder("123456789125-23","NESCAFE ORIGINAL",62.0,1,62.0),
@@ -144,6 +153,14 @@ public class POSCashier implements Initializable {
     private double total = 0;
     private int items = 0;
     private ProductOrder selectedProduct = null;
+
+    static POSDialog dialog;// static dialog to make it accessible
+                            // to the Dialog that is currently open
+                            // and easy to access the close method of the Dialog
+
+
+
+
     /*************************************************/
     /*************** EVENT HANDLERS ******************/
     /*************************************************/
@@ -161,8 +178,8 @@ public class POSCashier implements Initializable {
         ttvOrderList.setRoot(dataItem);
         ttvOrderList.setShowRoot(false);
 
-        countTotal();
-        countItems();
+        totalCountRefresher();
+        itemCountRefresher();
     }
 
     @FXML
@@ -172,7 +189,9 @@ public class POSCashier implements Initializable {
 
     @FXML
     void btnFunctionalitiesOnAction(ActionEvent event) {
-
+        if (event.getSource().equals(this.btnScanItem)){
+            openDialog("POSScanItem.fxml");
+        }
     }
 
     @FXML
@@ -188,6 +207,19 @@ public class POSCashier implements Initializable {
         else if (event.getSource().equals(btnSubtract))
             x=x-1;
         tfQuantity.setText(String.valueOf(x));
+
+        int newQuantity = Integer.parseInt(tfQuantity.getText());
+        changeQuantityOnTable(newQuantity);
+
+    }
+
+    private void changeQuantityOnTable(int newQuantity){
+        String id[] =lblBarcodeNumber.getText().split(": ");
+        if (id.length<1)return;
+        productList.forEach((e)->{
+            if (e.getProductID().equals(id[1]))
+                e.setQuantity(newQuantity);
+        });
     }
 
     @FXML
@@ -203,8 +235,8 @@ public class POSCashier implements Initializable {
             lblBarcodeNumber.setText("Product ID: ");
             lblUnitPrice.setText("Unit Price: ");
             tfQuantity.setText("");
-            countTotal();
-            countItems();
+            totalCountRefresher();
+            itemCountRefresher();
         }
     }
 
@@ -217,8 +249,9 @@ public class POSCashier implements Initializable {
     @FXML
     void ttvOrderOnMouseClicked(MouseEvent event) {
         populateProductInformation();
-
     }
+
+
 
 
     /*************************************************/
@@ -247,7 +280,23 @@ public class POSCashier implements Initializable {
         }
     }
 
-    private void countTotal(){
+    private void totalCountRefresher(){//for refreshing the total counter
+        Timeline totalCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            totalCount();
+        }),new KeyFrame(Duration.millis(100)));
+        totalCountRefresher.setCycleCount(Animation.INDEFINITE);
+        totalCountRefresher.play();
+    }
+
+    private void itemCountRefresher(){//for refreshing the item counter
+        Timeline itemCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            itemCount();
+        }),new KeyFrame(Duration.millis(100)));
+        itemCountRefresher.setCycleCount(Animation.INDEFINITE);
+        itemCountRefresher.play();
+    }
+
+    private void totalCount(){//for calculating the total of amount of the products
         total = 0;
         productList.forEach((e)->{
             total+=e.getTotal();
@@ -256,7 +305,7 @@ public class POSCashier implements Initializable {
         lblTotal.setText(total+"");
     }
 
-    private void countItems(){
+    private void itemCount(){ //for counting the overall number of items
         items = 0;
         productList.forEach((e)->{
             items+=e.getQuantity();
@@ -264,4 +313,23 @@ public class POSCashier implements Initializable {
         lblNumberItem.setText(items+"");
     }
 
+    private void openDialog(String fxml){
+        try {
+            Parent parent = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+fxml));
+            dialog = new POSDialog(rootPane, (Pane) parent,false);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    /*************************************************/
+    /******** STATIC FUNCTIONS AND PROCEDURES ********/
+    /*************************************************/
+    static void addItemToList(ProductOrder productOrder){
+        productList.add(productOrder);
+    }
 }

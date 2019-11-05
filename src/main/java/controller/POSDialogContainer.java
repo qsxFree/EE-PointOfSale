@@ -23,7 +23,6 @@ public class POSDialogContainer{
     }
 
     public void apDialogBaseClickClose(MouseEvent mouseEvent) {
-        System.out.println(mouseEvent.getSource());
         if (!mouseEvent.getSource().equals(vbDialogContainer)&&isBackgroundClosable())close();
     }
 
