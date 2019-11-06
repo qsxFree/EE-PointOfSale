@@ -101,7 +101,7 @@ public class POSCashier implements Initializable {
     private JFXButton btnRemove;
 
     @FXML
-    private JFXButton btnMoreAction;
+    private JFXButton btnReturn;
 
     @FXML
     private JFXButton btnDiscount;
@@ -197,7 +197,10 @@ public class POSCashier implements Initializable {
             sceneManipulator.openDialog(rootPane,"POSDiscount");
         }else if (selectedButton.equals(this.btnRemoveAll)){
             productList.clear();
+        }else if (selectedButton.equals(this.btnPriceInquiry)){
+            sceneManipulator.openDialog(rootPane,"POSPriceInquiry");
         }
+
     }
 
     @FXML

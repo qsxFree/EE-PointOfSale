@@ -170,14 +170,14 @@
                                           <Insets bottom="2.0" />
                                        </VBox.margin>
                                        <children>
-                                          <JFXButton fx:id="btnMoreAction" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="More Actions">
+                                          <JFXButton fx:id="btnReturn" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Return">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
                                                 <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true">
                                                    <image>
-                                                      <Image url="@../img/pos-more.png" />
+                                                      <Image url="@../img/pos-return.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
