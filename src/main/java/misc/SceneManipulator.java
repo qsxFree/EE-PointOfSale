@@ -5,13 +5,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import main.java.controller.POSDialog;
+
 import java.io.IOException;
 
 public class SceneManipulator {
     private Scene scene;
     private Stage stage;
     private Parent root;
+    private POSDialog dialog;
 
     /**
      * A Scene Manupulator method that changes the Scene inside the Stage
@@ -104,6 +108,20 @@ public class SceneManipulator {
         return (Stage) rootPane
                 .getScene()
                 .getWindow();
+    }
+
+    public void openDialog(StackPane rootPane, String fxml){
+        try {
+            Parent parent = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+fxml+".fxml"));
+            dialog = new POSDialog(rootPane, (Pane) parent,false);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeDialog(){
+        dialog.close();
     }
 
 }

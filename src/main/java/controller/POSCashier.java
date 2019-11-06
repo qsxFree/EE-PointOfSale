@@ -29,6 +29,7 @@ import javafx.util.Duration;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.InputRestrictor;
+import main.java.misc.SceneManipulator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -103,7 +104,7 @@ public class POSCashier implements Initializable {
     private JFXButton btnMoreAction;
 
     @FXML
-    private JFXButton btnCalculator;
+    private JFXButton btnDiscount;
 
     @FXML
     private JFXButton btnAddCredits;
@@ -158,7 +159,7 @@ public class POSCashier implements Initializable {
                             // to the Dialog that is currently open
                             // and easy to access the close method of the Dialog
 
-
+    static final SceneManipulator sceneManipulator = new SceneManipulator();
 
 
     /*************************************************/
@@ -190,7 +191,9 @@ public class POSCashier implements Initializable {
     @FXML
     void btnFunctionalitiesOnAction(ActionEvent event) {
         if (event.getSource().equals(this.btnScanItem)){
-            openDialog("POSScanItem.fxml");
+            sceneManipulator.openDialog(rootPane,"POSScanItem");
+        }else if (event.getSource().equals(this.btnDiscount)){
+            sceneManipulator.openDialog(rootPane,"POSDiscount");
         }
     }
 
@@ -315,7 +318,7 @@ public class POSCashier implements Initializable {
 
     private void openDialog(String fxml){
         try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+fxml));
+            Parent parent = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+fxml+".fxml"));
             dialog = new POSDialog(rootPane, (Pane) parent,false);
             dialog.show();
         } catch (IOException e) {

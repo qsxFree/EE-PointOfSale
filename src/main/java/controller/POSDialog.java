@@ -45,6 +45,7 @@ public class POSDialog {
         pane.setEffect(shadow);
         loader.<POSDialogContainer>getController().setDialogPane(pane);
         parentRoot.getChildren().add(root);
+        root.requestFocus();
     }
 
     public void close(){

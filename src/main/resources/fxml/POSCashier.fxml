@@ -165,7 +165,7 @@
                            <children>
                               <VBox id="controls-button-container" layoutX="35.0" layoutY="-36.0" prefHeight="215.0" prefWidth="462.0" AnchorPane.bottomAnchor="185.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                  <children>
-                                    <HBox alignment="CENTER" prefHeight="114.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                                    <HBox alignment="CENTER" prefHeight="102.0" prefWidth="462.0" VBox.vgrow="NEVER">
                                        <VBox.margin>
                                           <Insets bottom="2.0" />
                                        </VBox.margin>
@@ -185,14 +185,14 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton fx:id="btnCalculator" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Calculator">
+                                          <JFXButton fx:id="btnDiscount" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Discount">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
                                                 <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../img/pos-calculator.png" />
+                                                      <Image url="@../img/pos-discount.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -217,16 +217,16 @@
                                           </JFXButton>
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER" layoutX="10.0" layoutY="11.0" minHeight="-Infinity" prefHeight="114.0" prefWidth="200.0">
+                                    <HBox alignment="CENTER" layoutX="10.0" layoutY="11.0" minHeight="-Infinity" prefHeight="105.0" prefWidth="462.0">
                                        <children>
-                                          <JFXButton fx:id="btnRemoveAll" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Remove All">
+                                          <JFXButton fx:id="btnScanItem" alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Scan Item">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
-                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                                                    <image>
-                                                      <Image url="@../img/pos-void.png" />
+                                                      <Image url="@../img/pos-manualcode.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -249,14 +249,14 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton fx:id="btnScanItem" alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Scan Item">
+                                          <JFXButton fx:id="btnRemoveAll" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Remove All">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
-                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../img/pos-manualcode.png" />
+                                                      <Image url="@../img/pos-void.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>

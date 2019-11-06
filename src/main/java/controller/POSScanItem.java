@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.InputRestrictor;
 
@@ -14,6 +15,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class POSScanItem implements Initializable {
+
+
+    @FXML
+    private StackPane rootPane;
 
     @FXML
     private TextField tfBarcode;
@@ -49,6 +54,8 @@ public class POSScanItem implements Initializable {
         InputRestrictor.limitInput(tbQuantity,3);
         InputRestrictor.limitInput(tfBarcode,12);
         InputRestrictor.numbersInput(tfBarcode);
+
+        if (rootPane.isFocused()) tfBarcode.requestFocus();
     }
 
     @FXML
@@ -59,7 +66,8 @@ public class POSScanItem implements Initializable {
 
     @FXML
     void btnCloseOnAction(ActionEvent event) {
-        POSCashier.dialog.close();
+        POSCashier.sceneManipulator.closeDialog();//get the scenemanipulator from
+                                                    // the parent scene and call the closeDialog
     }
 
     @FXML
