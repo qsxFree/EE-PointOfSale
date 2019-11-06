@@ -14,7 +14,7 @@ import main.java.misc.InputRestrictor;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class POSScanItem implements Initializable {
+public class POSScanItem extends POSCashier implements Initializable {
 
 
     @FXML
@@ -66,8 +66,8 @@ public class POSScanItem implements Initializable {
 
     @FXML
     void btnCloseOnAction(ActionEvent event) {
-        POSCashier.sceneManipulator.closeDialog();//get the scenemanipulator from
-                                                    // the parent scene and call the closeDialog
+        sceneManipulator.closeDialog();//get the scenemanipulator from
+                                        // the parent scene and call the closeDialog
     }
 
     @FXML

@@ -11,7 +11,7 @@ import main.java.misc.InputRestrictor;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class POSDiscount implements Initializable {
+public class POSDiscount extends POSCashier implements Initializable {
 
     @FXML
     private StackPane rootPane;
@@ -32,7 +32,7 @@ public class POSDiscount implements Initializable {
 
     @FXML
     void btnCloseOnAction(ActionEvent event) {
-        POSCashier.sceneManipulator.closeDialog();//get the scenemanipulator from
+        sceneManipulator.closeDialog();//get the scenemanipulator from
                                                 // the parent scene and call the closeDialog
     }
 

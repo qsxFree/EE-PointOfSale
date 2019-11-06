@@ -155,11 +155,11 @@ public class POSCashier implements Initializable {
     private int items = 0;
     private ProductOrder selectedProduct = null;
 
-    static POSDialog dialog;// static dialog to make it accessible
+    protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
                             // and easy to access the close method of the Dialog
 
-    static final SceneManipulator sceneManipulator = new SceneManipulator();
+    protected static final SceneManipulator sceneManipulator = new SceneManipulator();
 
 
     /*************************************************/
@@ -184,21 +184,24 @@ public class POSCashier implements Initializable {
     }
 
     @FXML
-    void btnCheckoutOnAction(ActionEvent event) {
+    protected void btnCheckoutOnAction(ActionEvent event) {
 
     }
 
     @FXML
-    void btnFunctionalitiesOnAction(ActionEvent event) {
-        if (event.getSource().equals(this.btnScanItem)){
+    protected void btnFunctionalitiesOnAction(ActionEvent event) {
+        JFXButton selectedButton = (JFXButton) event.getSource();
+        if (selectedButton.equals(this.btnScanItem)){
             sceneManipulator.openDialog(rootPane,"POSScanItem");
-        }else if (event.getSource().equals(this.btnDiscount)){
+        }else if (selectedButton.equals(this.btnDiscount)){
             sceneManipulator.openDialog(rootPane,"POSDiscount");
+        }else if (selectedButton.equals(this.btnRemoveAll)){
+            productList.clear();
         }
     }
 
     @FXML
-    void btnQuantityChangerOnAction(ActionEvent event) {
+    protected void btnQuantityChangerOnAction(ActionEvent event) {
         if (tfQuantity.getText().isEmpty())
             return;
         else if (tfQuantity.getText().equals("0") && event.getSource().equals(btnSubtract))
@@ -216,17 +219,8 @@ public class POSCashier implements Initializable {
 
     }
 
-    private void changeQuantityOnTable(int newQuantity){
-        String id[] =lblBarcodeNumber.getText().split(": ");
-        if (id.length<1)return;
-        productList.forEach((e)->{
-            if (e.getProductID().equals(id[1]))
-                e.setQuantity(newQuantity);
-        });
-    }
-
     @FXML
-    void btnRemove(ActionEvent event) {
+    protected void btnRemove(ActionEvent event) {
         String id[] =lblBarcodeNumber.getText().split(": ");
         if (id.length>1){
             productList.forEach(e->{
@@ -244,13 +238,13 @@ public class POSCashier implements Initializable {
     }
 
     @FXML
-    void ttvOrderOnKeyReleased(KeyEvent event) {
+    protected void ttvOrderOnKeyReleased(KeyEvent event) {
         if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN)
             populateProductInformation();
     }
 
     @FXML
-    void ttvOrderOnMouseClicked(MouseEvent event) {
+    protected void ttvOrderOnMouseClicked(MouseEvent event) {
         populateProductInformation();
     }
 
@@ -326,13 +320,22 @@ public class POSCashier implements Initializable {
         }
     }
 
+    private void changeQuantityOnTable(int newQuantity){
+        String id[] =lblBarcodeNumber.getText().split(": ");
+        if (id.length<1)return;
+        productList.forEach((e)->{
+            if (e.getProductID().equals(id[1]))
+                e.setQuantity(newQuantity);
+        });
+    }
+
 
 
 
     /*************************************************/
     /******** STATIC FUNCTIONS AND PROCEDURES ********/
     /*************************************************/
-    static void addItemToList(ProductOrder productOrder){
+    protected static void addItemToList(ProductOrder productOrder){
         productList.add(productOrder);
     }
 }
