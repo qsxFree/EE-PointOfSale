@@ -170,14 +170,14 @@
                                           <Insets bottom="2.0" />
                                        </VBox.margin>
                                        <children>
-                                          <JFXButton fx:id="btnReturn" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Return">
+                                          <JFXButton fx:id="btnScanItem" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Scan Item">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
-                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true">
+                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                                                    <image>
-                                                      <Image url="@../img/pos-return.png" />
+                                                      <Image url="@../img/pos-manualcode.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -185,14 +185,14 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton fx:id="btnDiscount" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Discount">
+                                          <JFXButton fx:id="btnPriceInquiry" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Price Inquiry">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
-                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                                                    <image>
-                                                      <Image url="@../img/pos-discount.png" />
+                                                      <Image url="@../img/pos-priceinquiry.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -219,14 +219,14 @@
                                     </HBox>
                                     <HBox alignment="CENTER" layoutX="10.0" layoutY="11.0" minHeight="-Infinity" prefHeight="105.0" prefWidth="462.0">
                                        <children>
-                                          <JFXButton fx:id="btnScanItem" alignment="CENTER" contentDisplay="TOP" layoutX="246.0" layoutY="10.0" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Scan Item">
+                                          <JFXButton fx:id="btnDiscount" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Discount">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
-                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../img/pos-manualcode.png" />
+                                                      <Image url="@../img/pos-discount.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -234,14 +234,14 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton fx:id="btnPriceInquiry" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Price Inquiry">
+                                          <JFXButton fx:id="btnReturn" alignment="CENTER" contentDisplay="TOP" onAction="#btnFunctionalitiesOnAction" prefHeight="114.0" prefWidth="131.0" text="Return">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                              <graphic>
-                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                                <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true">
                                                    <image>
-                                                      <Image url="@../img/pos-priceinquiry.png" />
+                                                      <Image url="@../img/pos-return.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
