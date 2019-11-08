@@ -185,7 +185,8 @@ public class POSCashier implements Initializable {
 
     @FXML
     protected void btnCheckoutOnAction(ActionEvent event) {
-
+        if (event.getSource().equals(this.btnCheckout))
+            sceneManipulator.openDialog(rootPane,"POSCheckout");
     }
 
     @FXML
