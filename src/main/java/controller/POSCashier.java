@@ -31,11 +31,8 @@ import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.InputRestrictor;
 import main.java.misc.SceneManipulator;
-
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class POSCashier implements Initializable {

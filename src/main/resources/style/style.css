@@ -50,6 +50,11 @@
 .lbl-value{
     -fx-text-fill: -posFocusBlue;
 }
+
+.jfx-radio-button{
+    -jfx-selected-color: -posHighBlue;
+    -fx-rippler-fill:-posHighBlue;
+}
 /*TABLE VIEW DESIGN*/
 
 .tree-table-view{

@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
+import main.java.misc.SceneManipulator;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -74,9 +75,12 @@ public class POSCustomerAccount implements Initializable {
 
     }
 
+
+    protected SceneManipulator sceneManipulator = new SceneManipulator();
     @FXML
     void functionButtonOnAction(ActionEvent event) {
-
+        if (event.getSource().equals(btnNew))
+            sceneManipulator.openDialog(rootPane,"POSCustomerAccountForm");
     }
 
 
