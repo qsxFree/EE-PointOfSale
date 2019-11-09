@@ -45,6 +45,7 @@ public class SceneManipulator {
         stage = new Stage();
         stage.setScene(scene);
         stage.setTitle(title);
+        stage.setFullScreen(true);
         stage.show();
     }
 
@@ -124,4 +125,8 @@ public class SceneManipulator {
         dialog.close();
     }
 
+    public void changeOpenDialog(StackPane rootPane, String fxml){
+        closeDialog();
+        openDialog(rootPane,fxml);
+    }
 }

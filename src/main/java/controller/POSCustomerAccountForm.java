@@ -5,10 +5,13 @@ import com.jfoenix.controls.JFXRadioButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import main.java.misc.SceneManipulator;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,7 +56,7 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
-
+        sceneManipulator.closeDialog();
     }
 
     @FXML

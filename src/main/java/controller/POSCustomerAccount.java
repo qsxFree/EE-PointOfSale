@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class POSCustomerAccount implements Initializable {
 
     @FXML
-    private StackPane rootPane;
+    protected StackPane rootPane;
 
     @FXML
     private JFXButton btnHome;
@@ -76,12 +76,17 @@ public class POSCustomerAccount implements Initializable {
     }
 
 
-    protected SceneManipulator sceneManipulator = new SceneManipulator();
+    protected static SceneManipulator sceneManipulator = new SceneManipulator();
     @FXML
     void functionButtonOnAction(ActionEvent event) {
         if (event.getSource().equals(btnNew))
             sceneManipulator.openDialog(rootPane,"POSCustomerAccountForm");
     }
 
+
+    protected static void changeScene(){
+        sceneManipulator.closeDialog();
+        //sceneManipulator.openDialog(rootPane,"POSCardInformation");
+    }
 
 }
