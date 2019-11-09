@@ -1,14 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="main.java.controller.POSCustomerAccount"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="679.0" prefWidth="1137.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCustomerAccount">
+   <children>
+      <AnchorPane prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <VBox layoutX="231.0" prefHeight="679.0" prefWidth="1137.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="1097.0" styleClass="controls-container">
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <JFXButton fx:id="btnHome" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" onAction="#btnHomeOnAction" prefHeight="35.0" prefWidth="35.0" styleClass="icon-button" text="Button">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/pos-home.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </JFXButton>
+                        <TextField fx:id="tfSearch" prefHeight="36.0" prefWidth="638.0" promptText="Search">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <JFXButton fx:id="btnSearch" contentDisplay="GRAPHIC_ONLY" onAction="#btnSearchOnAction" prefHeight="37.0" prefWidth="80.0" styleClass="btn-high">
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                           <graphic>
+                              <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/pos-search-white.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="58.0" prefWidth="1034.0">
+                           <children>
+                              <JFXButton fx:id="btnCardInfo" onAction="#functionButtonOnAction" prefHeight="40.0" prefWidth="153.0" styleClass="btn-important" text="Card Info">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/pos-card-info.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton fx:id="btnNew" onAction="#functionButtonOnAction" prefHeight="50.0" prefWidth="113.0" styleClass="btn-important" text="New">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="btnUpdate" onAction="#functionButtonOnAction" prefHeight="50.0" prefWidth="113.0" styleClass="btn-important" text="Update">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="btnDelete" onAction="#functionButtonOnAction" prefHeight="50.0" prefWidth="113.0" styleClass="btn-danger" text="Delete">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <JFXTreeTableView fx:id="ttvCustomer" prefHeight="611.0" prefWidth="1137.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                     <columns>
+                        <TreeTableColumn fx:id="chCustomerID" prefWidth="124.0" text="Customer ID" />
+                        <TreeTableColumn fx:id="chCustomerName" prefWidth="189.0" text="Customer Name" />
+                        <TreeTableColumn fx:id="chAddress" prefWidth="364.0" text="Address" />
+                        <TreeTableColumn fx:id="chSex" minWidth="0.0" prefWidth="104.0" text="Sex" />
+                        <TreeTableColumn fx:id="chMobileNumber" prefWidth="139.0" text="Mobile Number" />
+                        <TreeTableColumn fx:id="chEmail" prefWidth="135.0" text="Email" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </JFXTreeTableView>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
