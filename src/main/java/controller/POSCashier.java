@@ -27,6 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.data.entity.ProductOrder;
+import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.InputRestrictor;
 import main.java.misc.SceneManipulator;
@@ -168,7 +169,7 @@ public class POSCashier implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(this.tfQuantity);
-        realTimeClock();
+        BackgroundProcesses.realTimeClock(lblDate);
         chProductID.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("productID"));
         chProduct.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("product"));
         chUnitPrice.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("unitPrice"));
@@ -259,16 +260,6 @@ public class POSCashier implements Initializable {
     /*********** FUNCTIONS AND PROCEDURES ************/
     /*************************************************/
 
-    private void realTimeClock(){
-        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            LocalDateTime currentTime = LocalDateTime.now();
-            lblDate.setText(currentTime.format(DateTimeFormatter.ofPattern("hh:mm a EEE, MMM dd, yyyy")));
-        }),
-                new KeyFrame(Duration.seconds(1))
-        );
-        clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();
-    }
 
     private void populateProductInformation(){
         var treeItem = ttvOrderList.getSelectionModel().getSelectedItem();

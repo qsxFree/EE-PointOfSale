@@ -11,7 +11,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSCashier.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSDashboard.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
         stage.setFullScreen(true);
