@@ -7,6 +7,7 @@ import javafx.scene.layout.*;
 public class POSDialogContainer{
     private Pane pane = null;
     private boolean backgroundClosable = true;
+    private StackPane rootPane;
 
     @FXML
     private HBox hbDialogContainer;
@@ -47,5 +48,12 @@ public class POSDialogContainer{
 
     public boolean isBackgroundClosable() {
         return backgroundClosable;
+    }
+
+    public void setRoot(StackPane pane){
+        this.rootPane = pane;
+    }
+    public StackPane getRoot(){
+        return rootPane;
     }
 }

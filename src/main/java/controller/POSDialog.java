@@ -44,11 +44,20 @@ public class POSDialog {
         DropShadow shadow = new DropShadow(20,0,0,new Color(0,0,0,.1));
         pane.setEffect(shadow);
         loader.<POSDialogContainer>getController().setDialogPane(pane);
+        loader.<POSDialogContainer>getController().setRoot(parentRoot);
         parentRoot.getChildren().add(root);
         root.requestFocus();
     }
 
     public void close(){
         loader.<POSDialogContainer>getController().close();
+    }
+
+    public Object getDialogController(){
+        return loader.getController();
+    }
+
+    public StackPane getParentRoot(){
+        return loader.<POSDialogContainer>getController().getRoot();
     }
 }

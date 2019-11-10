@@ -129,4 +129,8 @@ public class SceneManipulator {
         closeDialog();
         openDialog(rootPane,fxml);
     }
+
+    public Object getDialogController(){
+        return dialog.getParentRoot();
+    }
 }

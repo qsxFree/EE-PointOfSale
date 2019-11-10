@@ -62,9 +62,9 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     @FXML
     void btnCreateOnAction(ActionEvent event) {
         sceneManipulator.closeDialog();
+        System.out.println(sceneManipulator.getDialogController());
+        sceneManipulator.openDialog((StackPane) sceneManipulator.getDialogController(),"POSCardInformation");
 
-        //TODO changing the switching dialog won't work
-        //TODO things to be edit   POSDialog,SceneManipulator.POSDialogContainer(if possible)
     }
 
     @FXML

@@ -81,6 +81,7 @@ public class POSCustomerAccount implements Initializable {
     void functionButtonOnAction(ActionEvent event) {
         if (event.getSource().equals(btnNew))
             sceneManipulator.openDialog(rootPane,"POSCustomerAccountForm");
+        System.out.println(sceneManipulator.getDialogController());
     }
 
 
