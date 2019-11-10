@@ -27,8 +27,10 @@ public class SceneManipulator {
         root =  getFXML(fxmlName);
         stage = getStage(rootPane);
         stage.setTitle(title);
-        scene = new Scene(rootPane,stage.getWidth(),stage.getHeight());
+        scene = new Scene(root,stage.getWidth(),stage.getHeight());
         stage.setScene(scene);
+        stage.setFullScreen(true);//to full screen when switching a UI
+
     }
 
     /**

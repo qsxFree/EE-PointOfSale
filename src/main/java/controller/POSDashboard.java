@@ -69,9 +69,9 @@ public class POSDashboard implements Initializable {
     void menuButtonsOnAction(ActionEvent event) {
         JFXButton selectedButton = (JFXButton) event.getSource();
         if (selectedButton.equals(this.btnCashier)){
-            manipulator.changeStage(rootPane,"POSCashier","Cashier");
+            manipulator.changeScene(rootPane,"POSCashier","Cashier");
         }else if (selectedButton.equals(this.btnCustomer)){
-            manipulator.changeStage(rootPane,"POSCustomerAccount","Customer Account");
+            manipulator.changeScene(rootPane,"POSCustomerAccount","Customer Account");
         }
 
     }
