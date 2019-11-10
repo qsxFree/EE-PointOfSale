@@ -61,7 +61,10 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
 
     @FXML
     void btnCreateOnAction(ActionEvent event) {
+        sceneManipulator.closeDialog();
 
+        //TODO changing the switching dialog won't work
+        //TODO things to be edit   POSDialog,SceneManipulator.POSDialogContainer(if possible)
     }
 
     @FXML
