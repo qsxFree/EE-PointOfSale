@@ -4,22 +4,23 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import main.java.misc.SceneManipulator;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+public class POSCustomerEdit {
 
-public class POSCustomerAccountForm extends POSCustomerAccount{
+    /**
+     * TODO not yet linked to its parent
+     */
 
     @FXML
     private StackPane rootPane;
+
+    @FXML
+    private Label lblCustomerID;
 
     @FXML
     private TextField tfFirstName;
@@ -34,10 +35,10 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     private JFXRadioButton rbMale;
 
     @FXML
-    private JFXRadioButton rbFemale;
+    private ToggleGroup sex;
 
     @FXML
-    private ToggleGroup sex;
+    private JFXRadioButton rbFemale;
 
     @FXML
     private DatePicker dpBirthdate;
@@ -55,17 +56,15 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     private JFXButton btnCancel;
 
     @FXML
-    private JFXButton btnCreate;
+    private JFXButton btnSave;
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
-        sceneManipulator.closeDialog();
+
     }
 
     @FXML
-    void btnCreateOnAction(ActionEvent event) {
-        sceneManipulator.closeDialog();
-        sceneManipulator.openDialog((StackPane) sceneManipulator.getDialogController(),"POSCardInformation");
+    void btnSaveOnAction(ActionEvent event) {
 
     }
 
@@ -74,8 +73,4 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
 
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-    }
 }

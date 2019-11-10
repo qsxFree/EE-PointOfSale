@@ -11,7 +11,7 @@ Functions   :       POSCashier.fxml,POSCustomerAccount.fxml
 
     Function 2  :   POSCustomerAccount.fxml  -- UI form managing Customer accounts
                         |
-        Layer 2 :   POSCustomerAccountForm.fxml, POSSelectedCardInfo.fxml
+        Layer 2 :   POSCustomerAccountForm.fxml, POSSelectedCardInfo.fxml, POSCustomerEdit
                         |
             Layer 3 :   POSCardInformation.fxml
 

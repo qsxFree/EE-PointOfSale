@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<StackPane fx:id="rootPane" prefHeight="371.0" prefWidth="469.0" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSSelectedCardInfo">
+<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="371.0" prefWidth="469.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSSelectedCardInfo">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
          <children>
