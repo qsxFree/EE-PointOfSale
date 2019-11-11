@@ -47,7 +47,7 @@
                         </HBox>
                         <HBox prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <PasswordField fx:id="pfPIN" alignment="CENTER" editable="false" onContextMenuRequested="#pfPINMenuRequest" prefHeight="62.0" prefWidth="540.0" promptText="PIN">
+                              <PasswordField fx:id="pfPIN" alignment="CENTER" editable="false" prefHeight="62.0" prefWidth="540.0" promptText="PIN">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

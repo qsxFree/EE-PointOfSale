@@ -7,7 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-public class POSItemEdit {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class POSItemEdit extends POSInventory{
 
     @FXML
     private StackPane rootPane;
@@ -21,8 +24,6 @@ public class POSItemEdit {
     @FXML
     private TextField tfItemName;
 
-    @FXML
-    private TextField tfUnitType;
 
     @FXML
     private TextField tfPrice;
@@ -33,8 +34,15 @@ public class POSItemEdit {
     @FXML
     private JFXButton btnSave;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
+    }
+
     @FXML
     void btnCancelOnAction(ActionEvent event) {
+        sceneManipulator.closeDialog();
 
     }
 

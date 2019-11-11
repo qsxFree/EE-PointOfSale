@@ -24,5 +24,5 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static RFIDReaderInterface rfid = new RFIDReaderInterface();
+   // public static RFIDReaderInterface rfid = new RFIDReaderInterface();
 }

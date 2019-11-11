@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="523.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSItemEdit">
+<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="263.0" prefWidth="523.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSItemEdit">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -33,7 +33,7 @@
                         </Label>
                      </children>
                   </HBox>
-                  <VBox prefHeight="208.0" prefWidth="496.0" styleClass="controls-container">
+                  <VBox prefHeight="143.0" prefWidth="483.0" styleClass="controls-container">
                      <children>
                         <HBox prefHeight="45.0" prefWidth="540.0">
                            <children>
@@ -45,7 +45,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfItemCode" editable="false" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfItemCode" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -65,27 +65,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfItemName" editable="false" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="45.0" prefWidth="540.0">
-                           <children>
-                              <Label prefHeight="43.0" prefWidth="148.0" styleClass="lbl-name" text="Unit Type">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfUnitType" editable="false" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfItemName" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -105,7 +85,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfPrice" editable="false" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfPrice" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

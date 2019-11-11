@@ -104,13 +104,12 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" />
                      </VBox.margin>
                      <columns>
-                        <TreeTableColumn fx:id="chItemID" prefWidth="104.0" text="Item ID" />
-                        <TreeTableColumn fx:id="chItemCode" prefWidth="264.0" text="Item Code" />
-                        <TreeTableColumn fx:id="chItemName" prefWidth="277.0" text="Item Name" />
-                        <TreeTableColumn fx:id="chUnit" minWidth="0.0" prefWidth="81.0" text="Unit" />
-                        <TreeTableColumn fx:id="chUnitPrice" prefWidth="139.0" text="Unit Price" />
-                        <TreeTableColumn fx:id="chStock" prefWidth="135.0" text="Stock" />
-                        <TreeTableColumn fx:id="chTotal" prefWidth="135.0" text="Total" />
+                        <TreeTableColumn fx:id="chItemID" prefWidth="104.0" styleClass="center-cell-item" text="Item ID" />
+                        <TreeTableColumn fx:id="chItemCode" prefWidth="264.0" styleClass="center-cell-item" text="Item Code" />
+                        <TreeTableColumn fx:id="chItemName" prefWidth="277.0" styleClass="center-cell-item" text="Item Name" />
+                        <TreeTableColumn fx:id="chUnitPrice" prefWidth="139.0" styleClass="center-cell-item" text="Unit Price" />
+                        <TreeTableColumn fx:id="chStock" prefWidth="135.0" styleClass="center-cell-item" text="Stock" />
+                        <TreeTableColumn fx:id="chTotal" prefWidth="135.0" styleClass="center-cell-item" text="Total" />
                      </columns>
                      <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

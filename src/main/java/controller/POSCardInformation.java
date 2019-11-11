@@ -83,9 +83,5 @@ public class POSCardInformation implements Initializable {
 
     }
 
-    @FXML
-    void pfPINMenuRequest(ContextMenuEvent event) {
-       pfPIN.setText(Main.rfid.newPasscode());
-    }
 
 }

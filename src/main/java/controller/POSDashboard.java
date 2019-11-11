@@ -72,6 +72,8 @@ public class POSDashboard implements Initializable {
             manipulator.changeScene(rootPane,"POSCashier","Cashier");
         }else if (selectedButton.equals(this.btnCustomer)){
             manipulator.changeScene(rootPane,"POSCustomerAccount","Customer Account");
+        }else if (selectedButton.equals(this.btnInventory)){
+            manipulator.changeScene(rootPane,"POSInventory","Inventory and Stock Management");
         }
 
     }

@@ -70,8 +70,7 @@ public class DatabaseHandler {
                 dbConnection.close();
             if (!dbStatement.isClosed())
                 dbStatement.close();
-            if (!dbPreparedStatement.isClosed())
-                dbPreparedStatement.isClosed();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

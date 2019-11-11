@@ -7,7 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-public class POSNewItem {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class POSNewItem extends POSInventory{
 
     @FXML
     private StackPane rootPane;
@@ -17,9 +20,6 @@ public class POSNewItem {
 
     @FXML
     private TextField tfItemName;
-
-    @FXML
-    private TextField tfUnitType;
 
     @FXML
     private TextField tfPrice;
@@ -36,6 +36,12 @@ public class POSNewItem {
     @FXML
     private JFXButton btnAdd;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
+    }
+
     @FXML
     void btnAddOnAction(ActionEvent event) {
 
@@ -43,7 +49,7 @@ public class POSNewItem {
 
     @FXML
     void btnCloseOnAction(ActionEvent event) {
-
+        sceneManipulator.closeDialog();
     }
 
 }
