@@ -55,6 +55,10 @@ public class POSInventory {
     @FXML
     private TreeTableColumn<?, ?> chStock;
 
+
+    @FXML
+    private TreeTableColumn<?, ?> chTotal;
+
     @FXML
     void btnHomeOnAction(ActionEvent event) {
 

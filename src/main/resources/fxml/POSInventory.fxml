@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="679.0" prefWidth="1137.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSInventory">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -111,6 +110,7 @@
                         <TreeTableColumn fx:id="chUnit" minWidth="0.0" prefWidth="81.0" text="Unit" />
                         <TreeTableColumn fx:id="chUnitPrice" prefWidth="139.0" text="Unit Price" />
                         <TreeTableColumn fx:id="chStock" prefWidth="135.0" text="Stock" />
+                        <TreeTableColumn fx:id="chTotal" prefWidth="135.0" text="Total" />
                      </columns>
                      <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
