@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import main.java.MiscInstances;
 import main.java.misc.SceneManipulator;
 
 import java.net.URL;
@@ -40,9 +41,6 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     private ToggleGroup sex;
 
     @FXML
-    private DatePicker dpBirthdate;
-
-    @FXML
     private TextField tfMobileNumber;
 
     @FXML
@@ -66,6 +64,28 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     void btnCreateOnAction(ActionEvent event) {
         sceneManipulator.closeDialog();
         sceneManipulator.openDialog((StackPane) sceneManipulator.getDialogController(),"POSCardInformation");
+
+        /*
+        String firstName = tfFirstName.getText();
+        String middleInitial = tfMiddleInitial.getText().equals("") ? null : tfMiddleInitial.getText();
+        String lastName = tfLastName.getText();
+        String mobile = tfMobileNumber.getText();
+        String address = tfAddress.getText();
+        String email = tfEmailAddress.getText();
+        String sex = null;
+
+        if (this.sex.getSelectedToggle().equals(rbMale))
+            sex = "Male";
+        else if (this.sex.getSelectedToggle().equals(rbFemale))
+            sex = "Female";
+
+        String sql = "Insert into customer(firstName,middleInitial,lastName,sex,address,phonenumber,emailAddress)" +
+                " values('"+firstName+"','"+middleInitial+"','"+lastName+"','"+sex+"','"+address+"','"+mobile+"','"+email+"')";
+
+        MiscInstances misc = new MiscInstances();
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        */
 
     }
 

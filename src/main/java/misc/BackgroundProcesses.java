@@ -22,4 +22,6 @@ public class BackgroundProcesses {
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
     }
+
+
 }

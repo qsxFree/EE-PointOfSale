@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="316.0" prefWidth="425.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCardInformation">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -30,7 +29,7 @@
                      <children>
                         <HBox prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <TextField fx:id="tfCardID" alignment="CENTER" prefHeight="35.0" prefWidth="544.0" promptText="Card ID">
+                              <TextField fx:id="tfCardID" alignment="CENTER" editable="false" prefHeight="35.0" prefWidth="544.0" promptText="Card ID">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -48,7 +47,7 @@
                         </HBox>
                         <HBox prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <PasswordField fx:id="pfPIN" alignment="CENTER" prefHeight="62.0" prefWidth="540.0" promptText="PIN">
+                              <PasswordField fx:id="pfPIN" alignment="CENTER" editable="false" onContextMenuRequested="#pfPINMenuRequest" prefHeight="62.0" prefWidth="540.0" promptText="PIN">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
