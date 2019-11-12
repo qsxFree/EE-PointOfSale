@@ -58,6 +58,8 @@ public class POSRestock extends POSInventory{
         }
 
     }
+    //TODO recalculating the Text everytime the user are entering new stock value
+    //TODO update database when adding stocks
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {

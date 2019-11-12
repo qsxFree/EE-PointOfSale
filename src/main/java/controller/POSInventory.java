@@ -20,6 +20,7 @@ import javafx.util.Duration;
 import main.java.MiscInstances;
 import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
+import main.java.misc.CacheWriter;
 import main.java.misc.SceneManipulator;
 
 import java.io.BufferedWriter;
@@ -29,7 +30,7 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
-public class POSInventory implements Initializable {
+public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     private StackPane rootPane;
@@ -110,7 +111,7 @@ public class POSInventory implements Initializable {
 
     @FXML
     void functionButtonOnAction(ActionEvent event) {
-        writeToCache();
+        writeToCache("etc\\cache-user.file");
         JFXButton selectedButton = (JFXButton) event.getSource();
         if (selectedButton.equals(this.btnRestock)){
             sceneManipulator.openDialog(rootPane,"POSRestock");
@@ -156,7 +157,7 @@ public class POSInventory implements Initializable {
         ttvCustomer.setShowRoot(false);
     }
 
-    private void writeToCache(){
+     public void writeToCache(String file){
         if (hasSelectedItem()){
             Item selectedItem = ttvCustomer.getSelectionModel().getSelectedItem().getValue();
             String cacheData = "";
@@ -168,7 +169,7 @@ public class POSInventory implements Initializable {
             cacheData+="\n"+selectedItem.getSubtotal();
             BufferedWriter writer = null;
             try {
-                writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile("etc\\cache-user.file")));
+                writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile(file)));
                 writer.write(cacheData);
                 writer.close();
             } catch (IOException e) {
@@ -181,5 +182,10 @@ public class POSInventory implements Initializable {
     private boolean hasSelectedItem(){
         return ttvCustomer.getSelectionModel().getSelectedItem() != null;
     }
+
+
+    //TODO handling common errors
+    //TODO If there is no selected from the table
+    //TODO The search feature
 
 }
