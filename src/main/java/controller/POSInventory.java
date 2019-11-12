@@ -133,9 +133,14 @@ public class POSInventory implements Initializable, CacheWriter {
 
             }else if (selectedButton.equals(this.btnDelete)){
                 if (hasSelectedItem()){
-                    POSMessage.showConfirmationMessage(rootPane,"Please Select from the Table First"
-                            ,"No Selected Item", POSMessage.MessageType.ERROR);
-                    System.out.println(POSMessage.getConfirmationStatus());
+                    JFXButton btnNo = new JFXButton("No");
+                    btnNo.setOnAction(e->POSMessage.closeMessage());
+
+                    JFXButton btnYes = new JFXButton("Yes");
+                    btnYes.setOnAction(e->POSMessage.closeMessage());
+
+                    POSMessage.showConfirmationMessage(rootPane,"Do you really want to delete selected\n Item?"
+                            ,"No Selected Item", POSMessage.MessageType.ERROR,btnNo,btnYes);
                 }
 
                 else

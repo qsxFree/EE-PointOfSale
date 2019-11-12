@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import main.java.misc.InputRestrictor;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,7 +39,8 @@ public class POSNewItem extends POSInventory{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+       InputRestrictor.numbersInput(this.tfItemCode);
+       InputRestrictor.limitInput(this.tfItemCode,13);
 
     }
 
