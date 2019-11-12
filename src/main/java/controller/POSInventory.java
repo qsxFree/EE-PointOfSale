@@ -18,6 +18,7 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
+import main.java.controller.message.POSMessage;
 import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.CacheWriter;
@@ -111,15 +112,37 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     void functionButtonOnAction(ActionEvent event) {
-        writeToCache("etc\\cache-user.file");
-        JFXButton selectedButton = (JFXButton) event.getSource();
-        if (selectedButton.equals(this.btnRestock)){
-            sceneManipulator.openDialog(rootPane,"POSRestock");
-        }else if (selectedButton.equals(this.btnNew)){
-            sceneManipulator.openDialog(rootPane,"POSNewItem");
-        }else if (selectedButton.equals(this.btnUpdate)){
-            sceneManipulator.openDialog(rootPane,"POSItemEdit");
-        }
+            writeToCache("etc\\cache-user.file");
+            JFXButton selectedButton = (JFXButton) event.getSource();
+            if (selectedButton.equals(this.btnRestock)) {
+                if (hasSelectedItem())
+                    sceneManipulator.openDialog(rootPane, "POSRestock");
+                else
+                    POSMessage.showMessage(rootPane,"Please Select from the Table First"
+                            ,"No Selected Item", POSMessage.MessageType.ERROR);
+
+            } else if (selectedButton.equals(this.btnNew)) {
+                sceneManipulator.openDialog(rootPane, "POSNewItem");
+
+            } else if (selectedButton.equals(this.btnUpdate)) {
+                if (hasSelectedItem())
+                    sceneManipulator.openDialog(rootPane, "POSItemEdit");
+                else
+                    POSMessage.showMessage(rootPane,"Please Select from the Table First"
+                            ,"No Selected Item", POSMessage.MessageType.ERROR);
+
+            }else if (selectedButton.equals(this.btnDelete)){
+                if (hasSelectedItem()){
+                    POSMessage.showConfirmationMessage(rootPane,"Please Select from the Table First"
+                            ,"No Selected Item", POSMessage.MessageType.ERROR);
+                    System.out.println(POSMessage.getConfirmationStatus());
+                }
+
+                else
+                    POSMessage.showMessage(rootPane,"Please Select from the Table First"
+                            ,"No Selected Item", POSMessage.MessageType.ERROR);
+            }
+
     }
 
 
