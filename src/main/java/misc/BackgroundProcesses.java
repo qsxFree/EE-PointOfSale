@@ -6,6 +6,8 @@ import javafx.animation.Timeline;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,5 +25,20 @@ public class BackgroundProcesses {
         clock.play();
     }
 
+    public static void createCacheDir(String file){
+        File f = new File(file);
+        if (f.exists()) {
+            f.delete();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static File getFile(String file){
+        return new File(file);
+    }
 
 }

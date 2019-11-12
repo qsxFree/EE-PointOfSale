@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,10 +16,15 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import main.java.MiscInstances;
 import main.java.data.entity.Item;
+import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ResourceBundle;
@@ -78,8 +85,15 @@ public class POSInventory implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        queryAllItems();
-        loadTable();
+        Timeline clock = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+            queryAllItems();
+            loadTable();
+            BackgroundProcesses.createCacheDir("etc\\cache-user.file");
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        clock.setCycleCount(1);
+        clock.play();
 
     }
 
@@ -96,6 +110,7 @@ public class POSInventory implements Initializable {
 
     @FXML
     void functionButtonOnAction(ActionEvent event) {
+        writeToCache();
         JFXButton selectedButton = (JFXButton) event.getSource();
         if (selectedButton.equals(this.btnRestock)){
             sceneManipulator.openDialog(rootPane,"POSRestock");
@@ -141,5 +156,30 @@ public class POSInventory implements Initializable {
         ttvCustomer.setShowRoot(false);
     }
 
+    private void writeToCache(){
+        if (hasSelectedItem()){
+            Item selectedItem = ttvCustomer.getSelectionModel().getSelectedItem().getValue();
+            String cacheData = "";
+            cacheData+=selectedItem.getItemID();
+            cacheData+="\n"+selectedItem.getItemCode();
+            cacheData+="\n"+selectedItem.getItemName();
+            cacheData+="\n"+selectedItem.getItemPrice();
+            cacheData+="\n"+selectedItem.getStock();
+            cacheData+="\n"+selectedItem.getSubtotal();
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile("etc\\cache-user.file")));
+                writer.write(cacheData);
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private boolean hasSelectedItem(){
+        return ttvCustomer.getSelectionModel().getSelectedItem() != null;
+    }
 
 }
