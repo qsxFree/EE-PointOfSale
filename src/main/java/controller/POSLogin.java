@@ -44,12 +44,6 @@ public class POSLogin implements Initializable {
 
     @FXML
     void btnSignInOnAction(ActionEvent event) {
-        try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSMessage.fxml"));
-            POSDialog dialog = new POSDialog(rootPane, (Pane) parent,false);
-            dialog.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 }
