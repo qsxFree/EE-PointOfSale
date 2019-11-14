@@ -1,16 +1,19 @@
 package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
 import main.java.data.entity.Item;
 import main.java.misc.InputRestrictor;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -50,6 +53,18 @@ public class POSNewItem extends POSInventory{
 
         tfItemCode.requestFocus();
         misc = new MiscInstances();
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            if (!tfPrice.getText().equals("") && !tfInititalStock.getText().equals("")){
+                    double price = Double.parseDouble(tfPrice.getText());
+                    int initStock = Integer.parseInt(tfInititalStock.getText());
+                    lblTotalValue.setText((price*initStock)+"");
+            }
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
+
 
     }
 
@@ -108,4 +123,5 @@ public class POSNewItem extends POSInventory{
                 tfInititalStock.getText().equals("");
     }
 
+    //TODO Adding Brand and unit of measurement
 }

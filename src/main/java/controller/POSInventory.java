@@ -21,7 +21,7 @@ import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
 import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
-import main.java.misc.CacheWriter;
+import main.java.data.CacheWriter;
 import main.java.misc.SceneManipulator;
 
 import java.io.BufferedWriter;
