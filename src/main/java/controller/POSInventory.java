@@ -83,16 +83,16 @@ public class POSInventory implements Initializable, CacheWriter {
 
     protected static SceneManipulator sceneManipulator= new SceneManipulator();
     protected static MiscInstances misc = new MiscInstances();
-    protected ObservableList<Item> itemList = FXCollections.observableArrayList();
+    protected static ObservableList<Item> itemList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Timeline clock = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+        Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             queryAllItems();
             loadTable();
             BackgroundProcesses.createCacheDir("etc\\cache-user.file");
         }),
-                new KeyFrame(Duration.seconds(1))
+                new KeyFrame(Duration.millis(300))
         );
         clock.setCycleCount(1);
         clock.play();
@@ -151,7 +151,8 @@ public class POSInventory implements Initializable, CacheWriter {
     }
 
 
-    private void queryAllItems(){
+    protected static void queryAllItems(){
+        itemList.clear();
         String sql = "Select * from Item";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
