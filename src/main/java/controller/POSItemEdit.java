@@ -95,15 +95,44 @@ public class POSItemEdit extends POSInventory{
                     , POSMessage.MessageType.ERROR);
 
         }else{
+            JFXButton btnNo = new JFXButton("No");
+            btnNo.setOnAction(e->POSMessage.closeMessage());
 
-            //This is where the update will process
-            String sql = "Update Item set " +
-                    "itemName = '"+tfItemName.getText()+"', " +
-                    "itemCode = '"+tfItemCode.getText()+"'," +
-                    "itemPrice = "+tfPrice.getText()+"" +
-                    " where itemID = "+lblItemID.getText().split(" : ")[1];//to Get the ID from the ItemID label
+            JFXButton btnYes = new JFXButton("Yes");
+            btnYes.setOnAction(e->{
+                POSMessage.closeMessage();
+                //This is where the update will process
+                String sql = "Update Item set " +
+                        "itemName = '"+tfItemName.getText()+"', " +
+                        "itemCode = '"+tfItemCode.getText()+"'," +
+                        "itemPrice = "+tfPrice.getText()+"" +
+                        " where itemID = "+lblItemID.getText().split(" : ")[1];//to Get the ID from the ItemID label
 
-            System.out.println(sql);
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
+                JFXButton btnOk = new JFXButton("Ok");
+                btnOk.setOnAction(ev->{
+                    POSMessage.closeMessage();
+                    queryAllItems();
+                    sceneManipulator.closeDialog();
+
+                });
+
+                POSMessage.showConfirmationMessage(rootPane,
+                        "Item "+lblItemID.getText().split(" : ")[1]+" is now updated",
+                        "Update Success",
+                        POSMessage.MessageType.INFORM,btnOk);
+
+            });
+
+            POSMessage.showConfirmationMessage(rootPane,"Do you really want to update the item?"
+                    ,"Please Confirm Update", POSMessage.MessageType.CONFIRM,btnNo,btnYes);
+
+
+
+
         }
 
 
