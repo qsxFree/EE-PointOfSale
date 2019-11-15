@@ -12,10 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.java.controller.POSDialog;
-
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class SceneManipulator {
     private Scene scene;
@@ -34,10 +31,12 @@ public class SceneManipulator {
             root =  getFXML(fxmlName);
             stage = getStage(rootPane);
             stage.setTitle(title);
+            boolean isOnFull = stage.isFullScreen();
             scene = new Scene(root);
             stage.setScene(scene);
             stage.centerOnScreen();
-            stage.setFullScreen(true);//to full screen when switching a UI
+            stage.setFullScreenExitHint("");
+            stage.setFullScreen(isOnFull);//to full screen when switching a UI
         }),
                 new KeyFrame(Duration.millis(300))
         );

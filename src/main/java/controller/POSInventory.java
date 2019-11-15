@@ -23,7 +23,6 @@ import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
 import main.java.data.CacheWriter;
 import main.java.misc.SceneManipulator;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -90,7 +89,7 @@ public class POSInventory implements Initializable, CacheWriter {
         Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             queryAllItems();
             loadTable();
-            BackgroundProcesses.createCacheDir("etc\\cache-user.file");
+            BackgroundProcesses.createCacheDir("etc\\cache-selected-item.file");
         }),
                 new KeyFrame(Duration.millis(300))
         );
@@ -112,7 +111,7 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     void functionButtonOnAction(ActionEvent event) {
-            writeToCache("etc\\cache-user.file");
+            writeToCache("etc\\cache-selected-item.file");
             JFXButton selectedButton = (JFXButton) event.getSource();
             if (selectedButton.equals(this.btnRestock)) {
                 if (hasSelectedItem())

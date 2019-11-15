@@ -12,12 +12,9 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.InputRestrictor;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -55,7 +52,7 @@ public class POSRestock extends POSInventory{
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            Scanner scan = new Scanner(new FileInputStream(BackgroundProcesses.getFile("etc\\cache-user.file")));
+            Scanner scan = new Scanner(new FileInputStream(BackgroundProcesses.getFile("etc\\cache-selected-item.file")));
             scan.nextLine();
             tfItemCode.setText(scan.nextLine());
             tfItemName.setText(scan.nextLine());
