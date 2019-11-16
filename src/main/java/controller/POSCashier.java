@@ -206,7 +206,7 @@ public class POSCashier implements Initializable {
     protected void btnQuantityChangerOnAction(ActionEvent event) {
         if (tfQuantity.getText().isEmpty())
             return;
-        else if (tfQuantity.getText().equals("0") && event.getSource().equals(btnSubtract))
+        else if (tfQuantity.getText().equals("1") && event.getSource().equals(btnSubtract))
             return;
 
         var x = Integer.parseInt(tfQuantity.getText());

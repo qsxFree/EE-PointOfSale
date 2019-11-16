@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="521.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSRestock">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -89,7 +88,7 @@
                         </HBox>
                         <HBox prefHeight="45.0" prefWidth="540.0" style="-fx-background-color: #f3f3f3;" styleClass="controls-container">
                            <children>
-                              <Label prefHeight="43.0" prefWidth="148.0" styleClass="lbl-name" text="Add Stock">
+                              <Label prefHeight="33.0" prefWidth="260.0" styleClass="lbl-name" text="Change Stock Value">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -97,7 +96,15 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfAddStock" prefHeight="35.0" prefWidth="315.0">
+                              <JFXButton fx:id="btnSubtract" focusTraversable="false" onAction="#changeStockButton" prefHeight="33.0" prefWidth="33.0" styleClass="controls-container" text="-">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <TextField fx:id="tfAddStock" alignment="CENTER" prefHeight="33.0" prefWidth="83.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -105,6 +112,14 @@
                                     <Font size="14.0" />
                                  </font>
                               </TextField>
+                              <JFXButton fx:id="btnAdd" focusTraversable="false" onAction="#changeStockButton" prefHeight="33.0" prefWidth="33.0" styleClass="controls-container" text="+">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </JFXButton>
                            </children>
                            <VBox.margin>
                               <Insets left="15.0" right="15.0" top="20.0" />
@@ -112,22 +127,6 @@
                         </HBox>
                         <HBox prefHeight="45.0" prefWidth="540.0" style="-fx-background-color: #f3f3f3;" styleClass="controls-container">
                            <children>
-                              <Label prefHeight="31.0" prefWidth="152.0" styleClass="lbl-name" text="New Stock Value:">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="lblNewStockValue" prefHeight="31.0" prefWidth="80.0" styleClass="lbl-value" text="0">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </Label>
                               <Label prefHeight="31.0" prefWidth="127.0" styleClass="lbl-name" text="Estimated Value:">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
@@ -136,7 +135,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <Label fx:id="lblEstimatedValue" prefHeight="31.0" prefWidth="103.0" styleClass="lbl-value" text="0">
+                              <Label fx:id="lblEstimatedValue" alignment="CENTER_RIGHT" prefHeight="31.0" prefWidth="300.0" styleClass="lbl-value" text="0">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
@@ -164,7 +163,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </HBox.margin>
                         </JFXButton>
-                        <JFXButton fx:id="btnDone" onAction="#btnCreateOnAction" prefHeight="44.0" prefWidth="164.0" styleClass="btn-high" text="Done">
+                        <JFXButton fx:id="btnSave" onAction="#btnSaveOnAction" prefHeight="44.0" prefWidth="164.0" styleClass="btn-high" text="Save">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>

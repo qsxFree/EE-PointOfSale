@@ -36,16 +36,16 @@ public class POSRestock extends POSInventory{
     private TextField tfAddStock;
 
     @FXML
-    private Label lblNewStockValue;
-
-    @FXML
     private Label lblEstimatedValue;
 
     @FXML
     private JFXButton btnCancel;
 
     @FXML
-    private JFXButton btnDone;
+    private JFXButton btnSave;
+
+    @FXML
+    private JFXButton btnAdd,btnSubtract;
 
     protected double price = 0;
 
@@ -59,6 +59,8 @@ public class POSRestock extends POSInventory{
             price = Double.parseDouble(scan.nextLine());
             tfCurrentStock.setText(scan.nextLine());
             lblEstimatedValue.setText(scan.nextLine());
+
+            tfAddStock.setText(tfCurrentStock.getText());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -66,10 +68,8 @@ public class POSRestock extends POSInventory{
         InputRestrictor.numbersInput(tfAddStock);
         InputRestrictor.limitInput(tfAddStock,3);
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            int oldVal = Integer.parseInt(tfCurrentStock.getText());
             int newVal = tfAddStock.getText().equals("") ? 0 : Integer.parseInt(tfAddStock.getText());
-            lblNewStockValue.setText(""+(oldVal+newVal));
-            lblEstimatedValue.setText(((oldVal+newVal)*price)+"");
+            lblEstimatedValue.setText((newVal*price)+"");
         }),
                 new KeyFrame(Duration.seconds(1))
         );
@@ -85,8 +85,23 @@ public class POSRestock extends POSInventory{
     }
 
     @FXML
-    void btnCreateOnAction(ActionEvent event) {
+    void btnSaveOnAction(ActionEvent event) {
 
     }
 
+    @FXML
+    private void changeStockButton(ActionEvent event) {
+        if (tfAddStock.getText().isEmpty())
+            return;
+        else if (tfAddStock.getText().equals("1") && event.getSource().equals(btnSubtract))
+            return;
+
+        var x = Integer.parseInt(tfAddStock.getText());
+        if (event.getSource().equals(btnAdd))
+            x=x+1;
+        else if (event.getSource().equals(btnSubtract))
+            x=x-1;
+        tfAddStock.setText(String.valueOf(x));
+
+    }
 }
