@@ -90,6 +90,7 @@ public class POSInventory implements Initializable, CacheWriter {
             queryAllItems();
             loadTable();
             BackgroundProcesses.createCacheDir("etc\\cache-selected-item.file");
+            BackgroundProcesses.createCacheDir("etc\\cache-scanned-rfid.file");
         }),
                 new KeyFrame(Duration.millis(300))
         );
