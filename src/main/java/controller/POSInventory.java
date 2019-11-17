@@ -15,23 +15,26 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
+import main.java.data.CacheWriter;
 import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
-import main.java.data.CacheWriter;
 import main.java.misc.SceneManipulator;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class POSInventory implements Initializable, CacheWriter {
-
+    //TODO Restock function is not yet working
     @FXML
     private StackPane rootPane;
 
@@ -83,14 +86,13 @@ public class POSInventory implements Initializable, CacheWriter {
     protected static SceneManipulator sceneManipulator= new SceneManipulator();
     protected static MiscInstances misc = new MiscInstances();
     protected static ObservableList<Item> itemList = FXCollections.observableArrayList();
-
+    private static ArrayList allItem = new ArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             queryAllItems();
             loadTable();
             BackgroundProcesses.createCacheDir("etc\\cache-selected-item.file");
-            BackgroundProcesses.createCacheDir("etc\\cache-scanned-rfid.file");
         }),
                 new KeyFrame(Duration.millis(300))
         );
@@ -106,48 +108,98 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     void btnSearchOnAction(ActionEvent event) {
+        String basis = tfSearch.getText().toLowerCase();
+        ArrayList result = new ArrayList() ;
+        itemList.stream()
+                .filter(e->
+                    e.getItemCode().toLowerCase().contains(basis)
+                            || e.getItemName().toLowerCase().contains(basis)
+                ).forEach(e->
+                    result.add(e)
+                );
+        itemList.clear();
+        itemList.addAll(result);
 
     }
 
 
     @FXML
     void functionButtonOnAction(ActionEvent event) {
-            writeToCache("etc\\cache-selected-item.file");
-            JFXButton selectedButton = (JFXButton) event.getSource();
-            if (selectedButton.equals(this.btnRestock)) {
-                if (hasSelectedItem())
-                    sceneManipulator.openDialog(rootPane, "POSRestock");
-                else
-                    POSMessage.showMessage(rootPane,"Please Select from the Table First"
-                            ,"No Selected Item", POSMessage.MessageType.ERROR);
+            try {
+                writeToCache("etc\\cache-selected-item.file");
+                JFXButton selectedButton = (JFXButton) event.getSource();
 
-            } else if (selectedButton.equals(this.btnNew)) {
-                sceneManipulator.openDialog(rootPane, "POSNewItem");
+                /*
+                * FUNCTION BUTTON 1 - Button Restock
+                * */
+                if (selectedButton.equals(this.btnRestock)) {
+                    if (hasSelectedItem())
+                        sceneManipulator.openDialog(rootPane, "POSRestock");
+                    else
+                        POSMessage.showMessage(rootPane, "Please Select from the Table First"
+                                , "No Selected Item", POSMessage.MessageType.ERROR);
 
-            } else if (selectedButton.equals(this.btnUpdate)) {
-                if (hasSelectedItem())
-                    sceneManipulator.openDialog(rootPane, "POSItemEdit");
-                else
-                    POSMessage.showMessage(rootPane,"Please Select from the Table First"
-                            ,"No Selected Item", POSMessage.MessageType.ERROR);
 
-            }else if (selectedButton.equals(this.btnDelete)){
-                if (hasSelectedItem()){
-                    JFXButton btnNo = new JFXButton("No");
-                    btnNo.setOnAction(e->POSMessage.closeMessage());
+                /*
+                * FUNCTION BUTTON 2 - Button New Item
+                * */
+                } else if (selectedButton.equals(this.btnNew)) {
+                    sceneManipulator.openDialog(rootPane, "POSNewItem");
 
-                    JFXButton btnYes = new JFXButton("Yes");
-                    btnYes.setOnAction(e->POSMessage.closeMessage());
 
-                    POSMessage.showConfirmationMessage(rootPane,"Do you really want to delete selected\n Item?"
-                            ,"No Selected Item", POSMessage.MessageType.ERROR,btnNo,btnYes);
+                /*
+                * FUNCTION BUTTON 3 - Button Edit
+                * */
+                } else if (selectedButton.equals(this.btnUpdate)) {
+                    if (hasSelectedItem())
+                        sceneManipulator.openDialog(rootPane, "POSItemEdit");
+                    else
+                        POSMessage.showMessage(rootPane, "Please Select from the Table First"
+                                , "No Selected Item", POSMessage.MessageType.ERROR);
+
+                /*
+                * FUNCTION BUTTON 4 - Button Delete
+                * */
+                } else if (selectedButton.equals(this.btnDelete)) {
+                    if (hasSelectedItem()) {
+                        //When the function is pressed, a confirmation message will appear
+
+                        JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
+                        btnNo.setOnAction(e -> POSMessage.closeMessage());// After pressing the No button, it simply close the messgae
+
+                        JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
+                        btnYes.setOnAction(e -> {
+                            deleteItemFromButtonAction(e);
+                        });
+
+                        // Confirmation Message
+                        POSMessage.showConfirmationMessage(rootPane, "Do you really want to delete selected\nitem?"
+                                , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
+                    } else
+                        POSMessage.showMessage(rootPane, "Please Select from the Table First"
+                                , "No Selected Item", POSMessage.MessageType.ERROR);
                 }
-
-                else
-                    POSMessage.showMessage(rootPane,"Please Select from the Table First"
-                            ,"No Selected Item", POSMessage.MessageType.ERROR);
+            }catch (Exception e){
+                e.printStackTrace();
+                POSMessage.showMessage(rootPane,e.getMessage(),"System Error", POSMessage.MessageType.ERROR);
             }
+    }
 
+    private void deleteItemFromButtonAction(ActionEvent e){
+        //Creating query for update
+        Item selectedItem = ttvCustomer.getSelectionModel().getSelectedItem().getValue();
+        String sql = "Delete from item where itemId = "+selectedItem.getItemID();
+
+        //To update the database
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
+        //Closing the Message Dialog
+        POSMessage.closeMessage();
+
+        //Requery the table
+        queryAllItems();
     }
 
 
@@ -165,12 +217,15 @@ public class POSInventory implements Initializable, CacheWriter {
                         ,result.getDouble("itemPrice")
                         ,result.getInt("stock"));
                 itemList.add(item);
+
             }
         }catch (Exception e){
             e.printStackTrace();
             misc.dbHandler.closeConnection();
         }
         misc.dbHandler.closeConnection();
+        allItem.clear();
+        allItem.addAll(itemList);
     }
 
     private void loadTable(){
@@ -212,9 +267,25 @@ public class POSInventory implements Initializable, CacheWriter {
         return ttvCustomer.getSelectionModel().getSelectedItem() != null;
     }
 
+    @FXML
+    private void tfSearchOnKeyReleased(KeyEvent keyEvent) {
+        String basis = tfSearch.getText().toLowerCase();
+        ArrayList result = new ArrayList() ;
+        itemList.clear();
+        itemList.addAll(allItem);
+        if (!basis.equals("")){
+            itemList.parallelStream()
+                    .filter(e->
+                            e.getItemCode().toLowerCase().contains(basis)
+                                    || e.getItemName().toLowerCase().contains(basis)
+                    ).forEach(e->
+                    result.add(e)
+            );
+            itemList.clear();
+            itemList.addAll(result);
+        }
+        System.gc();
+    }
 
-    //TODO handling common errors
-    //TODO If there is no selected from the table
-    //TODO The search feature
 
 }

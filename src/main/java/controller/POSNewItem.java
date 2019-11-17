@@ -14,6 +14,7 @@ import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
 import main.java.data.entity.Item;
 import main.java.misc.InputRestrictor;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -98,6 +99,7 @@ public class POSNewItem extends POSInventory{
             tfItemName.setText("");
             tfInititalStock.setText("");
             tfPrice.setText("");
+            lblTotalValue.setText("0");
             tfItemCode.requestFocus();
         }
     }
