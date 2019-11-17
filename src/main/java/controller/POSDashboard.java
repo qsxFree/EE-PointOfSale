@@ -1,24 +1,21 @@
 package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
-import main.java.MiscInstances;
 import main.java.misc.BackgroundProcesses;
+import main.java.misc.DirectoryHandler;
 import main.java.misc.SceneManipulator;
-
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class POSDashboard implements Initializable {
 
@@ -63,6 +60,22 @@ public class POSDashboard implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         BackgroundProcesses.realTimeClock(lblDate);
+
+        try {
+            Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
+            scan.nextLine();
+            String fullName = scan.nextLine();
+            fullName += (" "+scan.nextLine());
+            fullName += (" "+scan.nextLine());
+            lblUser.setText("Logged in as "+fullName);
+            ivAdmin.setImage(scan.nextLine().equals("1")
+                    ? new Image(DirectoryHandler.IMG+"pos-admin.png")
+                    : new Image(DirectoryHandler.IMG+"pos-admin-disable.png") );
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @FXML
@@ -75,12 +88,6 @@ public class POSDashboard implements Initializable {
         }else if (selectedButton.equals(this.btnInventory)){
             manipulator.changeScene(rootPane,"POSInventory","Inventory and Stock Management");
         }
-
-    }
-
-
-
-    private void realTimeClock(){
 
     }
 
