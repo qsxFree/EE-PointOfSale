@@ -109,7 +109,7 @@ public class RFIDReaderInterface {
                     // Writes the next received data to a cache file
                     if (writeDataToCache) {
                         writeDataToCache = false;
-                        writeToCache(getLastStringRead(), RFIDcacheFilePath);
+                        writeToCache(getLastStringRead());
                     }
 
                     if (!deviceReady) {
@@ -177,8 +177,19 @@ public class RFIDReaderInterface {
     }
 
     public void checkGSMStatus() {
+        /**This method checks the GSM module's status with the Arduino,
+         * then writes the device's response to cache file.
+         */
         writeDataToCache = true;
-        serialPrint("check\n");
+        serialPrint("check\ngsm\nstatus");
+    }
+
+    public void checkGSMSignal() {
+        /**This method checks the GSM module's signal strength with the Arduino,
+         * then writes the device's response to cache file.
+         */
+        writeDataToCache = true;
+        serialPrint("check\ngsm\nsignal");
     }
 
     private void serialPrint(String input) {
@@ -194,7 +205,7 @@ public class RFIDReaderInterface {
         serialWriter.flush();
     }
 
-    private void writeToCache(String data, String path) {
+    private void writeToCache(String data) {
         /**
          * This method writes data to a specified cache file.
          * @param data This will be the data written to the file.
@@ -202,7 +213,7 @@ public class RFIDReaderInterface {
          */
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(path));
+            writer = new BufferedWriter(new FileWriter(RFIDcacheFilePath));
             writer.write(data);
             writer.close();
             if (serialCommDebugging) {
@@ -214,6 +225,14 @@ public class RFIDReaderInterface {
                 System.out.println("[WRITE UNSUCCESSFUL]");
             }
         }
+    }
+
+    public void clearCache() {
+        /**
+         * Clears cache. Useful when clearing cache after it has been read from
+         * to prevent problems with persistent data that might be mistakenly read.
+         */
+        writeToCache("");
     }
 
     private String getLastStringRead() {
