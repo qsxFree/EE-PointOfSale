@@ -52,6 +52,7 @@ public class POSCardInformation implements Initializable {
                    Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                    if (scan.hasNextLine()){
                        tfCardID.setText(scan.nextLine());
+                       Main.rfid.clearCache();
                        cardIdScannerThread.stop();
                    }
                } catch (FileNotFoundException ex) {
@@ -64,9 +65,11 @@ public class POSCardInformation implements Initializable {
            cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
            cardIdScannerThread.play();
        }catch (NullPointerException e){
-           POSMessage.showMessage(rootPane,"Please connect the RFID Scanner to complete Task",
-                   "RFID Scanner not detected",
-                   POSMessage.MessageType.ERROR);
+           JFXButton btnOk = new JFXButton("Ok");
+           btnOk.setOnAction(ev->POSMessage.closeMessage());
+           POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to\ncomplete Task",
+                   "Cannot Detect RFID Scanner",
+                   POSMessage.MessageType.ERROR,btnOk);
            e.printStackTrace();
        }
     }
