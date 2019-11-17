@@ -52,6 +52,7 @@ public class POSCardInformation implements Initializable {
                    Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                    if (scan.hasNextLine()){
                        tfCardID.setText(scan.nextLine());
+                       Main.rfid.clearCache();
                        cardIdScannerThread.stop();
                    }
                } catch (FileNotFoundException ex) {
