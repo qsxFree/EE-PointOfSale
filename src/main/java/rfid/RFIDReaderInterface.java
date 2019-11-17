@@ -24,9 +24,17 @@ public class RFIDReaderInterface {
     private String lastStringRead = "";
     private byte[] bytesRead;
     private String RFIDcacheFilePath = "etc\\rfid-cache.file";
-    private boolean writeDataToCache = false;
     private boolean deviceReady = false;
     private boolean serialCommDebugging = true; // Set to true when checking data sent/received through serial
+
+    private int writeDataToCache = 3;
+    // for classifying the data to be written to cache
+    /*
+    0 - nothing
+    1 - Card ID (8-character)
+    2 - New PIN (6-character)
+    3 - Code (1-character)
+     */
 
     public RFIDReaderInterface() {
         /**
@@ -90,6 +98,7 @@ public class RFIDReaderInterface {
                 }
 
                 @Override
+                // When data is received through Serial, this will trigger
                 public void serialEvent(SerialPortEvent event) {
                     if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                         return;
@@ -103,21 +112,39 @@ public class RFIDReaderInterface {
                     // For checking data received through serial, uncomment the line below
                     if (serialCommDebugging) {
                         System.out.print("[RECEIVED] ");
-                        System.out.println(numRead + " bytes read, " + lastStringRead.length() + " characters : \"" + lastStringRead + "\"");
+                        //System.out.println(numRead + " bytes read, " + lastStringRead.length() + " characters : \"" + lastStringRead + "\"");
+                        System.out.println(getLastStringRead());
                     }
 
                     // Writes the next received data to a cache file
-                    if (writeDataToCache) {
-                        writeDataToCache = false;
-                        writeToCache(getLastStringRead());
+                    // Will verify if received data is complete before writing to cache file
+                    // Otherwise, it will request for the device to send the data again
+                    if (writeDataToCache > 0 && writeDataToCache < 4) {
+                        int requiredLength = -1;
+                        boolean dataValid = false;
+                        switch (writeDataToCache) {
+                            case 1: requiredLength = 8; break; // For scanned Card ID
+                            case 2: requiredLength = 6; break; // For new PIN entries
+                            case 3: requiredLength = 1; break; // For single-character codes
+                        }
+
+                        if (getLastStringRead().length() != requiredLength) {
+                            // if received data is incomplete, ask arduino to send it again
+                            serialPrint("sendAgain");
+                        }
+                        else {
+                            writeDataToCache = 0;
+                            writeToCache(getLastStringRead());
+                        }
                     }
 
                     if (!deviceReady) {
-                        if (getLastStringRead().equals("99")) {
+                        if (getLastStringRead().equals("1")) {
                             serialPrint("start");
                         }
-                        else if (getLastStringRead().equals("1")) {
+                        else if (getLastStringRead().equals("2")) {
                             deviceReady = true;
+                            clearCache();
                         }
                     }
                 }
@@ -143,7 +170,7 @@ public class RFIDReaderInterface {
          * This method tells the Arduino to ask the customer to scan their RFID card,
          * then writes the device's response to cache file.
          */
-        writeDataToCache = true;
+        writeDataToCache = 1;
         serialPrint("scan");
     }
 
@@ -152,7 +179,7 @@ public class RFIDReaderInterface {
          * This method is for authentication of the ownership of a scanned RFID Card,
          * then writes the device's response to cache file.
          */
-        writeDataToCache = true;
+        writeDataToCache = 3;
         serialPrint("challenge\n" + passcode);
     }
 
@@ -163,7 +190,7 @@ public class RFIDReaderInterface {
          * It will ask the customer to enter the PIN twice for confirmation,
          * then writes the device's response to cache file.
          */
-        writeDataToCache = true;
+        writeDataToCache = 2;
         serialPrint("newpass");
     }
 
@@ -172,7 +199,7 @@ public class RFIDReaderInterface {
          * This method checks the RFID module's status with the Arduino,
          * then writes the device's response to cache file.
          */
-        writeDataToCache = true;
+        writeDataToCache = 3;
         serialPrint("check\nnfc");
     }
 
@@ -180,7 +207,7 @@ public class RFIDReaderInterface {
         /**This method checks the GSM module's status with the Arduino,
          * then writes the device's response to cache file.
          */
-        writeDataToCache = true;
+        writeDataToCache = 3;
         serialPrint("check\ngsm\nstatus");
     }
 
@@ -188,7 +215,7 @@ public class RFIDReaderInterface {
         /**This method checks the GSM module's signal strength with the Arduino,
          * then writes the device's response to cache file.
          */
-        writeDataToCache = true;
+        writeDataToCache = 3;
         serialPrint("check\ngsm\nsignal");
     }
 
@@ -217,7 +244,13 @@ public class RFIDReaderInterface {
             writer.write(data);
             writer.close();
             if (serialCommDebugging) {
-                System.out.println("[WRITE] " + data);
+                System.out.print("[WRITE] ");
+                if (!data.equals("")) {
+                    System.out.println(data);
+                }
+                else {
+                    System.out.println("<nothing>");
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,6 +266,7 @@ public class RFIDReaderInterface {
          * to prevent problems with persistent data that might be mistakenly read.
          */
         writeToCache("");
+        System.out.println("[CACHE CLEARED]");
     }
 
     private String getLastStringRead() {
