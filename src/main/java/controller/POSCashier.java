@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -26,14 +27,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import main.java.MiscInstances;
+import main.java.data.entity.Item;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.InputRestrictor;
 import main.java.misc.SceneManipulator;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class POSCashier implements Initializable {
 
@@ -142,16 +151,13 @@ public class POSCashier implements Initializable {
     /****************** VARIABLES ********************/
     /*************************************************/
 
-    private static ObservableList<ProductOrder> productList = FXCollections.observableArrayList(
-            new ProductOrder("324578126572-21","KOPIKO BROWN",60.0,2,120.0),
-            new ProductOrder("123456789124-22","GREATASTE WHITE",56.0,2,112.0),
-            new ProductOrder("123456789125-23","NESCAFE ORIGINAL",62.0,1,62.0),
-            new ProductOrder("123456791245-24","KOPIKO BLACK",58.0,4,232.0)
-    );
+    private static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
+    protected static ArrayList <Item>allItem = new ArrayList<Item>();
 
     private double total = 0;
     private int items = 0;
     private ProductOrder selectedProduct = null;
+    protected MiscInstances misc;
 
     protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
@@ -165,20 +171,32 @@ public class POSCashier implements Initializable {
     /*************************************************/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        misc = new MiscInstances();
+        queryAllItem();
         InputRestrictor.numbersInput(this.tfQuantity);
+        InputRestrictor.limitInput(this.tfQuantity,3);
         BackgroundProcesses.realTimeClock(lblDate);
-        chProductID.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("productID"));
-        chProduct.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("product"));
-        chUnitPrice.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("unitPrice"));
-        chQuantity.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Integer>("quantity"));
-        chTotal.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("total"));
-
-        TreeItem <ProductOrder>dataItem = new RecursiveTreeItem<ProductOrder>(productList, RecursiveTreeObject::getChildren);
-        ttvOrderList.setRoot(dataItem);
-        ttvOrderList.setShowRoot(false);
-
+        loadTable();
+        try {
+            Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
+            scan.nextLine();
+            scan.nextLine();
+            scan.nextLine();
+            scan.nextLine();
+            ivAdmin.setImage(scan.nextLine().equals("1")
+                    ? new Image(DirectoryHandler.IMG+"pos-admin.png")
+                    : new Image(DirectoryHandler.IMG+"pos-admin-disable.png") );
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         totalCountRefresher();
         itemCountRefresher();
+    }
+
+
+    @FXML
+    protected void btnHomeOnAction(ActionEvent event) {
+        sceneManipulator.changeScene(rootPane,"POSDashboard", "Dashboard");
     }
 
     @FXML
@@ -321,7 +339,37 @@ public class POSCashier implements Initializable {
         });
     }
 
+    private void loadTable(){
+        chProductID.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("productID"));
+        chProduct.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,String>("product"));
+        chUnitPrice.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("unitPrice"));
+        chQuantity.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Integer>("quantity"));
+        chTotal.setCellValueFactory(new TreeItemPropertyValueFactory<ProductOrder,Double>("total"));
+        TreeItem <ProductOrder>dataItem = new RecursiveTreeItem<ProductOrder>(productList, RecursiveTreeObject::getChildren);
+        ttvOrderList.setRoot(dataItem);
+        ttvOrderList.setShowRoot(false);
+    }
 
+    private void queryAllItem(){
+        String sql = "Select * from Item";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        try{
+            while(result.next()){
+                Item item = new Item(result.getInt("itemID")
+                        ,result.getString("itemCode")
+                        ,result.getString("itemName")
+                        ,result.getDouble("itemPrice")
+                        ,result.getInt("stock"));
+                allItem.add(item);
+            }
+            misc.dbHandler.closeConnection();
+        }catch (Exception e){
+            e.printStackTrace();
+            misc.dbHandler.closeConnection();
+        }
+
+    }
 
 
     /*************************************************/
