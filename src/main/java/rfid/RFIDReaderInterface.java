@@ -1,4 +1,9 @@
-import com.fazecast.jSerialComm.*;
+package main.java.rfid;
+
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
+
 import java.io.*;
 import java.util.Scanner;
 

@@ -9,16 +9,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.Main;
-import main.java.rfid.RFIDReaderInterface;
+import main.java.controller.message.POSMessage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class POSCardInformation implements Initializable {
 
@@ -42,35 +42,33 @@ public class POSCardInformation implements Initializable {
 
     @FXML
     private JFXButton btnDone;
-    Timeline clock,clock1;
+    private Timeline cardIdScannerThread;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        /*
-         clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            if (tfCardID.isFocused()){
-                tfCardID.setText(Main.rfid.scan());
-                clock.stop();
-            }
+       try {
+           Main.rfid.scan();
+           cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+               try {
+                   Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
+                   if (scan.hasNextLine()){
+                       tfCardID.setText(scan.nextLine());
+                       cardIdScannerThread.stop();
+                   }
+               } catch (FileNotFoundException ex) {
+                   ex.printStackTrace();
+               }
 
-        }),
-                new KeyFrame(Duration.seconds(1))
-        );
-        clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();
-
-
-        clock1 = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            if (pfPIN.isFocused()){
-                pfPIN.setText(Main.rfid.newPasscode());
-                clock1.stop();
-            }
-
-        }),
-                new KeyFrame(Duration.seconds(1))
-        );
-        clock1.setCycleCount(Animation.INDEFINITE);
-        clock1.play();
-        */
+           }),
+                   new KeyFrame(Duration.seconds(1))
+           );
+           cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
+           cardIdScannerThread.play();
+       }catch (NullPointerException e){
+           POSMessage.showMessage(rootPane,"Please connect the RFID Scanner to complete Task",
+                   "RFID Scanner not detected",
+                   POSMessage.MessageType.ERROR);
+           e.printStackTrace();
+       }
     }
 
     @FXML
