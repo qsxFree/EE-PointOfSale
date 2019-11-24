@@ -46,7 +46,7 @@ public class POSCardInformation implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
        try {
-           Main.rfid.scan();
+           Main.rfid.newScan();
            cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                try {
                    Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));

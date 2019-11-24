@@ -17,6 +17,8 @@ import java.util.Scanner;
  * @since 2019-11-5
  */
 
+// TODO Add timeouts for receiving bad data
+
 public class RFIDReaderInterface {
     private SerialPort selectedPort; // The selected port to be used
     private Scanner serialReader;
@@ -174,6 +176,16 @@ public class RFIDReaderInterface {
         serialPrint("scan");
     }
 
+    public void newScan() {
+        /**
+         * This method tells the Arduino to perform a thorough scan of an RFID Card.
+         * This is mainly intended for adding new cards into the database,
+         * as it scans the card 16 times and compares each scanned ID to determine the most accurate ID.
+         */
+        writeDataToCache = 1;
+        serialPrint("newscan");
+    }
+
     public void challenge(String passcode) {
         /**
          * This method is for authentication of the ownership of a scanned RFID Card,
@@ -249,7 +261,7 @@ public class RFIDReaderInterface {
                     System.out.println(data);
                 }
                 else {
-                    System.out.println("<nothing>");
+                    System.out.print("> ");
                 }
             }
         } catch (IOException e) {
