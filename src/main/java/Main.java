@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import main.java.misc.DirectoryHandler;
 import main.java.rfid.RFIDReaderInterface;
 
+
 public class Main extends Application {
 
     @Override
@@ -21,6 +22,9 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+
+
+
     }
 
     public static RFIDReaderInterface rfid = new RFIDReaderInterface();

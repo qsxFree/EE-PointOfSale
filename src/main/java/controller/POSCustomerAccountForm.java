@@ -73,17 +73,17 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     void btnCreateOnAction(ActionEvent event) throws IOException {
 
         if (hasEmptyField()){
-            POSMessage.showMessage(rootPane,"Please fill all the Fields","Invalid Value", POSMessage.MessageType.ERROR);
+            POSMessage.showMessage(rootPane,"Please fill all the required fields","Invalid Value", POSMessage.MessageType.ERROR);
         }else if (!emailIsValid()){
-            POSMessage.showMessage(rootPane,"The email is invalid","Invalid Value", POSMessage.MessageType.ERROR);
+            POSMessage.showMessage(rootPane,"The email you've entered is invalid","Invalid Value", POSMessage.MessageType.ERROR);
         }else if (!mobileIsValid()){
-            POSMessage.showMessage(rootPane,"The mobile number is invalid","Invalid Value", POSMessage.MessageType.ERROR);
+            POSMessage.showMessage(rootPane,"The mobile number you've entered is invalid","Invalid Value", POSMessage.MessageType.ERROR);
         }else{
             String newAcc = "";
             BufferedWriter writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile("etc\\cache-new-account.file")));
             newAcc += tfFirstName.getText();
             newAcc += "\n"+tfMiddleInitial.getText();
-            newAcc += "\n"+tfLastName.getText();
+            newAcc += "\n"+(tfLastName.getText().equals("")?"N/A":tfLastName.getText());
             newAcc += "\n"+tfAddress.getText();
             newAcc += "\n"+tfEmailAddress.getText();
             newAcc += "\n"+tfMobileNumber.getText();

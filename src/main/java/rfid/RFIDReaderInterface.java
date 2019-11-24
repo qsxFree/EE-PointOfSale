@@ -27,7 +27,7 @@ public class RFIDReaderInterface {
     private byte[] bytesRead;
     private String RFIDcacheFilePath = "etc\\rfid-cache.file";
     private boolean deviceReady = false;
-    private boolean serialCommDebugging = true; // Set to true when checking data sent/received through serial
+    private boolean serialCommDebugging = false; // Set to true when checking data sent/received through serial
 
     private int writeDataToCache = 3;
     // for classifying the data to be written to cache
