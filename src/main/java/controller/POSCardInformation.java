@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class POSCardInformation implements Initializable {
+public class POSCardInformation extends POSCustomerAccount implements Initializable {
 
     @FXML
     private StackPane rootPane;
@@ -48,6 +48,8 @@ public class POSCardInformation implements Initializable {
 
     private MiscInstances misc = new MiscInstances();
     private Timeline cardIdScannerThread;
+    private Timeline pinThread = null;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(tfInitialBalance);
@@ -83,7 +85,7 @@ public class POSCardInformation implements Initializable {
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
-
+        sceneManipulator.closeDialog();
     }
 
     @FXML
@@ -91,67 +93,29 @@ public class POSCardInformation implements Initializable {
         if (hasEmptyField()){
             POSMessage.showMessage(rootPane,"Please fill all the required fields","Invalid Value", POSMessage.MessageType.ERROR);
         }else{
-            Scanner scan = new Scanner(new FileInputStream("etc\\cache-new-account.file"));
-            String firstName,middleInitial,lastName,address,email,mobile,sex;
-            firstName = scan.nextLine();
-            middleInitial = scan.nextLine();
-            lastName = scan.nextLine();
-            address = scan.nextLine();
-            email = scan.nextLine();
-            mobile = scan.nextLine();
-            sex = scan.nextLine();
-            String sql = "Insert into customer(firstname,middleInitial,lastName,address,emailAddress,phoneNumber,sex) values ("
-                    + "'"+firstName+"',"
-                    + "'"+middleInitial+"',"
-                    + "'"+lastName+"',"
-                    + "'"+address+"',"
-                    + "'"+email+"',"
-                    + "'"+mobile+"',"
-                    + "'"+sex+"')";
+            JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
+            btnNo.setOnAction(e -> POSMessage.closeMessage());// After pressing the No button, it simply close the message
 
-            misc.dbHandler.startConnection();
-            misc.dbHandler.execUpdate(sql);
-            misc.dbHandler.closeConnection();
+            JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
+            btnYes.setOnAction(e -> {
+                try {
+                    doInsertion();
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            });
 
+            // Confirmation Message
+            POSMessage.showConfirmationMessage(rootPane, "Do you really want to delete selected\nitem?"
+                    , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
 
-            sql = "Select max(customerID) as cusID from customer";
-
-            misc.dbHandler.startConnection();
-            ResultSet result = misc.dbHandler.execQuery(sql);
-
-            int id = 0;
-            if (result.next()){
-                id = result.getInt("cusID");
-            }
-            misc.dbHandler.closeConnection();
-
-            Date d = new Date();
-            SimpleDateFormat date = new SimpleDateFormat("MM-dd-YYYY");
-            String cardID,PIN,activation,expiry;
-            cardID = tfCardID.getText();
-            PIN = pfPIN.getText();
-            activation  = date.format(d);
-            date = new SimpleDateFormat("MM-dd-");
-            expiry = date.format(d)+((d.getYear()+1900)+1);
-
-            sql = "Insert into card(cardID,PIN,activationDate,expiryDate,credits,customerID) values("
-                    + "'" +cardID+ "',"
-                    + "'" +PIN + "',"
-                    + "'" +activation+ "',"
-                    + "'" +expiry+ "',"
-                    + Double.parseDouble(tfInitialBalance.getText())+","
-                    + id+ ")";
-
-            misc.dbHandler.startConnection();
-            misc.dbHandler.execUpdate(sql);
-            misc.dbHandler.closeConnection();
-
-            POSMessage.showMessage(rootPane,"New account has been added","Registration Successful", POSMessage.MessageType.INFORM);
         }
     }
 
 
-    private Timeline pinThread = null;
+
     private void scanForPIN(){
         Main.rfid.newPasscode();
          pinThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -177,6 +141,65 @@ public class POSCardInformation implements Initializable {
     private boolean hasEmptyField(){
         return tfCardID.getText().equals("") || pfPIN.getText().equals("") ||
                 tfInitialBalance.getText().equals("");
+    }
+
+    private final void doInsertion() throws FileNotFoundException, SQLException {
+        Scanner scan = new Scanner(new FileInputStream("etc\\cache-new-account.file"));
+        String firstName,middleInitial,lastName,address,email,mobile,sex;
+        firstName = scan.nextLine();
+        middleInitial = scan.nextLine();
+        lastName = scan.nextLine();
+        address = scan.nextLine();
+        email = scan.nextLine();
+        mobile = scan.nextLine();
+        sex = scan.nextLine();
+        String sql = "Insert into customer(firstname,middleInitial,lastName,address,emailAddress,phoneNumber,sex) values ("
+                + "'"+firstName+"',"
+                + "'"+middleInitial+"',"
+                + "'"+lastName+"',"
+                + "'"+address+"',"
+                + "'"+email+"',"
+                + "'"+mobile+"',"
+                + "'"+sex+"')";
+
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
+
+        sql = "Select max(customerID) as cusID from customer";
+
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+
+        int id = 0;
+        if (result.next()){
+            id = result.getInt("cusID");
+        }
+        misc.dbHandler.closeConnection();
+
+        Date d = new Date();
+        SimpleDateFormat date = new SimpleDateFormat("MM-dd-YYYY");
+        String cardID,PIN,activation,expiry;
+        cardID = tfCardID.getText();
+        PIN = pfPIN.getText();
+        activation  = date.format(d);
+        date = new SimpleDateFormat("MM-dd-");
+        expiry = date.format(d)+((d.getYear()+1900)+1);
+
+        sql = "Insert into card(cardID,PIN,activationDate,expiryDate,credits,customerID) values("
+                + "'" +cardID+ "',"
+                + "'" +PIN + "',"
+                + "'" +activation+ "',"
+                + "'" +expiry+ "',"
+                + Double.parseDouble(tfInitialBalance.getText())+","
+                + id+ ")";
+
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
+        POSMessage.showMessage(rootPane,"New account has been added","Registration Successful", POSMessage.MessageType.INFORM);
     }
 
 }
