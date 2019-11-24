@@ -4,16 +4,16 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import main.java.MiscInstances;
-import main.java.misc.SceneManipulator;
+import main.java.controller.message.POSMessage;
+import main.java.misc.BackgroundProcesses;
+import main.java.misc.InputRestrictor;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -55,38 +55,13 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     @FXML
     private JFXButton btnCreate;
 
-    @FXML
-    void btnCancelOnAction(ActionEvent event) {
-        sceneManipulator.closeDialog();
-    }
 
-    @FXML
-    void btnCreateOnAction(ActionEvent event) {
-        sceneManipulator.closeDialog();
-        sceneManipulator.openDialog((StackPane) sceneManipulator.getDialogController(),"POSCardInformation");
-
-        /*
-        String firstName = tfFirstName.getText();
-        String middleInitial = tfMiddleInitial.getText().equals("") ? null : tfMiddleInitial.getText();
-        String lastName = tfLastName.getText();
-        String mobile = tfMobileNumber.getText();
-        String address = tfAddress.getText();
-        String email = tfEmailAddress.getText();
-        String sex = null;
-
-        if (this.sex.getSelectedToggle().equals(rbMale))
-            sex = "Male";
-        else if (this.sex.getSelectedToggle().equals(rbFemale))
-            sex = "Female";
-
-        String sql = "Insert into customer(firstName,middleInitial,lastName,sex,address,phonenumber,emailAddress)" +
-                " values('"+firstName+"','"+middleInitial+"','"+lastName+"','"+sex+"','"+address+"','"+mobile+"','"+email+"')";
-
-        MiscInstances misc = new MiscInstances();
-        misc.dbHandler.startConnection();
-        misc.dbHandler.execUpdate(sql);
-        */
-
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        InputRestrictor.limitInput(tfMobileNumber,11);
+        InputRestrictor.numbersInput(tfMobileNumber);
+        InputRestrictor.limitInput(tfMiddleInitial,3);
+        BackgroundProcesses.createCacheDir("etc\\cache-new-account.file");
     }
 
     @FXML
@@ -94,8 +69,57 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
 
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    @FXML
+    void btnCreateOnAction(ActionEvent event) throws IOException {
+
+        if (hasEmptyField()){
+            POSMessage.showMessage(rootPane,"Please fill all the Fields","Invalid Value", POSMessage.MessageType.ERROR);
+        }else if (!emailIsValid()){
+            POSMessage.showMessage(rootPane,"The email is invalid","Invalid Value", POSMessage.MessageType.ERROR);
+        }else if (!mobileIsValid()){
+            POSMessage.showMessage(rootPane,"The mobile number is invalid","Invalid Value", POSMessage.MessageType.ERROR);
+        }else{
+            String newAcc = "";
+            BufferedWriter writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile("etc\\cache-new-account.file")));
+            newAcc += tfFirstName.getText();
+            newAcc += "\n"+tfMiddleInitial.getText();
+            newAcc += "\n"+tfLastName.getText();
+            newAcc += "\n"+tfAddress.getText();
+            newAcc += "\n"+tfEmailAddress.getText();
+            newAcc += "\n"+tfMobileNumber.getText();
+            newAcc += "\n"+(rbMale.isSelected() ? "Male" : "Female");
+
+            writer.write(newAcc);
+            writer.close();
+            sceneManipulator.closeDialog();
+            sceneManipulator.openDialog((StackPane) sceneManipulator.getDialogController(),"POSCardInformation");
+        }
 
     }
+
+    @FXML
+    void btnCancelOnAction(ActionEvent event) {
+        sceneManipulator.closeDialog();
+    }
+
+    private boolean hasEmptyField(){
+        return tfFirstName.getText().equals("") ||
+                tfLastName.getText().equals("") ||
+                tfMiddleInitial.getText().equals("") ||
+                tfMobileNumber.getText().equals("") ||
+                tfAddress.getText().equals("") ||
+                !(rbFemale.isSelected() || rbMale.isSelected());
+    }
+
+    private boolean mobileIsValid(){
+        return (tfMobileNumber.getText().startsWith("0") && tfMobileNumber.getText().length() == 11) ||
+                (tfMobileNumber.getText().startsWith("9") && tfMobileNumber.getText().length() ==10);
+
+    }
+
+    private boolean emailIsValid(){
+        return tfEmailAddress.getText().contains("@")
+                && tfEmailAddress.getText().contains(".");
+    }
 }
+
