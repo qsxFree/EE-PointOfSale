@@ -2,21 +2,15 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXRadioButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
-<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="326.0" prefWidth="582.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCustomerAccountForm">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="501.0" prefWidth="468.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCustomerAccountForm">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
          <children>
-            <VBox layoutX="198.0" layoutY="46.0" prefHeight="381.0" prefWidth="582.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox layoutX="198.0" layoutY="46.0" prefHeight="478.0" prefWidth="582.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label prefHeight="30.0" prefWidth="556.0" styleClass="lbl-name" text="New Customer">
                      <VBox.margin>
@@ -26,31 +20,100 @@
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <VBox prefHeight="191.0" prefWidth="542.0" styleClass="controls-container">
+                  <VBox prefHeight="334.0" prefWidth="542.0" styleClass="controls-container">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" />
                      </VBox.margin>
                      <children>
                         <HBox prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <TextField fx:id="tfFirstName" alignment="CENTER" prefHeight="35.0" prefWidth="231.0" promptText="First Name">
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="First Name">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
-                              </TextField>
-                              <TextField fx:id="tfMiddleInitial" alignment="CENTER" prefHeight="39.0" prefWidth="83.0" promptText="M.I.">
+                              </Label>
+                              <TextField fx:id="tfFirstName" alignment="CENTER" prefHeight="35.0" prefWidth="347.0" promptText="First Name">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
-                              </TextField>
-                              <TextField fx:id="tfLastName" alignment="CENTER" prefHeight="39.0" prefWidth="207.0" promptText="Last Name">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
                               </TextField>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="540.0">
+                        <HBox prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <Label prefHeight="35.0" prefWidth="98.0" styleClass="lbl-name" text="First Name">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="tfMiddleInitial" alignment="CENTER" prefHeight="35.0" prefWidth="250.0" promptText="M.I.">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <TextField fx:id="tfLastName" alignment="CENTER" prefHeight="35.0" prefWidth="232.0" promptText="Last Name">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <TextField fx:id="tfMobileNumber" alignment="CENTER" prefHeight="35.0" prefWidth="226.0" promptText="Mobile Number">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <TextField fx:id="tfEmailAddress" alignment="CENTER" prefHeight="32.0" prefWidth="228.0" promptText="Email Address">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <TextField fx:id="tfAddress" alignment="CENTER" prefHeight="32.0" prefWidth="580.0" promptText="Address">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="540.0">
                            <children>
                               <HBox prefHeight="41.0" prefWidth="145.0">
                                  <children>
@@ -68,29 +131,7 @@
                               </HBox>
                            </children>
                         </HBox>
-                        <HBox prefHeight="45.0" prefWidth="540.0">
-                           <children>
-                              <TextField fx:id="tfMobileNumber" alignment="CENTER" prefHeight="35.0" prefWidth="196.0" promptText="Mobile Number">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <TextField fx:id="tfEmailAddress" alignment="CENTER" prefHeight="32.0" prefWidth="335.0" promptText="Email Address">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="45.0" prefWidth="540.0">
-                           <children>
-                              <TextField fx:id="tfAddress" alignment="CENTER" prefHeight="32.0" prefWidth="580.0" promptText="Address">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
+                        <Label text="Label" />
                      </children>
                   </VBox>
                   <HBox alignment="CENTER_RIGHT" prefHeight="65.0" prefWidth="542.0">
