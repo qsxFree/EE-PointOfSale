@@ -65,10 +65,13 @@ public class POSCardInformation implements Initializable {
            cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
            cardIdScannerThread.play();
        }catch (NullPointerException e){
-           POSMessage.showMessage(rootPane,"Please connect the RFID Scanner to complete Task",
+           JFXButton button = new JFXButton("Ok");
+           button.setOnAction(s->{
+               POSMessage.closeMessage();
+           });
+           POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to complete Task",
                    "RFID Scanner not detected",
-                   POSMessage.MessageType.ERROR);
-           e.printStackTrace();
+                   POSMessage.MessageType.ERROR,button);
        }
     }
 

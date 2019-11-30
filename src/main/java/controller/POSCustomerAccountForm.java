@@ -12,6 +12,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import main.java.MiscInstances;
+import main.java.controller.message.POSMessage;
 import main.java.misc.SceneManipulator;
 
 import java.net.URL;
@@ -87,6 +88,14 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
         misc.dbHandler.execUpdate(sql);
         */
 
+        if (hasEmptyField())
+            POSMessage.showMessage(rootPane,"Please fill out all the required fields","Invalid Value", POSMessage.MessageType.ERROR);
+        else if(!emailIsValid()){
+            POSMessage.showMessage(rootPane,"Please enter a valid email","Invalid Email", POSMessage.MessageType.ERROR);
+        }else if(!mobileNumberIsValid()){
+            POSMessage.showMessage(rootPane,"Please enter a valid mobile number","Invalid Mobile Number", POSMessage.MessageType.ERROR);
+        }
+
     }
 
     @FXML
@@ -97,5 +106,25 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+    }
+
+    private boolean hasEmptyField(){
+        return tfAddress.getText().equals("") ||
+                tfEmailAddress.getText().equals("") ||
+                tfFirstName.getText().equals("") ||
+                tfLastName.getText().equals("") ||
+                tfMobileNumber.getText().equals("") ||
+                (rbFemale.isSelected()==false && rbMale.isSelected()==false);
+    }
+
+    private boolean emailIsValid(){
+        return tfEmailAddress.getText().contains("@") &&
+                tfEmailAddress.getText().contains(".");
+    }
+
+    private boolean mobileNumberIsValid(){
+        return (tfMobileNumber.getText().startsWith("09") ||
+                tfMobileNumber.getText().startsWith("9")) &&
+                        !tfMobileNumber.getText().contains(".");
     }
 }
