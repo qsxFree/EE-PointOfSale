@@ -127,5 +127,4 @@ public class POSNewItem extends POSInventory{
                 tfInititalStock.getText().equals("");
     }
 
-    //TODO Adding Brand and unit of measurement
 }

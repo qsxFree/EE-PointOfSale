@@ -41,6 +41,9 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
     private PasswordField pfPIN;
 
     @FXML
+    private PasswordField pfConfirm;
+
+    @FXML
     private JFXButton btnCancel;
 
     @FXML
@@ -74,12 +77,13 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
            cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
            cardIdScannerThread.play();
        }catch (NullPointerException e){
-           JFXButton btnOk = new JFXButton("Ok");
-           btnOk.setOnAction(ev->POSMessage.closeMessage());
-           POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to\ncomplete Task",
-                   "Cannot Detect RFID Scanner",
-                   POSMessage.MessageType.ERROR,btnOk);
-           e.printStackTrace();
+           JFXButton button = new JFXButton("Ok");
+           button.setOnAction(s->{
+               POSMessage.closeMessage();
+           });
+           POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to complete Task",
+                   "RFID Scanner not detected",
+                   POSMessage.MessageType.ERROR,button);
        }
     }
 
