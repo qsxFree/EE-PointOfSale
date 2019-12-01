@@ -82,8 +82,8 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
             String newAcc = "";
             BufferedWriter writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile("etc\\cache-new-account.file")));
             newAcc += tfFirstName.getText();
-            newAcc += "\n"+tfMiddleInitial.getText();
-            newAcc += "\n"+(tfLastName.getText().equals("")?"N/A":tfLastName.getText());
+            newAcc += "\n"+(tfMiddleInitial.getText().equals("")?"N/A":tfMiddleInitial.getText());
+            newAcc += "\n"+tfLastName.getText();
             newAcc += "\n"+tfAddress.getText();
             newAcc += "\n"+tfEmailAddress.getText();
             newAcc += "\n"+tfMobileNumber.getText();
@@ -105,7 +105,6 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
     private boolean hasEmptyField(){
         return tfFirstName.getText().equals("") ||
                 tfLastName.getText().equals("") ||
-                tfMiddleInitial.getText().equals("") ||
                 tfMobileNumber.getText().equals("") ||
                 tfAddress.getText().equals("") ||
                 !(rbFemale.isSelected() || rbMale.isSelected());
