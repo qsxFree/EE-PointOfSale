@@ -2,16 +2,23 @@ package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
+import main.java.data.entity.Customer;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
@@ -22,7 +29,7 @@ import java.util.ResourceBundle;
 public class POSCustomerAccount implements Initializable {
 
     @FXML
-    protected StackPane rootPane;
+    protected  StackPane rootPane;
 
     @FXML
     private JFXButton btnHome;
@@ -46,34 +53,38 @@ public class POSCustomerAccount implements Initializable {
     private JFXButton btnDelete;
 
     @FXML
-    private JFXTreeTableView<?> ttvCustomer;
+    private JFXTreeTableView<Customer> ttvCustomer;
 
     @FXML
-    private TreeTableColumn<?, ?> chCustomerID;
+    private TreeTableColumn<Customer, Integer> chCustomerID;
 
     @FXML
-    private TreeTableColumn<?, ?> chCustomerName;
+    private TreeTableColumn<Customer, String> chCustomerName;
 
     @FXML
-    private TreeTableColumn<?, ?> chAddress;
+    private TreeTableColumn<Customer, String> chAddress;
 
     @FXML
-    private TreeTableColumn<?, ?> chSex;
+    private TreeTableColumn<Customer, String> chSex;
 
     @FXML
-    private TreeTableColumn<?, ?> chMobileNumber;
+    private TreeTableColumn<Customer, String> chMobileNumber;
 
     @FXML
-    private TreeTableColumn<?, ?> chEmail;
+    private TreeTableColumn<Customer, String> chEmail;
+
+    @FXML
+    private TreeTableColumn<Customer, JFXButton> chCardInfo;
 
     protected static MiscInstances misc;
+    protected static ObservableList<Customer> itemList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             queryAllItems();
-            //loadTable();
+            loadTable();
             BackgroundProcesses.createCacheDir("etc\\cache-selected-account.file");
             BackgroundProcesses.createCacheDir("etc\\cache-new-user.file");
         }),
@@ -125,14 +136,43 @@ public class POSCustomerAccount implements Initializable {
         ResultSet result = misc.dbHandler.execQuery(sql);
 
         try{
+            Customer customer;
             while(result.next()){
+                customer = new Customer(result.getInt("customerID")
+                        ,result.getString("firstName")
+                        ,result.getString("middleInitial")
+                        ,result.getString("lastName")
+                        ,result.getString("sex")
+                        ,result.getString("address")
+                        ,result.getString("phonenumber")
+                        ,result.getString("emailAddress")
+                ,new JFXButton("View"));
 
+                customer.setManipulator(sceneManipulator);
+                itemList.add(customer);
             }
         }catch (Exception e){
             e.printStackTrace();
             misc.dbHandler.closeConnection();
         }
         misc.dbHandler.closeConnection();
+    }
+
+    //private Integer customerID;
+    //private String firstName,middleInitial,lastName,sex,address,phoneNumber,email;
+    //private JFXButton btnViewCard;
+    private void loadTable(){
+        chCustomerID.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,Integer>("customerID"));
+        chCustomerName.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("fullName"));
+        chAddress.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("address"));
+        chSex.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("sex"));
+        chEmail.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("email"));
+        chMobileNumber.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("phoneNumber"));
+        chCardInfo.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,JFXButton>("btnViewCard"));
+
+        TreeItem<Customer> dataItem = new RecursiveTreeItem<Customer>(itemList, RecursiveTreeObject::getChildren);
+        ttvCustomer.setRoot(dataItem);
+        ttvCustomer.setShowRoot(false);
     }
 
 }
