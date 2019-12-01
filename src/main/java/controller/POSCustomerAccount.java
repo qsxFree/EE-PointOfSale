@@ -41,9 +41,6 @@ public class POSCustomerAccount implements Initializable {
     private JFXButton btnSearch;
 
     @FXML
-    private JFXButton btnCardInfo;
-
-    @FXML
     private JFXButton btnNew;
 
     @FXML
@@ -117,8 +114,6 @@ public class POSCustomerAccount implements Initializable {
 
         }else if (selectedButton.equals(this.btnUpdate)){
             sceneManipulator.openDialog(rootPane,"POSCustomerEdit");
-        }else if (selectedButton.equals(this.btnCardInfo)){
-            sceneManipulator.openDialog(rootPane,"POSSelectedCardInfo");
         }
 
     }
@@ -149,6 +144,7 @@ public class POSCustomerAccount implements Initializable {
                 ,new JFXButton("View"));
 
                 customer.setManipulator(sceneManipulator);
+                customer.setMisc(misc);
                 itemList.add(customer);
             }
         }catch (Exception e){
