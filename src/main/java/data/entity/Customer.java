@@ -2,7 +2,10 @@ package main.java.data.entity;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
 import main.java.data.CacheWriter;
@@ -18,25 +21,29 @@ import java.sql.SQLException;
 public class Customer extends RecursiveTreeObject<Customer> implements CacheWriter {
 
     private Integer customerID;
-    private String fullName,firstName,middleInitial,lastName,sex,address,phoneNumber,email;
-    private JFXButton btnViewCard;
+    private String fullName, firstName, middleInitial, lastName, sex, address, phoneNumber, email;
+    private JFXButton btnViewCard, btnEdit, btnDelete;
+    private HBox hbActionContainer;
     private StackPane rootPane;
     private SceneManipulator manipulator;
     private MiscInstances misc;
 
 
-    public Customer(int customerID, String firstName, String middleInitial, String lastName, String sex, String address, String phoneNumber, String email, JFXButton btnViewCard) {
+    public Customer(int customerID, String firstName, String middleInitial, String lastName, String sex, String address, String phoneNumber, String email, JFXButton btnViewCard, HBox hbActionContainer) {
         this.customerID = new Integer(customerID);
         this.firstName = firstName;
         this.middleInitial = middleInitial;
         this.lastName = lastName;
-        fullName = (firstName+" "+middleInitial+". "+lastName);
+        fullName = (firstName + " " + middleInitial + ". " + lastName);
         this.sex = sex;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.email = email;
         buildViewButton(btnViewCard);
         this.btnViewCard = btnViewCard;
+
+        this.hbActionContainer = hbActionContainer;
+        buildActionContainer();
 
     }
 
@@ -121,6 +128,10 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
         this.btnViewCard = btnViewCard;
     }
 
+    public HBox getHbActionContainer() {
+        return hbActionContainer;
+    }
+
     public void setMisc(MiscInstances misc) {
         this.misc = misc;
     }
@@ -129,7 +140,7 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
         this.manipulator = manipulator;
     }
 
-    private void buildViewButton(JFXButton button){
+    private void buildViewButton(JFXButton button) {
         button.setStyle("-fx-background-color:#1ca8d6;" +
                 "-fx-border-radius: 5px;" +
                 "-fx-border-color:#1994bd;" +
@@ -141,25 +152,47 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
             writeToCache("etc\\cache-selected-customer.file:etc\\cache-card-info.file");
 
             Node node = button;
-            while (true){
-                  node = node.getParent();
-                  if (node.getId()!=null && node.getId().equals("rootPane"))break;
+            while (true) {
+                node = node.getParent();
+                if (node.getId() != null && node.getId().equals("rootPane")) break;
             }
 
-          manipulator.openDialog((StackPane) node,"POSSelectedCardInfo");
+            manipulator.openDialog((StackPane) node, "POSSelectedCardInfo");
         });
     }
 
+    private void buildActionContainer() {
+        hbActionContainer.setAlignment(Pos.CENTER);
+        buildEditButton();
+        buildDeleteButton();
+        hbActionContainer.getChildren().addAll(btnEdit, btnDelete);
+        HBox.setMargin(btnEdit, new Insets(0, 2, 0, 2));
+        HBox.setMargin(btnDelete, new Insets(2, 2, 2, 2));
+    }
+
+    private void buildEditButton() {
+        btnEdit = new JFXButton("Edit");
+        btnEdit.setStyle("-fx-background-color:#1ca8d6;" +
+                "-fx-border-radius: 5px;" +
+                "-fx-text-fill:#ffffff;");
+
+    }
+
+    private void buildDeleteButton() {
+        btnDelete = new JFXButton("Delete");
+        btnDelete.getStyleClass().add("btn-danger");
+
+    }
 
     @Override
     public void writeToCache(String files) {
         String file[] = files.split(":");
 
         String cache = customerID +
-                "\n"+firstName +
-                "\n"+(middleInitial.equals("")?"N/A":middleInitial)+
-                "\n"+lastName+
-                "\n"+sex+
+                "\n" + firstName +
+                "\n" + (middleInitial.equals("") ? "N/A" : middleInitial) +
+                "\n" + lastName +
+                "\n" + sex +
                 "\n"+address+
                 "\n"+phoneNumber+
                 "\n"+email;

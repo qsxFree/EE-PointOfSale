@@ -89,6 +89,8 @@
                         <TreeTableColumn fx:id="chMobileNumber" prefWidth="139.0" styleClass="center-cell-item" text="Mobile Number" />
                         <TreeTableColumn fx:id="chEmail" prefWidth="135.0" styleClass="center-cell-item" text="Email" />
                         <TreeTableColumn fx:id="chCardInfo" prefWidth="135.0" styleClass="center-cell-item" text="Card" />
+                        <TreeTableColumn fx:id="chAction" prefWidth="135.0" styleClass="center-cell-item"
+                                         text="Action"/>
                      </columns>
                      <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

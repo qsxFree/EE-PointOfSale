@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
@@ -72,6 +73,9 @@ public class POSCustomerAccount implements Initializable {
 
     @FXML
     private TreeTableColumn<Customer, JFXButton> chCardInfo;
+
+    @FXML
+    private TreeTableColumn<Customer, HBox> chAction;
 
     protected static MiscInstances misc;
     protected static ObservableList<Customer> itemList = FXCollections.observableArrayList();
@@ -134,17 +138,16 @@ public class POSCustomerAccount implements Initializable {
             Customer customer;
             while(result.next()){
                 customer = new Customer(result.getInt("customerID")
-                        ,result.getString("firstName")
-                        ,result.getString("middleInitial")
-                        ,result.getString("lastName")
-                        ,result.getString("sex")
-                        ,result.getString("address")
-                        ,result.getString("phonenumber")
-                        ,result.getString("emailAddress")
-                ,new JFXButton("View"));
+                        , result.getString("firstName")
+                        , result.getString("middleInitial")
+                        , result.getString("lastName")
+                        , result.getString("sex")
+                        , result.getString("address")
+                        , result.getString("phonenumber")
+                        , result.getString("emailAddress")
+                        , new JFXButton("View"), new HBox());
 
                 customer.setManipulator(sceneManipulator);
-                customer.setMisc(misc);
                 itemList.add(customer);
             }
         }catch (Exception e){
@@ -164,7 +167,8 @@ public class POSCustomerAccount implements Initializable {
         chSex.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("sex"));
         chEmail.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("email"));
         chMobileNumber.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("phoneNumber"));
-        chCardInfo.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,JFXButton>("btnViewCard"));
+        chCardInfo.setCellValueFactory(new TreeItemPropertyValueFactory<Customer, JFXButton>("btnViewCard"));
+        chAction.setCellValueFactory(new TreeItemPropertyValueFactory<Customer, HBox>("hbActionContainer"));
 
         TreeItem<Customer> dataItem = new RecursiveTreeItem<Customer>(itemList, RecursiveTreeObject::getChildren);
         ttvCustomer.setRoot(dataItem);
