@@ -10,7 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
 
-public class POSCustomerEdit {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class POSCustomerEdit extends POSCustomerAccount{
 
     /**
      * TODO not yet linked to its parent
@@ -58,9 +61,14 @@ public class POSCustomerEdit {
     @FXML
     private JFXButton btnSave;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    }
+
     @FXML
     void btnCancelOnAction(ActionEvent event) {
-
+        sceneManipulator.closeDialog();
     }
 
     @FXML

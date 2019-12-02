@@ -151,8 +151,7 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
                 "-fx-text-fill:#ffffff;");
 
         button.setOnAction(e->{
-            BackgroundProcesses.createCacheDir("etc\\cache-selected-customer.file");
-            BackgroundProcesses.createCacheDir("etc\\cache-card-info.file");
+
             writeToCache("etc\\cache-selected-customer.file:etc\\cache-card-info.file");
 
 
@@ -193,7 +192,7 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
                 "-fx-text-fill:#ffffff;");
 
         btnEdit.setOnAction(e->{
-
+            manipulator.openDialog((StackPane) this.getRoot(btnEdit),"POSCustomerEdit");
         });
 
     }

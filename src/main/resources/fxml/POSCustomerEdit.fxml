@@ -2,29 +2,22 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXRadioButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
-<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="343.0" prefWidth="582.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCustomerEdit">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="437.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCustomerEdit">
    <children>
-      <AnchorPane prefHeight="400.0" prefWidth="600.0">
+      <AnchorPane prefHeight="482.0" prefWidth="513.0">
          <children>
-            <VBox prefHeight="362.0" prefWidth="582.0">
+            <VBox prefHeight="482.0" prefWidth="444.0">
                <children>
                   <HBox prefHeight="30.0" prefWidth="270.0">
                      <VBox.margin>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                      </VBox.margin>
                      <children>
-                        <Label prefHeight="30.0" prefWidth="677.0" styleClass="lbl-name" text="Update Customer">
+                        <Label prefHeight="30.0" prefWidth="572.0" styleClass="lbl-name" text="Update Customer">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -36,32 +29,72 @@
                         </Label>
                      </children>
                   </HBox>
-                  <VBox prefHeight="217.0" prefWidth="542.0" styleClass="controls-container">
+                  <VBox prefHeight="343.0" prefWidth="453.0" styleClass="controls-container">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" />
                      </VBox.margin>
                      <children>
-                        <HBox prefHeight="45.0" prefWidth="540.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <TextField fx:id="tfFirstName" alignment="CENTER" prefHeight="35.0" prefWidth="231.0" promptText="First Name">
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="First Name">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
-                              </TextField>
-                              <TextField fx:id="tfMiddleInitial" alignment="CENTER" prefHeight="39.0" prefWidth="83.0" promptText="M.I.">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <TextField fx:id="tfLastName" alignment="CENTER" prefHeight="39.0" prefWidth="207.0" promptText="Last Name">
+                              </Label>
+                              <TextField fx:id="tfFirstName" alignment="CENTER" prefHeight="31.0" prefWidth="303.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </TextField>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="540.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="507.0">
                            <children>
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="Middle Initial">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="tfMiddleInitial" alignment="CENTER" prefHeight="31.0" prefWidth="303.0">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="Last Name">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="tfLastName" alignment="CENTER" prefHeight="31.0" prefWidth="304.0">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <Label prefHeight="32.0" prefWidth="115.0" styleClass="lbl-name" text="Sex">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
                               <HBox prefHeight="42.0" prefWidth="149.0">
                                  <children>
                                     <HBox alignment="CENTER">
@@ -78,36 +111,55 @@
                               </HBox>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="540.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <HBox prefHeight="42.0" prefWidth="237.0">
-                                 <children>
-                                    <DatePicker fx:id="dpBirthdate" prefHeight="32.0" prefWidth="237.0" promptText="Birthdate">
-                                       <HBox.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </HBox.margin>
-                                    </DatePicker>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="45.0" prefWidth="540.0">
-                           <children>
-                              <TextField fx:id="tfMobileNumber" alignment="CENTER" prefHeight="35.0" prefWidth="196.0" promptText="Mobile Number">
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="Phone No.">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
-                              </TextField>
-                              <TextField fx:id="tfEmailAddress" alignment="CENTER" prefHeight="32.0" prefWidth="335.0" promptText="Email Address">
+                              </Label>
+                              <TextField fx:id="tfMobileNumber" alignment="CENTER" prefHeight="32.0" prefWidth="306.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </TextField>
                            </children>
                         </HBox>
+                        <HBox prefHeight="45.0" prefWidth="492.0">
+                           <children>
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="Email">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="tfEmailAddress" alignment="CENTER" prefHeight="32.0" prefWidth="308.0">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="540.0">
+                           <children>
+                              <Label prefHeight="35.0" prefWidth="137.0" styleClass="lbl-name" text="Address">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
                         <HBox prefHeight="45.0" prefWidth="540.0">
                            <children>
-                              <TextField fx:id="tfAddress" alignment="CENTER" prefHeight="32.0" prefWidth="580.0" promptText="Address">
+                              <TextField fx:id="tfAddress" alignment="CENTER" prefHeight="32.0" prefWidth="580.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -116,7 +168,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="65.0" prefWidth="542.0">
+                  <HBox alignment="CENTER_RIGHT" prefHeight="65.0" prefWidth="419.0">
                      <VBox.margin>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
                      </VBox.margin>

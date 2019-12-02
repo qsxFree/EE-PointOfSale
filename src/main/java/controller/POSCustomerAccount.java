@@ -82,6 +82,8 @@ public class POSCustomerAccount implements Initializable {
             loadTable();
             BackgroundProcesses.createCacheDir("etc\\cache-selected-account.file");
             BackgroundProcesses.createCacheDir("etc\\cache-new-user.file");
+            BackgroundProcesses.createCacheDir("etc\\cache-selected-customer.file");
+            BackgroundProcesses.createCacheDir("etc\\cache-card-info.file");
         }),
                 new KeyFrame(Duration.millis(300))
         );
@@ -121,6 +123,7 @@ public class POSCustomerAccount implements Initializable {
 
 
     protected static void queryAllItems(){
+        itemList.clear();
         String sql = "Select * from customer";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
@@ -139,6 +142,7 @@ public class POSCustomerAccount implements Initializable {
                         , new JFXButton("View"), new HBox());
 
                 customer.setManipulator(sceneManipulator);
+                customer.setMisc(misc);
                 itemList.add(customer);
             }
         }catch (Exception e){

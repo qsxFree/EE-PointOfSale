@@ -3,7 +3,6 @@ package main.java.controller;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -16,7 +15,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class POSSelectedCardInfo extends POSCustomerAccount implements Initializable {
+public class POSSelectedCardInfo extends POSCustomerAccount {
 
     @FXML
     private TextField tfCardID;
