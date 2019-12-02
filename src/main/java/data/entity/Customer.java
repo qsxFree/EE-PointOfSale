@@ -5,11 +5,15 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
+import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.misc.BackgroundProcesses;
+import main.java.misc.DirectoryHandler;
 import main.java.misc.SceneManipulator;
 
 import java.io.BufferedWriter;
@@ -151,14 +155,19 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
             BackgroundProcesses.createCacheDir("etc\\cache-card-info.file");
             writeToCache("etc\\cache-selected-customer.file:etc\\cache-card-info.file");
 
-            Node node = button;
-            while (true) {
-                node = node.getParent();
-                if (node.getId() != null && node.getId().equals("rootPane")) break;
-            }
 
-            manipulator.openDialog((StackPane) node, "POSSelectedCardInfo");
+
+            manipulator.openDialog((StackPane) getRoot(button), "POSSelectedCardInfo");
         });
+    }
+
+    private Node getRoot(Node control){
+        Node node = control;
+        while (true) {
+            node = node.getParent();
+            if (node.getId() != null && node.getId().equals("rootPane")) break;
+        }
+        return node;
     }
 
     private void buildActionContainer() {
@@ -171,16 +180,50 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
     }
 
     private void buildEditButton() {
-        btnEdit = new JFXButton("Edit");
+        btnEdit = new JFXButton();
+        Image trash = new Image(DirectoryHandler.IMG+"pos-edit.png");
+        ImageView imageView = new ImageView(trash);
+        imageView.setFitHeight(18);
+        imageView.setFitWidth(18);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        btnEdit.setGraphic(imageView);
         btnEdit.setStyle("-fx-background-color:#1ca8d6;" +
                 "-fx-border-radius: 5px;" +
                 "-fx-text-fill:#ffffff;");
 
+        btnEdit.setOnAction(e->{
+
+        });
+
     }
 
     private void buildDeleteButton() {
-        btnDelete = new JFXButton("Delete");
+        btnDelete = new JFXButton();
+        Image trash = new Image(DirectoryHandler.IMG+"pos-trash.png");
+        ImageView imageView = new ImageView(trash);
+        imageView.setFitHeight(18);
+        imageView.setFitWidth(18);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        btnDelete.setGraphic(imageView);
         btnDelete.getStyleClass().add("btn-danger");
+
+        btnDelete.setOnAction(e->{
+            //When the function is pressed, a confirmation message will appear
+
+            JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
+            btnNo.setOnAction(ev -> POSMessage.closeMessage());// After pressing the No button, it simply close the messgae
+
+            JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
+            btnYes.setOnAction(ev -> {
+                POSMessage.closeMessage();
+            });
+
+            // Confirmation Message
+            POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete), "Do you really want to delete selected\nitem?"
+                    , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
+        });
 
     }
 

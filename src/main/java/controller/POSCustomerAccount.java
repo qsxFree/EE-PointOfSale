@@ -45,12 +45,6 @@ public class POSCustomerAccount implements Initializable {
     private JFXButton btnNew;
 
     @FXML
-    private JFXButton btnUpdate;
-
-    @FXML
-    private JFXButton btnDelete;
-
-    @FXML
     private JFXTreeTableView<Customer> ttvCustomer;
 
     @FXML
@@ -110,14 +104,11 @@ public class POSCustomerAccount implements Initializable {
     protected static SceneManipulator sceneManipulator = new SceneManipulator();
 
     @FXML
-    void functionButtonOnAction(ActionEvent event) {
+    void btnNewOnACtion(ActionEvent event) {
 
         JFXButton selectedButton = (JFXButton) event.getSource();
         if (selectedButton.equals(btnNew)){
             sceneManipulator.openDialog(rootPane,"POSCustomerAccountForm");
-
-        }else if (selectedButton.equals(this.btnUpdate)){
-            sceneManipulator.openDialog(rootPane,"POSCustomerEdit");
         }
 
     }
@@ -157,9 +148,6 @@ public class POSCustomerAccount implements Initializable {
         misc.dbHandler.closeConnection();
     }
 
-    //private Integer customerID;
-    //private String firstName,middleInitial,lastName,sex,address,phoneNumber,email;
-    //private JFXButton btnViewCard;
     private void loadTable(){
         chCustomerID.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,Integer>("customerID"));
         chCustomerName.setCellValueFactory(new TreeItemPropertyValueFactory<Customer,String>("fullName"));
