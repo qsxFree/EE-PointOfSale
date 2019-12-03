@@ -9,9 +9,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
+import main.java.misc.BackgroundProcesses;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class POSCustomerEdit extends POSCustomerAccount{
 
@@ -63,7 +67,23 @@ public class POSCustomerEdit extends POSCustomerAccount{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            Scanner scan = new Scanner(new FileInputStream(BackgroundProcesses.getFile("etc\\cache-selected-customer.file")));
+            lblCustomerID.setText("ID : "+scan.nextLine());
+            tfFirstName.setText(scan.nextLine());
+            tfMiddleInitial.setText(scan.nextLine());
+            tfLastName.setText(scan.nextLine());
+            if(scan.nextLine().equals("Male"))
+                rbMale.setSelected(true);
+            else
+                rbFemale.setSelected(false);
 
+            tfAddress.setText(scan.nextLine());
+            tfMobileNumber.setText(scan.nextLine());
+            tfEmailAddress.setText(scan.nextLine());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
