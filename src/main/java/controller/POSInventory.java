@@ -46,19 +46,8 @@ public class POSInventory implements Initializable, CacheWriter {
     private TextField tfSearch;
 
     @FXML
-    private JFXButton btnSearch;
-
-    @FXML
-    private JFXButton btnRestock;
-
-    @FXML
     private JFXButton btnNew;
 
-    @FXML
-    private JFXButton btnUpdate;
-
-    @FXML
-    private JFXButton btnDelete;
 
     @FXML
     private JFXTreeTableView<Item> ttvCustomer;
@@ -84,7 +73,6 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     private TreeTableColumn<Item,HBox> chAction;
-
 
     @FXML
     private TreeTableColumn<Item, Double> chTotal;
@@ -135,56 +123,9 @@ public class POSInventory implements Initializable, CacheWriter {
             try {
                 writeToCache("etc\\cache-selected-item.file");
                 JFXButton selectedButton = (JFXButton) event.getSource();
-
-                /*
-                * FUNCTION BUTTON 1 - Button Restock
-                * */
-                if (selectedButton.equals(this.btnRestock)) {
-                    if (hasSelectedItem())
-                        sceneManipulator.openDialog(rootPane, "POSRestock");
-                    else
-                        POSMessage.showMessage(rootPane, "Please Select from the Table First"
-                                , "No Selected Item", POSMessage.MessageType.ERROR);
-
-
-                /*
-                * FUNCTION BUTTON 2 - Button New Item
-                * */
-                } else if (selectedButton.equals(this.btnNew)) {
+                if (selectedButton.equals(this.btnNew)) {
                     sceneManipulator.openDialog(rootPane, "POSNewItem");
 
-
-                /*
-                * FUNCTION BUTTON 3 - Button Edit
-                * */
-                } else if (selectedButton.equals(this.btnUpdate)) {
-                    if (hasSelectedItem())
-                        sceneManipulator.openDialog(rootPane, "POSItemEdit");
-                    else
-                        POSMessage.showMessage(rootPane, "Please Select from the Table First"
-                                , "No Selected Item", POSMessage.MessageType.ERROR);
-
-                /*
-                * FUNCTION BUTTON 4 - Button Delete
-                * */
-                } else if (selectedButton.equals(this.btnDelete)) {
-                    if (hasSelectedItem()) {
-                        //When the function is pressed, a confirmation message will appear
-
-                        JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
-                        btnNo.setOnAction(e -> POSMessage.closeMessage());// After pressing the No button, it simply close the messgae
-
-                        JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
-                        btnYes.setOnAction(e -> {
-                            deleteItemFromButtonAction(e);
-                        });
-
-                        // Confirmation Message
-                        POSMessage.showConfirmationMessage(rootPane, "Do you really want to delete selected\nitem?"
-                                , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
-                    } else
-                        POSMessage.showMessage(rootPane, "Please Select from the Table First"
-                                , "No Selected Item", POSMessage.MessageType.ERROR);
                 }
             }catch (Exception e){
                 e.printStackTrace();
