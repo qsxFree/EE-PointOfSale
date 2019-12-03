@@ -16,6 +16,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
@@ -77,6 +78,12 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     private TreeTableColumn<Item,Integer> chStock;
+
+    @FXML
+    private TreeTableColumn<Item, JFXButton> chRestock;
+
+    @FXML
+    private TreeTableColumn<Item,HBox> chAction;
 
 
     @FXML
@@ -215,9 +222,12 @@ public class POSInventory implements Initializable, CacheWriter {
                         ,result.getString("itemCode")
                         ,result.getString("itemName")
                         ,result.getDouble("itemPrice")
-                        ,result.getInt("stock"));
+                        ,result.getInt("stock")
+                        ,new JFXButton("Modify")
+                        ,new HBox());
+                item.setManipulator(sceneManipulator);
+                item.setMisc(misc);
                 itemList.add(item);
-
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -235,6 +245,8 @@ public class POSInventory implements Initializable, CacheWriter {
         chUnitPrice.setCellValueFactory(new TreeItemPropertyValueFactory<Item,Double>("itemPrice"));
         chStock.setCellValueFactory(new TreeItemPropertyValueFactory<Item,Integer>("stock"));
         chTotal.setCellValueFactory(new TreeItemPropertyValueFactory<Item,Double>("subtotal"));
+        chRestock.setCellValueFactory(new TreeItemPropertyValueFactory<Item,JFXButton>("stock"));
+        chAction.setCellValueFactory(new TreeItemPropertyValueFactory<Item,HBox>("subtotal"));
 
         TreeItem<Item> dataItem = new RecursiveTreeItem<Item>(itemList, RecursiveTreeObject::getChildren);
         ttvCustomer.setRoot(dataItem);

@@ -102,6 +102,8 @@
                         <TreeTableColumn fx:id="chUnitPrice" prefWidth="139.0" styleClass="center-cell-item" text="Unit Price" />
                         <TreeTableColumn fx:id="chStock" prefWidth="135.0" styleClass="center-cell-item" text="Stock" />
                         <TreeTableColumn fx:id="chTotal" prefWidth="135.0" styleClass="center-cell-item" text="Total" />
+                        <TreeTableColumn fx:id="chRestock" prefWidth="135.0" styleClass="center-cell-item" text="Restock" />
+                        <TreeTableColumn fx:id="chAction" prefWidth="135.0" styleClass="center-cell-item" text="Action" />
                      </columns>
                      <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
