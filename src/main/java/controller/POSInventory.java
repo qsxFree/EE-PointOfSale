@@ -245,8 +245,8 @@ public class POSInventory implements Initializable, CacheWriter {
         chUnitPrice.setCellValueFactory(new TreeItemPropertyValueFactory<Item,Double>("itemPrice"));
         chStock.setCellValueFactory(new TreeItemPropertyValueFactory<Item,Integer>("stock"));
         chTotal.setCellValueFactory(new TreeItemPropertyValueFactory<Item,Double>("subtotal"));
-        chRestock.setCellValueFactory(new TreeItemPropertyValueFactory<Item,JFXButton>("stock"));
-        chAction.setCellValueFactory(new TreeItemPropertyValueFactory<Item,HBox>("subtotal"));
+        chRestock.setCellValueFactory(new TreeItemPropertyValueFactory<Item,JFXButton>("btnRestock"));
+        chAction.setCellValueFactory(new TreeItemPropertyValueFactory<Item,HBox>("hbActionContainer"));
 
         TreeItem<Item> dataItem = new RecursiveTreeItem<Item>(itemList, RecursiveTreeObject::getChildren);
         ttvCustomer.setRoot(dataItem);

@@ -154,7 +154,7 @@ public class Item extends RecursiveTreeObject<Item> implements CacheWriter {
 
         button.setOnAction(e->{
             writeToCache("etc\\cache-selected-item.file");
-            manipulator.openDialog((StackPane) getRoot(button), "POSSelectedCardInfo");
+            manipulator.openDialog((StackPane) getRoot(button), "POSRestock");
         });
     }
 
