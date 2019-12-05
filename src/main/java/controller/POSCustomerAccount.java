@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -25,6 +26,7 @@ import main.java.misc.SceneManipulator;
 
 import java.net.URL;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class POSCustomerAccount implements Initializable {
@@ -38,9 +40,6 @@ public class POSCustomerAccount implements Initializable {
 
     @FXML
     private TextField tfSearch;
-
-    @FXML
-    private JFXButton btnSearch;
 
     @FXML
     private JFXButton btnNew;
@@ -74,6 +73,7 @@ public class POSCustomerAccount implements Initializable {
 
     protected static MiscInstances misc;
     protected static ObservableList<Customer> itemList = FXCollections.observableArrayList();
+    private static ArrayList allItem = new ArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -101,6 +101,26 @@ public class POSCustomerAccount implements Initializable {
     @FXML
     void btnSearchOnAction(ActionEvent event) {
 
+    }
+
+    @FXML
+    private void tfSearchOnKeyReleased(KeyEvent keyEvent) {
+        String basis = tfSearch.getText().toLowerCase();
+        ArrayList result = new ArrayList() ;
+        itemList.clear();
+        itemList.addAll(allItem);
+        if (!basis.equals("")){
+            itemList.parallelStream()
+                    .filter(e->
+                            e.getFirstName().toLowerCase().contains(basis)
+                                    || e.getLastName().toLowerCase().contains(basis)
+                    ).forEach(e->
+                    result.add(e)
+            );
+            itemList.clear();
+            itemList.addAll(result);
+        }
+        System.gc();
     }
 
 
@@ -147,6 +167,8 @@ public class POSCustomerAccount implements Initializable {
             misc.dbHandler.closeConnection();
         }
         misc.dbHandler.closeConnection();
+        allItem.clear();
+        allItem.addAll(itemList);
     }
 
     private void loadTable(){
