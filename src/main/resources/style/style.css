@@ -84,12 +84,16 @@
     -fx-padding: 12px;
 }
 
+.tree-table-cell:odd{
+    -fx-background-color: #f0f0f0;
+}
+
 .tree-table-header{
     -fx-rippler-fill:-posNormalBlue;
 }
-.tree-table-view:focused .tree-table-row-cell:selected{
-    -fx-background-color:-posImportant;
 
+.tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell{
+    -fx-background-color:-posImportant !important;
 }
 
 .tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell{
@@ -101,9 +105,7 @@
     -fx-font-weight: bolder;
 }
 
-.tree-table-cell:odd{
-    -fx-background-color: #f0f0f0;
-}
+
 .center-cell-item{
     -fx-alignment: CENTER;
 }
