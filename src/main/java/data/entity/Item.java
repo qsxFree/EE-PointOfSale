@@ -1,25 +1,65 @@
 package main.java.data.entity;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import main.java.MiscInstances;
+import main.java.controller.message.POSMessage;
+import main.java.data.CacheWriter;
+import main.java.misc.BackgroundProcesses;
+import main.java.misc.DirectoryHandler;
+import main.java.misc.SceneManipulator;
 
-public class Item extends RecursiveTreeObject<Item> {
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Item extends RecursiveTreeObject<Item> implements CacheWriter {
     private SimpleIntegerProperty itemID;
     private SimpleStringProperty itemCode;
     private SimpleStringProperty itemName;
     private SimpleDoubleProperty itemPrice;
     private SimpleIntegerProperty stock;
     private SimpleDoubleProperty subtotal;
+    private JFXButton btnRestock;
 
-    public Item(int itemID, String itemCode, String itemName, double itemPrice,int stock) {
+    public void setHbActionContainer(HBox hbActionContainer) {
+        this.hbActionContainer = hbActionContainer;
+    }
+
+    public JFXButton getBtnRestock() {
+        return btnRestock;
+    }
+
+    private JFXButton btnEdit;
+    private JFXButton btnDelete;
+    private HBox hbActionContainer;
+    private StackPane rootPane;
+    private SceneManipulator manipulator;
+    private MiscInstances misc;
+
+    public Item(int itemID, String itemCode, String itemName, double itemPrice, int stock, JFXButton btnRestock, HBox hbActionContainer) {
         this.itemID = new SimpleIntegerProperty(itemID);
         this.itemCode = new SimpleStringProperty(itemCode);
         this.itemName = new SimpleStringProperty(itemName);
         this.itemPrice = new SimpleDoubleProperty(itemPrice);
         this.stock = new SimpleIntegerProperty(stock);
         this.subtotal = new SimpleDoubleProperty(calculateTotal(this.itemPrice,this.stock));
+
+        this.btnRestock = btnRestock;
+        buildRestockButton(this.btnRestock);
+
+        this.hbActionContainer = hbActionContainer;
+        buildActionContainer();
     }
 
     private double calculateTotal(SimpleDoubleProperty itemPrice,SimpleIntegerProperty stock){
@@ -94,5 +134,114 @@ public class Item extends RecursiveTreeObject<Item> {
         return subtotal.get();
     }
 
+    public void setMisc(MiscInstances misc) {
+        this.misc = misc;
+    }
+
+    public void setManipulator(SceneManipulator manipulator) {
+        this.manipulator = manipulator;
+    }
+
+    public HBox getHbActionContainer() {
+        return hbActionContainer;
+    }
+
+    private void buildRestockButton(JFXButton button) {
+        button.setStyle("-fx-background-color:#1ca8d6;" +
+                "-fx-border-radius: 5px;" +
+                "-fx-border-color:#1994bd;" +
+                "-fx-text-fill:#ffffff;");
+
+        button.setOnAction(e->{
+            writeToCache("etc\\cache-selected-item.file");
+            manipulator.openDialog((StackPane) getRoot(button), "POSRestock");
+        });
+    }
+
+    private void buildActionContainer() {
+        hbActionContainer.setAlignment(Pos.CENTER);
+        buildEditButton();
+        buildDeleteButton();
+        hbActionContainer.getChildren().addAll(btnEdit, btnDelete);
+        HBox.setMargin(btnEdit, new Insets(0, 2, 0, 2));
+        HBox.setMargin(btnDelete, new Insets(2, 2, 2, 2));
+    }
+
+    private void buildEditButton() {
+        btnEdit = new JFXButton();
+        Image trash = new Image(DirectoryHandler.IMG+"pos-edit.png");
+        ImageView imageView = new ImageView(trash);
+        imageView.setFitHeight(18);
+        imageView.setFitWidth(18);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        btnEdit.setGraphic(imageView);
+        btnEdit.setStyle("-fx-background-color:#1ca8d6;" +
+                "-fx-border-radius: 5px;" +
+                "-fx-text-fill:#ffffff;");
+
+        btnEdit.setOnAction(e->{
+            writeToCache("etc\\cache-selected-item.file");
+            manipulator.openDialog((StackPane) this.getRoot(btnEdit),"POSItemEdit");
+        });
+
+    }
+
+    private void buildDeleteButton() {
+        btnDelete = new JFXButton();
+        Image trash = new Image(DirectoryHandler.IMG+"pos-trash.png");
+        ImageView imageView = new ImageView(trash);
+        imageView.setFitHeight(18);
+        imageView.setFitWidth(18);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        btnDelete.setGraphic(imageView);
+        btnDelete.getStyleClass().add("btn-danger");
+
+        btnDelete.setOnAction(e->{
+            //When the function is pressed, a confirmation message will appear
+
+            JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
+            btnNo.setOnAction(ev -> POSMessage.closeMessage());// After pressing the No button, it simply close the messgae
+
+            JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
+            btnYes.setOnAction(ev -> {
+                POSMessage.closeMessage();
+            });
+
+            // Confirmation Message
+            POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete), "Do you really want to delete selected\nitem?"
+                    , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
+        });
+
+    }
+
+    @Override
+    public void writeToCache(String file){
+        String cacheData = "";
+        cacheData+=itemID.get();
+        cacheData+="\n"+itemCode.get();
+        cacheData+="\n"+itemName.get();
+        cacheData+="\n"+itemPrice.get();
+        cacheData+="\n"+stock.get();
+        cacheData+="\n"+subtotal.get();
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile(file)));
+            writer.write(cacheData);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Node getRoot(Node control){
+        Node node = control;
+        while (true) {
+            node = node.getParent();
+            if (node.getId() != null && node.getId().equals("rootPane")) break;
+        }
+        return node;
+    }
 
 }
