@@ -139,7 +139,7 @@ public class POSCustomerAccount implements Initializable {
 
 
 
-    protected static void queryAllItems(){
+    public static void queryAllItems(){
         itemList.clear();
         String sql = "Select * from customer";
         misc.dbHandler.startConnection();

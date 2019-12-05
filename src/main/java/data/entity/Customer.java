@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
+import main.java.controller.POSCustomerAccount;
 import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.misc.BackgroundProcesses;
@@ -213,7 +214,23 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
 
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(ev -> {
+
+                String sql = "Delete from customer where customerID = "+customerID.intValue();
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
                 POSMessage.closeMessage();
+                JFXButton btnOk = new JFXButton("Ok");
+                btnOk.setOnAction(evt->{
+                    POSMessage.closeMessage();
+                    POSCustomerAccount.queryAllItems();
+                });
+
+                POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete),
+                        "Customer "+customerID+" is has been deleted",
+                        "Delete Success",
+                        POSMessage.MessageType.INFORM,btnOk);
             });
 
             // Confirmation Message
