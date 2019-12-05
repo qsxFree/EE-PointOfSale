@@ -71,7 +71,7 @@ public class POSCustomerAccount implements Initializable {
     @FXML
     private TreeTableColumn<Customer, HBox> chAction;
 
-    protected static MiscInstances misc;
+    protected static MiscInstances misc = new MiscInstances();
     protected static ObservableList<Customer> itemList = FXCollections.observableArrayList();
     private static ArrayList allItem = new ArrayList();
 
