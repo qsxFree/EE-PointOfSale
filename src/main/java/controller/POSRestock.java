@@ -10,8 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import main.java.controller.message.POSMessage;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.InputRestrictor;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -48,12 +50,12 @@ public class POSRestock extends POSInventory{
     private JFXButton btnAdd,btnSubtract;
 
     protected double price = 0;
-
+    private int itemID = 0;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             Scanner scan = new Scanner(new FileInputStream(BackgroundProcesses.getFile("etc\\cache-selected-item.file")));
-            scan.nextLine();
+            itemID = Integer.parseInt(scan.nextLine());
             tfItemCode.setText(scan.nextLine());
             tfItemName.setText(scan.nextLine());
             price = Double.parseDouble(scan.nextLine());
@@ -86,6 +88,40 @@ public class POSRestock extends POSInventory{
 
     @FXML
     void btnSaveOnAction(ActionEvent event) {
+
+        JFXButton btnNo = new JFXButton("No");
+        btnNo.setOnAction(e-> POSMessage.closeMessage());
+
+        JFXButton btnYes = new JFXButton("Yes");
+        btnYes.setOnAction(e->{
+
+            POSMessage.closeMessage();
+
+            String sql = "Update item set stock = "+tfAddStock.getText()+" where" +
+                    "\nitemID = "+itemID+" and " +
+                    "\nitemCode = '"+tfItemCode.getText()+"'";
+
+            misc.dbHandler.startConnection();
+            misc.dbHandler.execUpdate(sql);
+            misc.dbHandler.closeConnection();
+
+            JFXButton btnOk = new JFXButton("Ok");
+            btnOk.setOnAction(ev->{
+                POSMessage.closeMessage();
+                queryAllItems();
+                sceneManipulator.closeDialog();
+            });
+
+            POSMessage.showConfirmationMessage(rootPane,
+                    "Item "+itemID+" is now updated",
+                    "Update Success",
+                    POSMessage.MessageType.INFORM,btnOk);
+
+        });
+
+        POSMessage.showConfirmationMessage(rootPane,"Do you really want to change the \n" +
+                        "stock value of  this item?"
+                ,"Please Confirm Update", POSMessage.MessageType.CONFIRM,btnNo,btnYes);
 
     }
 

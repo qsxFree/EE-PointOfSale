@@ -1,8 +1,5 @@
 package main.java.misc;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,8 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import main.java.controller.POSDialog;
+
 import java.io.IOException;
 
 public class SceneManipulator {
@@ -27,7 +24,6 @@ public class SceneManipulator {
      * @param title - to change the Title of the stage
      * */
     public void changeScene(Pane rootPane,String fxmlName,String title){
-        Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             root =  getFXML(fxmlName);
             stage = getStage(rootPane);
             stage.setTitle(title);
@@ -37,11 +33,6 @@ public class SceneManipulator {
             stage.centerOnScreen();
             stage.setFullScreenExitHint("");
             stage.setFullScreen(isOnFull);//to full screen when switching a UI
-        }),
-                new KeyFrame(Duration.millis(300))
-        );
-        clock.setCycleCount(1);
-        clock.play();
     }
 
     /**
