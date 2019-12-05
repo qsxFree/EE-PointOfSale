@@ -17,6 +17,13 @@ public class Main extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
         stage.setFullScreen(true);
+        /* DISPLAYING UI TO THE SECOND SCREEN
+        if ( Screen.getScreens().size()>1){
+            Rectangle2D bounds = Screen.getScreens().get(1).getVisualBounds();
+            stage.setX(bounds.getMinX() + 100);
+            stage.setY(bounds.getMinY() + 100);
+        }
+        */
         stage.show();
     }
 
