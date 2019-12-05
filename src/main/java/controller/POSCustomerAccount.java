@@ -29,6 +29,7 @@ import java.util.ResourceBundle;
 
 public class POSCustomerAccount implements Initializable {
 
+    protected final String S_KEY = "POS_CUSTOMER";
     @FXML
     protected  StackPane rootPane;
 
@@ -116,10 +117,6 @@ public class POSCustomerAccount implements Initializable {
     }
 
 
-    protected static void changeScene(){
-        sceneManipulator.closeDialog();
-        //sceneManipulator.openDialog(rootPane,"POSCardInformation");
-    }
 
 
     protected static void queryAllItems(){
