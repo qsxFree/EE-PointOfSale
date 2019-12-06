@@ -58,10 +58,35 @@ public class POSScanItem extends POSCashier implements Initializable {
         if (rootPane.isFocused()) tfBarcode.requestFocus();
     }
 
+    private ProductOrder existingOrder= null;
     @FXML
     void btnAddOnAction(ActionEvent event) {
-        //String productNumber = lblBarcode.getText().split(": ")[1] +"-"+lblID.getText().split(": ")[1];
-        POSCashier.addItemToList(new ProductOrder("213456789124-26","Kokipo Blanca",60.0,2,120.0));
+        if (lblID.getText().split(" : ").length!=1){
+            String productID = tfBarcode.getText()+"-"+lblID.getText().split(" : ")[1];
+            String product = lblProduct.getText().split(" : ")[1];
+            double unitPrice = Double.parseDouble(lblUnitPrice.getText().split(" : ")[1]);
+            int quantity = Integer.parseInt(tbQuantity.getText());
+
+            if (orderExist(productID)){
+                existingOrder.setQuantity(existingOrder.getQuantity()+quantity);
+                existingOrder.setTotal(existingOrder.getQuantity() * existingOrder.getUnitPrice());
+
+            }else {
+                POSCashier.addItemToList(new ProductOrder(productID,product,unitPrice,quantity,(unitPrice*quantity)));
+            }
+        }
+
+    }
+
+    private boolean orderExist(String productID){
+        for (ProductOrder order:POSCashier.productList){
+            if (order.getProductID().equals(productID)){
+                existingOrder = order;
+                return true;
+            }
+
+        }
+        return false;
     }
 
     @FXML

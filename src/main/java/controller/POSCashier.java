@@ -24,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -151,7 +152,7 @@ public class POSCashier implements Initializable {
     /****************** VARIABLES ********************/
     /*************************************************/
 
-    private static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
+    protected static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
     protected static ArrayList <Item>allItem = new ArrayList<Item>();
 
     private double total = 0;
@@ -360,7 +361,7 @@ public class POSCashier implements Initializable {
                         ,result.getString("itemCode")
                         ,result.getString("itemName")
                         ,result.getDouble("itemPrice")
-                        ,result.getInt("stock"));
+                        ,result.getInt("stock"),new JFXButton(),new HBox());
                 allItem.add(item);
             }
             misc.dbHandler.closeConnection();
