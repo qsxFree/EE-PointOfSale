@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXTreeTableView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <StackPane fx:id="rootPane" prefHeight="679.0" prefWidth="1137.0" styleClass="root-Pane" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCashier">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -44,7 +35,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                            <children>
-                              <JFXButton fx:id="btnHome" contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="35.0" styleClass="icon-button" text="Button">
+                              <JFXButton fx:id="btnHome" contentDisplay="GRAPHIC_ONLY" onAction="#btnHomeOnAction" prefHeight="35.0" prefWidth="35.0" styleClass="icon-button" text="Button">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

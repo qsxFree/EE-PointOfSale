@@ -52,9 +52,9 @@ public class POSScanItem extends POSCashier implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(tbQuantity);
         InputRestrictor.limitInput(tbQuantity,3);
-        InputRestrictor.limitInput(tfBarcode,12);
+        InputRestrictor.limitInput(tfBarcode,13);
         InputRestrictor.numbersInput(tfBarcode);
-
+        tbQuantity.setText("1");
         if (rootPane.isFocused()) tfBarcode.requestFocus();
     }
 
@@ -72,8 +72,15 @@ public class POSScanItem extends POSCashier implements Initializable {
 
     @FXML
     void tfBarcodeOnKeyReleased(KeyEvent event) {
-        if (tfBarcode.getText().length()==12){
-            //code here
+        if (tfBarcode.getText().length()>=12){
+            allItem.forEach(item -> {
+                if (item.getItemCode().equals(tfBarcode.getText())){
+                    lblID.setText("ID : "+item.getItemID());
+                    lblBarcode.setText("Barcode : "+item.getItemCode());
+                    lblProduct.setText("Product : "+item.getItemName());
+                    lblUnitPrice.setText("Unit Price : "+item.getItemPrice());
+                }
+            });
         }
     }
 
