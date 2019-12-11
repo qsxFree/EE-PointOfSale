@@ -57,35 +57,7 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(tfInitialBalance);
-       try {
-           Main.rfid.newScan();
-           cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-               try {
-                   Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
-                   if (scan.hasNextLine()){
-                       tfCardID.setText(scan.nextLine());
-                       Main.rfid.clearCache();
-                       scanForPIN();
-                       cardIdScannerThread.stop();
-                   }
-               } catch (FileNotFoundException ex) {
-                   ex.printStackTrace();
-               }
-
-           }),
-                   new KeyFrame(Duration.seconds(1))
-           );
-           cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
-           cardIdScannerThread.play();
-       }catch (NullPointerException e){
-           JFXButton button = new JFXButton("Ok");
-           button.setOnAction(s->{
-               POSMessage.closeMessage();
-           });
-           POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to complete Task",
-                   "RFID Scanner not detected",
-                   POSMessage.MessageType.ERROR,button);
-       }
+        initCardScan();
     }
 
     @FXML
@@ -94,7 +66,7 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
     }
 
     @FXML
-    void btnCreateOnAction(ActionEvent event) throws FileNotFoundException, SQLException {
+    void btnCreateOnAction(ActionEvent event){
         if (hasEmptyField()){
             POSMessage.showMessage(rootPane,"Please fill all the required fields","Invalid Value", POSMessage.MessageType.ERROR);
         }else{
@@ -104,10 +76,18 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(e -> {
                 try {
-                    doInsertion();
-                } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
-                } catch (SQLException ex) {
+                    String sql = "Select cardID from card where card = '"+tfCardID.getText()+"'";
+                    misc.dbHandler.startConnection();
+                    if (misc.dbHandler.execQuery(sql).next()){
+                        JFXButton btnOk = new JFXButton("Rescan");
+                        btnOk.setOnAction(rescan->{
+                            initCardScan();
+                        });
+                        POSMessage.showConfirmationMessage(rootPane,"The card is already exist",
+                                "Insert failed", POSMessage.MessageType.ERROR,btnOk);//TODO Need to test
+                    }else doInsertion();
+                    misc.dbHandler.closeConnection();
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             });
@@ -205,6 +185,38 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
         misc.dbHandler.closeConnection();
 
         POSMessage.showMessage(rootPane,"New account has been added","Registration Successful", POSMessage.MessageType.INFORM);
+    }
+
+    private void initCardScan(){
+        try {
+            Main.rfid.newScan();
+            cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+                try {
+                    Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
+                    if (scan.hasNextLine()){
+                        tfCardID.setText(scan.nextLine());
+                        Main.rfid.clearCache();
+                        scanForPIN();
+                        cardIdScannerThread.stop();
+                    }
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+
+            }),
+                    new KeyFrame(Duration.seconds(1))
+            );
+            cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
+            cardIdScannerThread.play();
+        }catch (NullPointerException e){
+            JFXButton button = new JFXButton("Ok");
+            button.setOnAction(s->{
+                POSMessage.closeMessage();
+            });
+            POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to complete Task",
+                    "Cannot Detect Scanner",
+                    POSMessage.MessageType.ERROR,button);
+        }
     }
 
 }
