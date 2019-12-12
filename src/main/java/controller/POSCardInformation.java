@@ -76,16 +76,23 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(e -> {
                 try {
-                    String sql = "Select cardID from card where card = '"+tfCardID.getText()+"'";
+                    String sql = "Select cardID from card where cardID = '"+tfCardID.getText()+"'";
                     misc.dbHandler.startConnection();
                     if (misc.dbHandler.execQuery(sql).next()){
                         JFXButton btnOk = new JFXButton("Rescan");
                         btnOk.setOnAction(rescan->{
+                            tfCardID.setText("");
+                            pfPIN.setText("");
                             initCardScan();
+                            POSMessage.closeMessage();
                         });
+                        POSMessage.closeMessage();
                         POSMessage.showConfirmationMessage(rootPane,"The card is already exist",
                                 "Insert failed", POSMessage.MessageType.ERROR,btnOk);//TODO Need to test
-                    }else doInsertion();
+                    }else {
+                        POSMessage.closeMessage();
+                        doInsertion();
+                    }
                     misc.dbHandler.closeConnection();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -93,8 +100,8 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
             });
 
             // Confirmation Message
-            POSMessage.showConfirmationMessage(rootPane, "Do you really want to delete selected\nitem?"
-                    , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
+            POSMessage.showConfirmationMessage(rootPane, "Do your really want to create\nnew account?"
+                    , "Please Confirm Insertion", POSMessage.MessageType.INFORM, btnNo, btnYes);
 
         }
     }
@@ -184,7 +191,14 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();
 
-        POSMessage.showMessage(rootPane,"New account has been added","Registration Successful", POSMessage.MessageType.INFORM);
+        JFXButton close = new JFXButton("Close");
+        close.setOnAction(e->{
+            POSCustomerAccount.queryAllItems();
+            POSMessage.closeMessage();
+            sceneManipulator.closeDialog();
+        });
+        POSMessage.showConfirmationMessage(rootPane,"New account has been added","Registration Successful"
+                , POSMessage.MessageType.INFORM,close);
     }
 
     private void initCardScan(){

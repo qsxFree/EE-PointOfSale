@@ -39,7 +39,7 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
         this.firstName = firstName;
         this.middleInitial = middleInitial;
         this.lastName = lastName;
-        fullName = (firstName + " " + middleInitial + ". " + lastName);
+        fullName = (firstName + " " + (middleInitial.equals("N/A")?" ":(middleInitial+". ")) + lastName);
         this.sex = sex;
         this.address = address;
         this.phoneNumber = phoneNumber;
