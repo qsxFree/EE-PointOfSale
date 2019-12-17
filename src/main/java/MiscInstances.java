@@ -31,7 +31,7 @@ public class MiscInstances {
             url = textScan.nextLine();
             uname = textScan.nextLine();
             password = textScan.nextLine();
-            dbHandler= new DatabaseHandler(url,uname,password);// initializing the DatabaseHandler
+            dbHandler= new DatabaseHandler(url,uname,password.equals("N/A")?"":password);// initializing the DatabaseHandler
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

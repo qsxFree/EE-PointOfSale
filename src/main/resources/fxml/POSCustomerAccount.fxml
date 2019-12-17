@@ -3,11 +3,17 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+
 <StackPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="679.0" prefWidth="1137.0" style="-fx-background-color: white;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCustomerAccount">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -57,26 +63,23 @@
                         </HBox>
                      </children>
                   </HBox>
-                  <JFXTreeTableView fx:id="ttvCustomer" prefHeight="611.0" prefWidth="1137.0">
-                     <VBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" />
-                     </VBox.margin>
-                     <columns>
-                        <TreeTableColumn fx:id="chCustomerID" prefWidth="124.0" styleClass="center-cell-item" text="Customer ID" />
-                        <TreeTableColumn fx:id="chCustomerName" prefWidth="189.0" styleClass="center-cell-item" text="Customer Name" />
-                        <TreeTableColumn fx:id="chAddress" prefWidth="364.0" styleClass="center-cell-item" text="Address" />
-                        <TreeTableColumn fx:id="chSex" minWidth="0.0" prefWidth="104.0" styleClass="center-cell-item" text="Sex" />
-                        <TreeTableColumn fx:id="chMobileNumber" prefWidth="139.0" styleClass="center-cell-item" text="Mobile Number" />
-                        <TreeTableColumn fx:id="chEmail" prefWidth="135.0" styleClass="center-cell-item" text="Email" />
-                        <TreeTableColumn fx:id="chCardInfo" prefWidth="135.0" styleClass="center-cell-item" text="Card" />
-                        <TreeTableColumn fx:id="chAction" prefWidth="135.0" styleClass="center-cell-item" text="Action" />
-                     </columns>
-                     <columnResizePolicy>
-                        <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </JFXTreeTableView>
                </children>
             </VBox>
+            <JFXTreeTableView fx:id="ttvCustomer" prefHeight="611.0" prefWidth="1137.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="95.20000000000005">
+               <columns>
+                  <TreeTableColumn fx:id="chCustomerID" prefWidth="124.0" styleClass="center-cell-item" text="Customer ID" />
+                  <TreeTableColumn fx:id="chCustomerName" prefWidth="189.0" styleClass="center-cell-item" text="Customer Name" />
+                  <TreeTableColumn fx:id="chAddress" prefWidth="364.0" styleClass="center-cell-item" text="Address" />
+                  <TreeTableColumn fx:id="chSex" minWidth="0.0" prefWidth="104.0" styleClass="center-cell-item" text="Sex" />
+                  <TreeTableColumn fx:id="chMobileNumber" prefWidth="139.0" styleClass="center-cell-item" text="Mobile Number" />
+                  <TreeTableColumn fx:id="chEmail" prefWidth="135.0" styleClass="center-cell-item" text="Email" />
+                  <TreeTableColumn fx:id="chCardInfo" prefWidth="135.0" styleClass="center-cell-item" text="Card" />
+                  <TreeTableColumn fx:id="chAction" prefWidth="135.0" styleClass="center-cell-item" text="Action" />
+               </columns>
+               <columnResizePolicy>
+                  <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </JFXTreeTableView>
          </children>
       </AnchorPane>
    </children>
