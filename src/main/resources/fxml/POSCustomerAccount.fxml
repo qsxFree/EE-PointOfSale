@@ -65,7 +65,7 @@
                   </HBox>
                </children>
             </VBox>
-            <JFXTreeTableView fx:id="ttvCustomer" prefHeight="611.0" prefWidth="1137.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="95.20000000000005">
+            <JFXTreeTableView fx:id="ttvCustomer" prefHeight="562.0" prefWidth="1098.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="96.80000000000007">
                <columns>
                   <TreeTableColumn fx:id="chCustomerID" prefWidth="124.0" styleClass="center-cell-item" text="Customer ID" />
                   <TreeTableColumn fx:id="chCustomerName" prefWidth="189.0" styleClass="center-cell-item" text="Customer Name" />

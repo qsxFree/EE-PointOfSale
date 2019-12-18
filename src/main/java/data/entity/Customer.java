@@ -214,8 +214,12 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
 
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(ev -> {
+                String sql ="Delete from card where customerID = "+customerID.intValue();
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
 
-                String sql = "Delete from customer where customerID = "+customerID.intValue();
+                sql = "Delete from customer where customerID = "+customerID.intValue();
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();
@@ -234,7 +238,8 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
             });
 
             // Confirmation Message
-            POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete), "Do you really want to delete selected\nitem?"
+            POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete), "Do you really want to delete the" +
+                            "\nselected customer from list?"
                     , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
         });
 
