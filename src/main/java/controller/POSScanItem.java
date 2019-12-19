@@ -36,6 +36,9 @@ public class POSScanItem extends POSCashier implements Initializable {
     private Label lblUnitPrice;
 
     @FXML
+    private Label lblStock;
+
+    @FXML
     private Label lblQuantity;
 
     @FXML
@@ -84,7 +87,6 @@ public class POSScanItem extends POSCashier implements Initializable {
                 existingOrder = order;
                 return true;
             }
-
         }
         return false;
     }
@@ -104,6 +106,11 @@ public class POSScanItem extends POSCashier implements Initializable {
                     lblBarcode.setText("Barcode : "+item.getItemCode());
                     lblProduct.setText("Product : "+item.getItemName());
                     lblUnitPrice.setText("Unit Price : "+item.getItemPrice());
+                    if (item.getStock()<10)
+                        lblStock.setStyle("-fx-text-fill: #ff6475");
+                    else
+                        lblStock.setStyle("-fx-text-fill: #000000");
+                    lblStock.setText(item.getStock()+"");
                 }
             });
         }
