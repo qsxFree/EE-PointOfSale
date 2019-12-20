@@ -20,14 +20,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
-import main.java.data.entity.Item;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 

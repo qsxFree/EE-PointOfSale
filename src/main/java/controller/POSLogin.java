@@ -60,6 +60,7 @@ public class POSLogin implements Initializable, CacheWriter {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
         InputRestrictor.numbersInput(tfEmpID);
         InputRestrictor.limitInput(tfEmpID,5);
         BackgroundProcesses.createCacheDir("etc\\cache-user.file");

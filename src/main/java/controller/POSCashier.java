@@ -148,6 +148,7 @@ public class POSCashier implements Initializable {
     /****************** VARIABLES ********************/
     /*************************************************/
 
+    protected final static String S_KEY = "POS_CUSTOMER";
     protected static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
     protected static ArrayList <Item>allItem = new ArrayList<Item>();
     protected static double discount = 0.0;
@@ -155,7 +156,7 @@ public class POSCashier implements Initializable {
     private int items = 0,type = 0;
     private double subTotal = 0;
     private ProductOrder selectedProduct = null;
-    protected MiscInstances misc;
+    protected MiscInstances misc = new MiscInstances();
 
     protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
@@ -170,7 +171,7 @@ public class POSCashier implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         BackgroundProcesses.createCacheDir("etc\\cache-secondary-table.file");
-        misc = new MiscInstances();
+        //misc = new MiscInstances();
         queryAllItem();
         InputRestrictor.numbersInput(this.tfQuantity);
         InputRestrictor.limitInput(this.tfQuantity,3);
