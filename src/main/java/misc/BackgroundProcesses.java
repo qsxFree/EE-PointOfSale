@@ -6,8 +6,7 @@ import javafx.animation.Timeline;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -41,4 +40,13 @@ public class BackgroundProcesses {
         return new File(file);
     }
 
+    public static void changeSecondaryFormStageStatus(short status){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile("etc\\cache-secondary-status.file")));
+            writer.write(String.valueOf(status));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -126,7 +126,8 @@ public class SceneManipulator {
     }
 
     public void closeDialog(){
-        dialog.close();
+        if (dialog!=null)
+            dialog.close();
     }
 
     public void changeOpenDialog(StackPane rootPane, String fxml){

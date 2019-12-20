@@ -16,7 +16,19 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSLogin.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
+        stage.setMinHeight(679);
+        stage.setMinWidth(1137);
         stage.setFullScreen(true);
+        stage.show();
+
+        stage = new Stage();
+        root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSSecondaryMain.fxml"));
+        stage.setScene(new Scene(root));
+        stage.setTitle("Customer View");
+        stage.setMinHeight(679);
+        stage.setMinWidth(1137);
+        stage.setMaximized(true);
+        stage.show();
         /* DISPLAYING UI TO THE SECOND SCREEN
         if ( Screen.getScreens().size()>1){
             Rectangle2D bounds = Screen.getScreens().get(1).getVisualBounds();
@@ -24,7 +36,7 @@ public class Main extends Application {
             stage.setY(bounds.getMinY() + 100);
         }
         */
-        stage.show();
+
     }
 
     public static void main(String[] args) {

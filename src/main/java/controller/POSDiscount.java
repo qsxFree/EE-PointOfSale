@@ -27,9 +27,10 @@ public class POSDiscount extends POSCashier implements Initializable {
 
     @FXML
     void btnAddDiscountOnAction(ActionEvent event) {
-        if (!tfDiscount.getText().equals(""))
-           POSDiscount.discount = Double.parseDouble(tfDiscount.getText());
-
+        if (!tfDiscount.getText().equals("")){
+            POSCashier.discount = Double.parseDouble(tfDiscount.getText());
+            POSSecondaryMain.discount = Double.parseDouble(tfDiscount.getText());
+        }
         sceneManipulator.closeDialog();
     }
 

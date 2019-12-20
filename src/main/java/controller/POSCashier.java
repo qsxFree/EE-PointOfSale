@@ -29,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
+import main.java.data.CacheWriter;
 import main.java.data.entity.Item;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.BackgroundProcesses;
@@ -36,9 +37,7 @@ import main.java.misc.DirectoryHandler;
 import main.java.misc.InputRestrictor;
 import main.java.misc.SceneManipulator;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -170,6 +169,7 @@ public class POSCashier implements Initializable {
     /*************************************************/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        BackgroundProcesses.createCacheDir("etc\\cache-secondary-table.file");
         misc = new MiscInstances();
         queryAllItem();
         InputRestrictor.numbersInput(this.tfQuantity);
@@ -293,6 +293,7 @@ public class POSCashier implements Initializable {
         Timeline itemCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             checkoutStatusCalculate();
             lblDiscount.setText(String.valueOf(discount));
+            writeToCache("etc\\cache-secondary-table.file");
         }),new KeyFrame(Duration.millis(100)));
         itemCountRefresher.setCycleCount(Animation.INDEFINITE);
         itemCountRefresher.play();
@@ -372,5 +373,22 @@ public class POSCashier implements Initializable {
     /*************************************************/
     protected static void addItemToList(ProductOrder productOrder){
         productList.add(productOrder);
+
+    }
+
+    private static BufferedWriter writer;
+    private static void writeToCache(String file) {
+        String cacheData="";
+        for (ProductOrder p:productList) {
+            cacheData+=p.getProductID()+":"+p.getProduct()+":"+p.getUnitPrice()+":"+p.getQuantity()+":"+p.getTotal()+"\n";
+        }
+        try {
+            writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile(file)));
+            writer.write(cacheData);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
