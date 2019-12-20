@@ -145,8 +145,6 @@ public class POSCashier implements Initializable {
 
 
 
-
-
     /*************************************************/
     /****************** VARIABLES ********************/
     /*************************************************/
@@ -326,8 +324,12 @@ public class POSCashier implements Initializable {
         String id[] =lblBarcodeNumber.getText().split(": ");
         if (id.length<1)return;
         productList.forEach((e)->{
-            if (e.getProductID().equals(id[1]))
+            if (e.getProductID().equals(id[1])){
                 e.setQuantity(newQuantity);
+                e.setTotal(e.getQuantity()*e.getUnitPrice());
+            }
+
+
         });
     }
 
