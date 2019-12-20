@@ -62,6 +62,7 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
+        Main.rfid.cancelOperation();
         sceneManipulator.closeDialog();
     }
 
@@ -206,13 +207,13 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
     private void initCardScan(){
         try {
-            Main.rfid.scanExtensive();
+            Main.rfid.scanBasic();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 try {
                     Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                     while (scan.hasNextLine()){
                         String scanned[] = scan.nextLine().split("=");
-                        if (scanned[0].equals("scanExtensive")){
+                        if (scanned[0].equals("scanBasic")){
                             tfCardID.setText(scanned[1]);
                             Main.rfid.clearCache();
                             scanForPIN();
