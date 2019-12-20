@@ -17,6 +17,9 @@ public class Main extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Point of Sales");
         stage.setFullScreen(true);
+        stage.setOnCloseRequest(e->{
+            System.exit(0);
+        });
         /* DISPLAYING UI TO THE SECOND SCREEN
         if ( Screen.getScreens().size()>1){
             Rectangle2D bounds = Screen.getScreens().get(1).getVisualBounds();
@@ -29,9 +32,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-
-
-
     }
 
     public static RFIDReaderInterface rfid = new RFIDReaderInterface();

@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
 
 public class POSCustomerAccount implements Initializable {
 
-    protected final String S_KEY = "POS_CUSTOMER";
+    protected final static String S_KEY = "POS_CUSTOMER";
     @FXML
     protected  StackPane rootPane;
 

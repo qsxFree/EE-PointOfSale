@@ -1,11 +1,18 @@
 package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import main.java.Main;
+import main.java.controller.message.POSMessage;
+import main.java.data.AES;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.InputRestrictor;
 
@@ -54,6 +61,7 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
     private JFXButton btnClose;
 
     private String pin,customerID;
+    private Timeline oldPINThread,newPINThread;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -76,8 +84,10 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
     }
 
     @FXML
-    void btnChangePinOnAction(ActionEvent event) {
-
+    void btnChangePinOnAction(ActionEvent event) throws FileNotFoundException {
+        vbPINContainer.setDisable(false);
+        btnChangePin.setDisable(true);
+        scanOldPIN();
     }
 
     @FXML
@@ -87,6 +97,84 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
 
     @FXML
     void pinFunctionsOnAction(ActionEvent actionEvent) {
+        if (actionEvent.getSource().equals(this.btnSave))doUpdate();
+        pfNew.setText("");
+        pfOld.setText("");
+        btnChangePin.setDisable(false);
+        vbPINContainer.setDisable(true);
     }
 
+    private Scanner scan;
+    private String forChallenge;
+    private void scanOldPIN() throws FileNotFoundException {
+        scan = new Scanner(new FileInputStream("etc\\cache-card-info.file"));
+        for (int i  = 1; i<=5;i++) System.out.println(scan.nextLine());
+        forChallenge=AES.decrypt(scan.nextLine(),POSCustomerAccount.S_KEY);//TODO Under observation
+        Main.rfid.challenge(forChallenge);
+
+        oldPINThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            try {
+                scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
+                while (scan.hasNextLine()){
+                    String scanned[] = scan.nextLine().split("=");
+                    if (scanned[0].equals("challengeResult")){
+                        if (scanned[1].equals("1")){
+                            pfOld.setText(forChallenge);
+                            Main.rfid.clearCache();
+                            scanNewPIN();
+                            oldPINThread.stop();
+                            break;
+                        }
+                    }
+                }
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+                oldPINThread.stop();
+            }
+
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        oldPINThread.setCycleCount(Animation.INDEFINITE);
+        oldPINThread.play();
+    }
+
+    private void scanNewPIN(){
+        Main.rfid.newPIN();
+        newPINThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            try {
+                Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
+                while (scan.hasNextLine()){
+                    String []scanned = scan.nextLine().split("=");
+                    if (scanned[0].equals("newPIN")){
+                        pfNew.setText(scanned[1]);
+                        Main.rfid.clearCache();
+                        newPINThread.stop();
+                        break;
+                    }
+                }
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        newPINThread.setCycleCount(Animation.INDEFINITE);
+        newPINThread.play();
+    }
+
+    private void doUpdate(){
+        String sql = "Update card set PIN='"+AES.encrypt(pfNew.getText(),POSCustomerAccount.S_KEY)+"' where cardID = '"+tfCardID.getText()+"';";
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
+        JFXButton close = new JFXButton("Close");
+        close.setOnAction(e->{
+            POSCustomerAccount.queryAllItems();
+            POSMessage.closeMessage();
+        });
+        POSMessage.showConfirmationMessage(rootPane,"Card PIN is now updated","Update Success"
+                , POSMessage.MessageType.INFORM,close);
+    }
 }
