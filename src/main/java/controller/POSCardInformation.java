@@ -109,15 +109,18 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
 
     private void scanForPIN(){
-        Main.rfid.newPasscode();
+        Main.rfid.newPIN();
          pinThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
                 Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
-                if (scan.hasNextLine()){
-                    pfPIN.setText(scan.nextLine());
-                    Main.rfid.clearCache();
-                    pinThread.stop();
-
+                while (scan.hasNextLine()){
+                    String []scanned = scan.nextLine().split("=");
+                    if (scanned[0].equals("newPIN")){
+                        pfPIN.setText(scanned[1]);
+                        Main.rfid.clearCache();
+                        pinThread.stop();
+                        break;
+                    }
                 }
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
@@ -203,15 +206,20 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
     private void initCardScan(){
         try {
-            Main.rfid.newScan();
+            Main.rfid.scanExtensive();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 try {
                     Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
-                    if (scan.hasNextLine()){
-                        tfCardID.setText(scan.nextLine());
-                        Main.rfid.clearCache();
-                        scanForPIN();
-                        cardIdScannerThread.stop();
+                    while (scan.hasNextLine()){
+                        String scanned[] = scan.nextLine().split("=");
+                        if (scanned[0].equals("scanExtensive")){
+                            tfCardID.setText(scanned[1]);
+                            Main.rfid.clearCache();
+                            scanForPIN();
+                            cardIdScannerThread.stop();
+                            break;
+                        }
+
                     }
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
