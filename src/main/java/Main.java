@@ -18,7 +18,10 @@ public class Main extends Application {
         stage.setTitle("Point of Sales");
         stage.setMinHeight(679);
         stage.setMinWidth(1137);
-        stage.setFullScreen(true);
+        //stage.setFullScreen(true);
+        stage.setOnCloseRequest(e->{
+            System.exit(0);
+        });
         stage.show();
 
         stage = new Stage();
@@ -28,7 +31,11 @@ public class Main extends Application {
         stage.setMinHeight(679);
         stage.setMinWidth(1137);
         stage.setMaximized(true);
+        stage.setOnCloseRequest(e->{
+            System.exit(0);
+        });
         stage.show();
+
         /* DISPLAYING UI TO THE SECOND SCREEN
         if ( Screen.getScreens().size()>1){
             Rectangle2D bounds = Screen.getScreens().get(1).getVisualBounds();
@@ -36,14 +43,10 @@ public class Main extends Application {
             stage.setY(bounds.getMinY() + 100);
         }
         */
-
     }
 
     public static void main(String[] args) {
         launch(args);
-
-
-
     }
 
     public static RFIDReaderInterface rfid = new RFIDReaderInterface();

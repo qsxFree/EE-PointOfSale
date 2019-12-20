@@ -1,10 +1,8 @@
 package main.java.rfid;
 
-import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
-
+import com.fazecast.jSerialComm.*;
 import java.io.*;
+import java.math.BigInteger;
 import java.util.Scanner;
 
 /**
@@ -17,33 +15,24 @@ import java.util.Scanner;
  * @since 2019-11-5
  */
 
-// TODO Add timeouts for receiving bad data
-
 public class RFIDReaderInterface {
     private SerialPort selectedPort; // The selected port to be used
     private Scanner serialReader;
     private PrintWriter serialWriter;
-    private String lastStringRead = "";
     private byte[] bytesRead;
-    private String RFIDcacheFilePath = "etc\\rfid-cache.file";
+    private final String RFIDcacheFilePath = "etc\\rfid-cache.file";
+    private boolean writeDataToCache = false;
     private boolean deviceReady = false;
-    private boolean serialCommDebugging = false; // Set to true when checking data sent/received through serial
-
-    private int writeDataToCache = 3;
-    // for classifying the data to be written to cache
-    /*
-    0 - nothing
-    1 - Card ID (8-character)
-    2 - New PIN (6-character)
-    3 - Code (1-character)
-     */
+    private boolean serialCommDebugging = true; // Set to true when checking data sent/received through serial
+    private int lastCommand = 0;
+    private long time;
 
     public RFIDReaderInterface() {
         /**
          * This constructor will prepare and establish a connection to allow you to communicate
          * with the Arduino with ease.
          */
-        System.out.println("===== RFIDReaderInterface by Cyphred =====");
+        System.out.println("==== RFIDReaderInterface: Start of Initialization ====");
 
         System.out.println("> Fetching available COM Ports...");
         SerialPort availablePorts[] = SerialPort.getCommPorts(); // Gets all available COM Ports
@@ -100,53 +89,43 @@ public class RFIDReaderInterface {
                 }
 
                 @Override
-                // When data is received through Serial, this will trigger
                 public void serialEvent(SerialPortEvent event) {
                     if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                         return;
                     bytesRead = new byte[selectedPort.bytesAvailable()];
-                    int numRead = (selectedPort.readBytes(bytesRead, bytesRead.length) - 2);
-                    try {
-                        lastStringRead = new String(bytesRead, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    int numRead = (selectedPort.readBytes(bytesRead, bytesRead.length));
                     // For checking data received through serial, uncomment the line below
                     if (serialCommDebugging) {
                         System.out.print("[RECEIVED] ");
-                        //System.out.println(numRead + " bytes read, " + lastStringRead.length() + " characters : \"" + lastStringRead + "\"");
-                        System.out.println(getLastStringRead());
+                        System.out.print(numRead + " bytes, dec: ");
+                        for (int x = 0; x < numRead; x++) {
+                            System.out.print(bytesRead[x]);
+                            if (x != (numRead - 1)) {
+                                System.out.print(" ");
+                            }
+                        }
+                        System.out.print(", char:\"");
+                        for (int x = 0; x < numRead; x++) {
+                            System.out.print((char)bytesRead[x]);
+                            if (x != (numRead - 1)) {
+                                System.out.print(" ");
+                            }
+                        }
+                        System.out.println("\"");
                     }
 
                     // Writes the next received data to a cache file
-                    // Will verify if received data is complete before writing to cache file
-                    // Otherwise, it will request for the device to send the data again
-                    if (writeDataToCache > 0 && writeDataToCache < 4) {
-                        int requiredLength = -1;
-                        boolean dataValid = false;
-                        switch (writeDataToCache) {
-                            case 1: requiredLength = 8; break; // For scanned Card ID
-                            case 2: requiredLength = 6; break; // For new PIN entries
-                            case 3: requiredLength = 1; break; // For single-character codes
-                        }
-
-                        if (getLastStringRead().length() != requiredLength) {
-                            // if received data is incomplete, ask arduino to send it again
-                            serialPrint("sendAgain");
-                        }
-                        else {
-                            writeDataToCache = 0;
-                            writeToCache(getLastStringRead());
-                        }
+                    if (writeDataToCache) {
+                        writeDataToCache = false;
+                        translateCacheData(bytesRead);
                     }
 
                     if (!deviceReady) {
-                        if (getLastStringRead().equals("1")) {
-                            serialPrint("start");
+                        if (bytesRead[0] == -128) {
+                            sendByte(129);
                         }
-                        else if (getLastStringRead().equals("2")) {
+                        else if (bytesRead[0] == 49)  {
                             deviceReady = true;
-                            clearCache();
                         }
                     }
                 }
@@ -167,84 +146,178 @@ public class RFIDReaderInterface {
         System.out.println("===== RFIDReaderInterface: End of Initialization =====");
     }
 
-    public void scan() {
+    public void sendByte(int input) {
         /**
-         * This method tells the Arduino to ask the customer to scan their RFID card,
-         * then writes the device's response to cache file.
-         */
-        writeDataToCache = 1;
-        serialPrint("scan");
-    }
-
-    public void newScan() {
-        /**
-         * This method tells the Arduino to perform a thorough scan of an RFID Card.
-         * This is mainly intended for adding new cards into the database,
-         * as it scans the card 16 times and compares each scanned ID to determine the most accurate ID.
-         */
-        writeDataToCache = 1;
-        serialPrint("newscan");
-    }
-
-    public void challenge(String passcode) {
-        /**
-         * This method is for authentication of the ownership of a scanned RFID Card,
-         * then writes the device's response to cache file.
-         */
-        writeDataToCache = 3;
-        serialPrint("challenge\n" + passcode);
-    }
-
-    public void newPasscode() {
-        /**
-         * This method will tell the Arduino to ask the customer to enter a 6-digit PIN.
-         * This can be used when creating a new PIN, or changing an existing one.
-         * It will ask the customer to enter the PIN twice for confirmation,
-         * then writes the device's response to cache file.
-         */
-        writeDataToCache = 2;
-        serialPrint("newpass");
-    }
-
-    public void checkRFIDStatus() {
-        /**
-         * This method checks the RFID module's status with the Arduino,
-         * then writes the device's response to cache file.
-         */
-        writeDataToCache = 3;
-        serialPrint("check\nnfc");
-    }
-
-    public void checkGSMStatus() {
-        /**This method checks the GSM module's status with the Arduino,
-         * then writes the device's response to cache file.
-         */
-        writeDataToCache = 3;
-        serialPrint("check\ngsm\nstatus");
-    }
-
-    public void checkGSMSignal() {
-        /**This method checks the GSM module's signal strength with the Arduino,
-         * then writes the device's response to cache file.
-         */
-        writeDataToCache = 3;
-        serialPrint("check\ngsm\nsignal");
-    }
-
-    private void serialPrint(String input) {
-        /**
-         * This method sends a String to serial.
+         * This method sends a byte to serial.
          * This is where Java will send commands to the Arduino.
-         * @param input This will be the String that will be sent to serial.
+         * @param intput This will be the byte that will be sent to serial.
          */
         if (serialCommDebugging) {
-            System.out.println("[SENT] " + input);
+            System.out.println("[SENT] dec:" + input + ", char:\"" + (char)input + "\"");
         }
-        serialWriter.print(input);
+        serialWriter.print((char)input);
         serialWriter.flush();
     }
 
-    private void writeToCache(String data) {
+    public void cancelOperation() {
+        sendByte(131);
+        lastCommand = 0;
+        writeDataToCache = false;
+    }
+
+    public void scanBasic() {
+        sendByte(132);
+        lastCommand = 132;
+        writeDataToCache = true;
+    }
+
+    public void scanExtensive() {
+        sendByte(133);
+        lastCommand = 133;
+        writeDataToCache = true;
+    }
+
+    public void gsmStatus() {
+        sendByte(134);
+        lastCommand = 134;
+        writeDataToCache = true;
+    }
+
+    public void gsmSignal() {
+        sendByte(135);
+        lastCommand = 135;
+        writeDataToCache = true;
+    }
+
+    public void gsmSendSMS(String number, String message) {
+        sendByte(136);
+
+        sendByte(2);
+        for (char c: number.toCharArray()) {
+            sendByte(c);
+        }
+        sendByte(3);
+
+        sendByte(2);
+        for (char c: message.toCharArray()) {
+            sendByte(c);
+        }
+        sendByte(3);
+
+        lastCommand = 136;
+    }
+
+    public void challenge(String passcode) {
+        sendByte(139);
+        sendByte(2);
+        for (char c: passcode.toCharArray()) {
+            sendByte(c);
+        }
+        sendByte(3);
+
+        lastCommand = 139;
+        writeDataToCache = true;
+    }
+
+    public void newPIN() {
+        sendByte(141);
+        lastCommand = 141;
+        writeDataToCache = true;
+    }
+
+    public void testConnection() {
+        sendByte(142);
+        lastCommand = 142;
+        writeDataToCache = true;
+        time = System.currentTimeMillis();
+    }
+
+    private boolean translateCacheData(byte data[]) {
+        boolean returnValue = true;
+
+        // Basic Scan
+        if (lastCommand == 132) {
+            String tagID = "";
+            for (byte b: data) {
+                tagID += String.format("%02X", b);
+            }
+            writeToCache("scanBasic=" + tagID, RFIDcacheFilePath);
+        }
+        // Extensive Scan
+        else if (lastCommand == 133) {
+            String tagID = "";
+            for (byte b: data) {
+                tagID += String.format("%02X", b);
+            }
+            writeToCache("scanExtensive=" + tagID, RFIDcacheFilePath);
+        }
+        // Check GSM
+        else if (lastCommand == 134) {
+            switch ((char)data[0]) {
+                case '0':
+                    writeToCache("gsmStatus=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("gsmStatus=1", RFIDcacheFilePath);
+                    break;
+                default:
+                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for checkGSM()");
+                    returnValue = false;
+                    break;
+            }
+        }
+        // Check GSM Signal
+        else if (lastCommand == 135) {
+            String signal = "";
+            for (byte b: data) {
+                signal += (char)b;
+            }
+            writeToCache("gsmSignal=" + signal,RFIDcacheFilePath);
+        }
+        // Challenge
+        else if (lastCommand == 139) {
+            switch ((char) data[0]) {
+                case '0':
+                    writeToCache("challengeResult=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("challengeResult=1", RFIDcacheFilePath);
+                    break;
+                default:
+                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for challenge()");
+                    returnValue = false;
+                    break;
+            }
+        }
+        // New PIN
+        else if (lastCommand == 141) {
+            String pin = "";
+            for (byte b: data) {
+                pin += (char)b;
+            }
+            writeToCache("newPIN=" + pin, RFIDcacheFilePath);
+        }
+        // Test Connection
+        else if (lastCommand == 142) {
+            switch ((char) data[0]) {
+                case '0':
+                    writeToCache("connectionStatus=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("connectionStatus=1", RFIDcacheFilePath);
+                    break;
+                default:
+                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for testConnection()");
+                    returnValue = false;
+                    break;
+            }
+        }
+
+        lastCommand = 0;
+        return returnValue;
+    }
+
+    private boolean writeToCache(String data, String path) {
         /**
          * This method writes data to a specified cache file.
          * @param data This will be the data written to the file.
@@ -252,52 +325,24 @@ public class RFIDReaderInterface {
          */
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(RFIDcacheFilePath));
+            writer = new BufferedWriter(new FileWriter(path));
             writer.write(data);
+            writer.flush();
             writer.close();
             if (serialCommDebugging) {
-                System.out.print("[WRITE] ");
-                if (!data.equals("")) {
-                    System.out.println(data);
-                }
-                else {
-                    System.out.print("> ");
-                }
+                System.out.println("[WRITE] " + data);
             }
         } catch (IOException e) {
             e.printStackTrace();
             if (serialCommDebugging) {
                 System.out.println("[WRITE UNSUCCESSFUL]");
             }
+            return false;
         }
+        return true;
     }
 
-    public void clearCache() {
-        /**
-         * Clears cache. Useful when clearing cache after it has been read from
-         * to prevent problems with persistent data that might be mistakenly read.
-         */
-        writeToCache("");
-        System.out.println("[CACHE CLEARED]");
-    }
-
-    private String getLastStringRead() {
-        /**
-         * This method will fetch the last received data from the Arduino through serial.
-         * It does not read the last two bytes directly read from the serial because they are line breaks.
-         * @return String This returns the data last received through serial in the form of a String.
-         */
-        String returnValue = "";
-        for (int x = 0; x < lastStringRead.length() - 2; x++) {
-            returnValue += lastStringRead.toCharArray()[x];
-        }
-        return returnValue;
-    }
-
-    public void clearLastStringRead() {
-        /**
-         * Clears the last read string.
-         */
-        lastStringRead = "";
+    public void clearCache(){
+        writeToCache("",RFIDcacheFilePath);
     }
 }
