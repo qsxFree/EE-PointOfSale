@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 <StackPane fx:id="rootPane" prefHeight="679.0" prefWidth="1137.0" styleClass="root-Pane" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.POSCashier">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -264,6 +273,29 @@
                               </VBox>
                               <VBox layoutX="78.0" layoutY="176.0" prefHeight="173.0" prefWidth="462.0" styleClass="controls-container" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <children>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="460.0" styleClass="value-box-even">
+                                       <children>
+                                          <Label prefHeight="17.0" prefWidth="341.0" styleClass="lbl-name" text="No. of Item Type">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets left="10.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <Label fx:id="lblTypeCount" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="0">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="5.0" right="5.0" top="10.0" />
+                                       </VBox.margin>
+                                    </HBox>
                                     <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="460.0">
                                        <children>
                                           <Label prefHeight="17.0" prefWidth="341.0" styleClass="lbl-name" text="No. of Items">
@@ -284,7 +316,7 @@
                                           </Label>
                                        </children>
                                        <VBox.margin>
-                                          <Insets left="5.0" right="5.0" top="10.0" />
+                                          <Insets left="5.0" right="5.0" />
                                        </VBox.margin>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="460.0" styleClass="value-box-even">
@@ -297,7 +329,7 @@
                                                 <Insets left="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label fx:id="lblSubtotal" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="339.0">
+                                          <Label fx:id="lblSubtotal" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="0.0">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -333,29 +365,6 @@
                                           <Insets left="5.0" right="5.0" />
                                        </VBox.margin>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="460.0" styleClass="value-box-even">
-                                       <children>
-                                          <Label prefHeight="17.0" prefWidth="341.0" styleClass="lbl-name" text="Tax">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                          <Label fx:id="lblTax" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="123.0" styleClass="lbl-value" text="7.80">
-                                             <font>
-                                                <Font name="System Bold" size="14.0" />
-                                             </font>
-                                             <HBox.margin>
-                                                <Insets right="10.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </VBox.margin>
-                                    </HBox>
                                     <HBox prefHeight="62.0" prefWidth="460.0">
                                        <children>
                                           <Label prefHeight="21.0" prefWidth="48.0" styleClass="lbl-name" text="Total:">
@@ -366,7 +375,7 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="lblTotal" prefHeight="50.0" prefWidth="211.0" text="337.75">
+                                          <Label fx:id="lblTotal" prefHeight="50.0" prefWidth="211.0" text="0.0">
                                              <font>
                                                 <Font name="System Bold" size="32.0" />
                                              </font>

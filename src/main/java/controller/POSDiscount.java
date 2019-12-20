@@ -27,7 +27,10 @@ public class POSDiscount extends POSCashier implements Initializable {
 
     @FXML
     void btnAddDiscountOnAction(ActionEvent event) {
+        if (!tfDiscount.getText().equals(""))
+           POSDiscount.discount = Double.parseDouble(tfDiscount.getText());
 
+        sceneManipulator.closeDialog();
     }
 
     @FXML
@@ -39,5 +42,6 @@ public class POSDiscount extends POSCashier implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(tfDiscount);
+        tfDiscount.setText(POSCashier.discount+"");
     }
 }

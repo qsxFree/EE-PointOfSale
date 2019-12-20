@@ -62,7 +62,6 @@ public class POSCashier implements Initializable {
     @FXML
     private TreeTableColumn<ProductOrder, String> chProductID;
 
-
     @FXML
     private TreeTableColumn<ProductOrder, Double> chUnitPrice;
 
@@ -133,10 +132,10 @@ public class POSCashier implements Initializable {
     private Label lblSubtotal;
 
     @FXML
-    private Label lblDiscount;
+    private Label lblTypeCount;
 
     @FXML
-    private Label lblTax;
+    private Label lblDiscount;
 
     @FXML
     private Label lblTotal;
@@ -154,9 +153,10 @@ public class POSCashier implements Initializable {
 
     protected static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
     protected static ArrayList <Item>allItem = new ArrayList<Item>();
-
+    protected static double discount = 0.0;
     private double total = 0;
-    private int items = 0;
+    private int items = 0,type = 0;
+    private double subTotal = 0;
     private ProductOrder selectedProduct = null;
     protected MiscInstances misc;
 
@@ -178,6 +178,7 @@ public class POSCashier implements Initializable {
         InputRestrictor.limitInput(this.tfQuantity,3);
         BackgroundProcesses.realTimeClock(lblDate);
         loadTable();
+
         try {
             Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
             scan.nextLine();
@@ -190,8 +191,8 @@ public class POSCashier implements Initializable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        totalCountRefresher();
-        itemCountRefresher();
+        checkoutStatusRefresher();
+
     }
 
 
@@ -212,6 +213,7 @@ public class POSCashier implements Initializable {
         if (selectedButton.equals(this.btnScanItem)){
             sceneManipulator.openDialog(rootPane,"POSScanItem");
         }else if (selectedButton.equals(this.btnDiscount)){
+            discount = Double.parseDouble(lblDiscount.getText());
             sceneManipulator.openDialog(rootPane,"POSDiscount");
         }else if (selectedButton.equals(this.btnRemoveAll)){
             productList.clear();
@@ -253,8 +255,7 @@ public class POSCashier implements Initializable {
             lblBarcodeNumber.setText("Product ID: ");
             lblUnitPrice.setText("Unit Price: ");
             tfQuantity.setText("");
-            totalCountRefresher();
-            itemCountRefresher();
+            checkoutStatusRefresher();
         }
     }
 
@@ -288,47 +289,37 @@ public class POSCashier implements Initializable {
         }
     }
 
-    private void totalCountRefresher(){//for refreshing the total counter
-        Timeline totalCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            totalCount();
-        }),new KeyFrame(Duration.millis(100)));
-        totalCountRefresher.setCycleCount(Animation.INDEFINITE);
-        totalCountRefresher.play();
-    }
 
-    private void itemCountRefresher(){//for refreshing the item counter
+
+    private void checkoutStatusRefresher(){//for refreshing the checkout Status
         Timeline itemCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            itemCount();
+            checkoutStatusCalculate();
+            lblDiscount.setText(String.valueOf(discount));
         }),new KeyFrame(Duration.millis(100)));
         itemCountRefresher.setCycleCount(Animation.INDEFINITE);
         itemCountRefresher.play();
     }
 
-    private void totalCount(){//for calculating the total of amount of the products
-        total = 0;
-        productList.forEach((e)->{
-            total+=e.getTotal();
-        });
 
-        lblTotal.setText(total+"");
-    }
 
-    private void itemCount(){ //for counting the overall number of items
+    private void checkoutStatusCalculate(){
+        type = 0;
+        subTotal = 0.0;
         items = 0;
-        productList.forEach((e)->{
+        total = 0;
+        productList.forEach(e->{
+            subTotal = subTotal+(e.getQuantity()*e.getUnitPrice());
             items+=e.getQuantity();
+            type++;
         });
+        lblTypeCount.setText(type+"");
+        lblSubtotal.setText(subTotal+"");
         lblNumberItem.setText(items+"");
-    }
+        total =discount!=0
+                ? subTotal-((subTotal*discount)/100)
+                : subTotal;
+        lblTotal.setText(total+"");
 
-    private void openDialog(String fxml){
-        try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+fxml+".fxml"));
-            dialog = new POSDialog(rootPane, (Pane) parent,false);
-            dialog.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void changeQuantityOnTable(int newQuantity){
@@ -352,6 +343,7 @@ public class POSCashier implements Initializable {
     }
 
     private void queryAllItem(){
+        allItem.clear();
         String sql = "Select * from Item";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
