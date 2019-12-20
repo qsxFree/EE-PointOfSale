@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class POSCheckout extends POSCashier implements Initializable {
+public class POSCheckout extends POSCashier {
 
     @FXML
     private StackPane rootPane;
@@ -49,14 +49,20 @@ public class POSCheckout extends POSCashier implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 1);
         scanCard();
+
+
     }
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
+        Main.rfid.cancelOperation();
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
         sceneManipulator.closeDialog();
+
     }
 
     @FXML
@@ -67,6 +73,7 @@ public class POSCheckout extends POSCashier implements Initializable {
     private Timeline cardIdScannerThread, checkPINThread;
     private String cardID=null,customerID=null;
     private void scanCard(){
+
         try {
             Main.rfid.scanBasic();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -101,6 +108,7 @@ public class POSCheckout extends POSCashier implements Initializable {
                     "Cannot Detect Scanner",
                     POSMessage.MessageType.ERROR,button);
         }
+
     }
     private Scanner scan;
     private String forChallenge;
@@ -206,6 +214,12 @@ public class POSCheckout extends POSCashier implements Initializable {
         scan = new Scanner(new FileInputStream("etc\\cache-checkout-customer.file"));
         scan.nextLine();
         lblOwner.setText(scan.nextLine()+" "+scan.nextLine()+". "+scan.nextLine());
+        scan = new Scanner(new FileInputStream("etc\\cache-checkout-total.file"));
+        if (scan.hasNextLine())
+            lblCheckout.setText(scan.nextLine());
+
+        lblTotal.setText(String.valueOf(Double.parseDouble(lblBalance.getText())
+                - Double.parseDouble(lblCheckout.getText())));
     }
 
 }

@@ -157,7 +157,7 @@ public class POSCashier implements Initializable {
     private double subTotal = 0;
     private ProductOrder selectedProduct = null;
     protected MiscInstances misc = new MiscInstances();
-
+    protected static double overAllTotal=0;
     protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
                             // and easy to access the close method of the Dialog
@@ -201,7 +201,10 @@ public class POSCashier implements Initializable {
     }
 
     @FXML
-    protected void btnCheckoutOnAction(ActionEvent event) {
+    protected void btnCheckoutOnAction(ActionEvent event) throws IOException {
+        writer = new BufferedWriter(new FileWriter("etc\\cache-checkout-total.file"));
+        writer.write(lblTotal.getText());
+        writer.close();
         if (event.getSource().equals(this.btnCheckout))
             sceneManipulator.openDialog(rootPane,"POSCheckout");
     }
@@ -318,6 +321,7 @@ public class POSCashier implements Initializable {
         total =discount!=0
                 ? subTotal-((subTotal*discount)/100)
                 : subTotal;
+        overAllTotal = total;
         lblTotal.setText(total+"");
 
     }
