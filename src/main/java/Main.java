@@ -21,7 +21,7 @@ public class Main extends Application {
         stage.setTitle("Customer View");
         stage.setMinHeight(679);
         stage.setMinWidth(1137);
-        stage.setMaximized(true);
+        //stage.setMaximized(true);
         if ( Screen.getScreens().size()>1){
             Rectangle2D bounds = Screen.getScreens().get(1).getVisualBounds();
             stage.setX(bounds.getMinX() + 100);
@@ -30,6 +30,7 @@ public class Main extends Application {
         stage.setOnCloseRequest(e->{
             System.exit(0);
         });
+        stage.setFullScreen(true);
         stage.show();
 
 
@@ -39,7 +40,7 @@ public class Main extends Application {
         stage.setTitle("Point of Sales");
         stage.setMinHeight(679);
         stage.setMinWidth(1137);
-
+        stage.setMaximized(true);
         //stage.setFullScreen(true);
         stage.setOnCloseRequest(e->{
             System.exit(0);
