@@ -68,12 +68,10 @@ public class POSSecondaryMain implements Initializable {
     private Label lblTotal;
 
     protected static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
-    protected static double discount = 0.0;
-    private double total = 0;
-    private int items = 0,type = 0;
-    private double subTotal = 0;
+    protected static double discount = 0.0,total = 0,subTotal = 0;
+    protected static int items = 0,type = 0;
     protected MiscInstances misc;
-    private Timeline mainThread,statusThread;
+    protected static Timeline mainThread,statusThread;
     protected static POSDialog dialog;// static dialog to make it accessible
     // to the Dialog that is currently open
     // and easy to access the close method of the Dialog
