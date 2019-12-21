@@ -60,7 +60,7 @@ public class POSDashboard implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         BackgroundProcesses.realTimeClock(lblDate);
-
+        BackgroundProcesses.changeSecondaryFormStageStatus((short)2);
         try {
             Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
             scan.nextLine();

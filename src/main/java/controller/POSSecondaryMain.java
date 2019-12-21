@@ -23,7 +23,6 @@ import main.java.MiscInstances;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
-
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -163,12 +162,18 @@ public class POSSecondaryMain implements Initializable {
                 short status = Short.parseShort(scan.nextLine());
                 switch (status){
                     case 0:
-                        if (hasDialog())
-                        sceneManipulator.closeDialog();
+                        if (hasDialog()){
+                            sceneManipulator.closeDialog();
+                            mainThread.play();
+                        }
                         break;
                     case 1:
                         if (!hasDialog())
                             sceneManipulator.openDialog(rootPane,"POSSecondaryCheckout");
+                        break;
+                    case 2:
+                        if (!hasDialog())
+                            sceneManipulator.openDialog(rootPane,"POSSecondaryOffline");
                         break;
                 }
 
@@ -193,3 +198,4 @@ public class POSSecondaryMain implements Initializable {
 //STATUS
 //      0       -       On Scanning - Available - Dialog are close
 //      1       -       On Checkout Procedure - Scanning card
+//      2       -       Busy - Status

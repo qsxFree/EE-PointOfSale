@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -15,6 +16,7 @@ import main.java.Main;
 import main.java.controller.message.POSMessage;
 import main.java.data.AES;
 import main.java.misc.BackgroundProcesses;
+import main.java.misc.DirectoryHandler;
 
 import java.io.*;
 import java.net.URL;
@@ -41,6 +43,9 @@ public class POSCheckout extends POSCashier {
     private Label lblCheckout;
 
     @FXML
+    private Label lblStatus;
+
+    @FXML
     private Label lblTotal;
 
     @FXML
@@ -49,20 +54,16 @@ public class POSCheckout extends POSCashier {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 1);
         scanCard();
-
-
     }
 
     @FXML
-    void btnCancelOnAction(ActionEvent event) {
+    void btnCancelOnAction(ActionEvent event) throws IOException {
+        cacheClear();
         Main.rfid.cancelOperation();
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
         sceneManipulator.closeDialog();
-
     }
 
     @FXML
@@ -73,7 +74,6 @@ public class POSCheckout extends POSCashier {
     private Timeline cardIdScannerThread, checkPINThread;
     private String cardID=null,customerID=null;
     private void scanCard(){
-
         try {
             Main.rfid.scanBasic();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -84,7 +84,6 @@ public class POSCheckout extends POSCashier {
                         if (scanned[0].equals("scanBasic")){
                             cardID = scanned[1];
                             queryCard();
-
                             Main.rfid.clearCache();
                             cardIdScannerThread.stop();
                             break;
@@ -108,7 +107,6 @@ public class POSCheckout extends POSCashier {
                     "Cannot Detect Scanner",
                     POSMessage.MessageType.ERROR,button);
         }
-
     }
     private Scanner scan;
     private String forChallenge;
@@ -128,13 +126,14 @@ public class POSCheckout extends POSCashier {
                         if (scanned[1].equals("1")){
                             populateData();
                             Main.rfid.clearCache();
-                            ivPrompt.setImage(null);
+                            lblStatus.setText("Processing transaction...");
+                            ivPrompt.setImage(new Image(DirectoryHandler.IMG+"pos-spinner.gif"));
                             checkPINThread.stop();
                             break;
                         }
                     }
                 }
-            } catch (FileNotFoundException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
                 checkPINThread.stop();
             }
@@ -193,8 +192,9 @@ public class POSCheckout extends POSCashier {
                 JFXButton button = new JFXButton("Ok");
                 button.setOnAction(s->{
                     POSMessage.closeMessage();
+                    scanCard();
                 });
-                POSMessage.showConfirmationMessage(rootPane,"Card doesn't exist or it maybe deactivated",
+                POSMessage.showConfirmationMessage(rootPane,"Card doesn't exist or maybe\nit is deactivated",
                         "Invalid Card",
                         POSMessage.MessageType.ERROR,button);
                 misc.dbHandler.closeConnection();
@@ -207,7 +207,8 @@ public class POSCheckout extends POSCashier {
 
     }
 
-    private void populateData() throws FileNotFoundException {
+    private void populateData() throws IOException {
+
         scan = new Scanner(new FileInputStream("etc\\cache-checkout-card.file"));
         lblCardID.setText(scan.nextLine());
         lblBalance.setText(scan.nextLine());
@@ -220,6 +221,16 @@ public class POSCheckout extends POSCashier {
 
         lblTotal.setText(String.valueOf(Double.parseDouble(lblBalance.getText())
                 - Double.parseDouble(lblCheckout.getText())));
+
+        writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
+        writer.write("1");
+        writer.close();
     }
 
+
+    private void cacheClear() throws IOException {
+        writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
+        writer.write("0");
+        writer.close();
+    }
 }

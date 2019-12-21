@@ -170,6 +170,7 @@ public class POSCashier implements Initializable {
     /*************************************************/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        BackgroundProcesses.changeSecondaryFormStageStatus((short)0);
         BackgroundProcesses.createCacheDir("etc\\cache-secondary-table.file");
         //misc = new MiscInstances();
         queryAllItem();

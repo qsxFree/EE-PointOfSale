@@ -142,7 +142,7 @@
                      <children>
                         <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="30.0" prefWidth="456.0" text="Please scan your card">
+                              <Label fx:id="lblStatus" alignment="CENTER" prefHeight="30.0" prefWidth="456.0" text="Please scan your card">
                                  <font>
                                     <Font name="System Bold" size="20.0" />
                                  </font>
