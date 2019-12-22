@@ -225,6 +225,8 @@ public class POSCashier implements Initializable {
             productList.clear();
         }else if (selectedButton.equals(this.btnPriceInquiry)){
             sceneManipulator.openDialog(rootPane,"POSPriceInquiry");
+        }else if (selectedButton.equals(this.btnAddCredits)){
+            sceneManipulator.openDialog(rootPane,"POSAddBalance");
         }
 
     }

@@ -108,18 +108,19 @@ public class POSCheckout extends POSCashier {
             insertTransaction(orderID);
             updateCardBalance();
 
-            String message = "Transaction No. : "+transactionNumber
-                    +"\nCost : "+transactionCost
-                    +"\nDate : "+this.date
-                    +"\nTime : "+this.time
-                    +"\nRemaining Balance : "+remainingBalance;
+            String message = "Transaction No. : "+String.valueOf(transactionNumber).toString()+"\n"
+                    +"Cost : "+String.valueOf(transactionCost).toString()+"\n"
+                    +"Date : "+this.date.toString()+"\n"
+                    +"Time : "+this.time.toString()+"\n"
+                    +"Remaining Balance : "+String.valueOf(remainingBalance).toString();
 
-            String intPhone = "63"+(phone.substring(1,phone.length()));
+            String intPhone = "63".concat(phone.substring(1,phone.length())).toString();
             try {
                 System.out.println(message);
                 System.out.println(intPhone);
                 /*
                     Main.rfid.gsmSendSMS(intPhone,message);
+
                  */
             }catch (Exception e){
                 e.printStackTrace();
