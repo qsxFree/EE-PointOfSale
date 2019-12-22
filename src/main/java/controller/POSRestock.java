@@ -17,6 +17,8 @@ import main.java.misc.InputRestrictor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -53,6 +55,8 @@ public class POSRestock extends POSInventory{
     private int itemID = 0;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        InputRestrictor.numbersInput(tfAddStock);
+        InputRestrictor.limitInput(tfAddStock, 3);
         try {
             Scanner scan = new Scanner(new FileInputStream(BackgroundProcesses.getFile("etc\\cache-selected-item.file")));
             itemID = Integer.parseInt(scan.nextLine());
@@ -61,14 +65,12 @@ public class POSRestock extends POSInventory{
             price = Double.parseDouble(scan.nextLine());
             tfCurrentStock.setText(scan.nextLine());
             lblEstimatedValue.setText(scan.nextLine());
-
             tfAddStock.setText(tfCurrentStock.getText());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        InputRestrictor.numbersInput(tfAddStock);
-        InputRestrictor.limitInput(tfAddStock,3);
+
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             int newVal = tfAddStock.getText().equals("") ? 0 : Integer.parseInt(tfAddStock.getText());
             lblEstimatedValue.setText((newVal*price)+"");
@@ -77,6 +79,7 @@ public class POSRestock extends POSInventory{
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
+
     }
     //TODO recalculating the Text everytime the user are entering new stock value
     //TODO update database when adding stocks
@@ -97,23 +100,32 @@ public class POSRestock extends POSInventory{
 
             POSMessage.closeMessage();
 
-            String sql = "Update item set stock = "+tfAddStock.getText()+" where" +
-                    "\nitemID = "+itemID+" and " +
-                    "\nitemCode = '"+tfItemCode.getText()+"'";
+            String sql = "Update item set stock = " + tfAddStock.getText() + " where" +
+                    "\nitemID = " + itemID + " and " +
+                    "\nitemCode = '" + tfItemCode.getText() + "'";
+
+            misc.dbHandler.startConnection();
+            misc.dbHandler.execUpdate(sql);
+            misc.dbHandler.closeConnection();
+
+            Date d = new Date();
+            SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+            sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                    " VALUES ( 'Stock Management', 'Restock', '" + date.format(d) + "', '" + POSInventory.userID + "', '" + tfItemCode.getText() + "');";
 
             misc.dbHandler.startConnection();
             misc.dbHandler.execUpdate(sql);
             misc.dbHandler.closeConnection();
 
             JFXButton btnOk = new JFXButton("Ok");
-            btnOk.setOnAction(ev->{
+            btnOk.setOnAction(ev -> {
                 POSMessage.closeMessage();
                 queryAllItems();
                 sceneManipulator.closeDialog();
             });
 
             POSMessage.showConfirmationMessage(rootPane,
-                    "Item "+itemID+" is now updated",
+                    "Item " + itemID + " is now updated",
                     "Update Success",
                     POSMessage.MessageType.INFORM,btnOk);
 

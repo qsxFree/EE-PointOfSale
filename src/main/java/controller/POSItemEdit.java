@@ -10,9 +10,12 @@ import main.java.controller.message.POSMessage;
 import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.InputRestrictor;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -145,17 +148,27 @@ public class POSItemEdit extends POSInventory{
 
                 //This is where the update will process
                 String sql = "Update Item set " +
-                        "itemName = '"+tfItemName.getText()+"', " +
-                        "itemCode = '"+tfItemCode.getText()+"'," +
-                        "itemPrice = "+tfPrice.getText()+"" +
-                        " where itemID = "+itemId;//Basis for the update is the Id of the selected item
+                        "itemName = '" + tfItemName.getText() + "', " +
+                        "itemCode = '" + tfItemCode.getText() + "'," +
+                        "itemPrice = " + tfPrice.getText() + "" +
+                        " where itemID = " + itemId;//Basis for the update is the Id of the selected item
 
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();
 
+                Date d = new Date();
+                SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+                sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                        " VALUES ( 'Stock Management', 'Edit', '" + date.format(d) + "', '" + POSInventory.userID + "', '" + tfItemCode.getText() + "');";
+
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
+
                 JFXButton btnOk = new JFXButton("Ok");
-                btnOk.setOnAction(ev->{
+                btnOk.setOnAction(ev -> {
                     POSMessage.closeMessage();
                     queryAllItems();
                     sceneManipulator.closeDialog();
