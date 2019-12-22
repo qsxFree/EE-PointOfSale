@@ -63,7 +63,12 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
-        Main.rfid.cancelOperation();
+        try{
+            Main.rfid.cancelOperation();
+        }catch (Exception e){
+
+        }
+
         sceneManipulator.closeDialog();
     }
 

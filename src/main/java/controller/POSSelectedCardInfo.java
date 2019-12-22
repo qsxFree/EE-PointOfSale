@@ -87,7 +87,18 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
     void btnChangePinOnAction(ActionEvent event) throws FileNotFoundException {
         vbPINContainer.setDisable(false);
         btnChangePin.setDisable(true);
-        scanOldPIN();
+        try{
+            scanOldPIN();
+        }catch (NullPointerException e){
+            JFXButton button = new JFXButton("Ok");
+            button.setOnAction(s->{
+                POSMessage.closeMessage();
+            });
+            POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to complete Task",
+                    "Cannot Detect Scanner",
+                    POSMessage.MessageType.ERROR,button);
+        }
+
     }
 
     @FXML

@@ -61,7 +61,12 @@ public class POSCheckout extends POSCashier {
     @FXML
     void btnCancelOnAction(ActionEvent event) throws IOException {
         cacheClear();
-        Main.rfid.cancelOperation();
+        try{
+            Main.rfid.cancelOperation();
+        }catch (Exception e){
+
+        }
+
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
         sceneManipulator.closeDialog();
     }

@@ -24,27 +24,28 @@ public class SceneManipulator {
      * @param title - to change the Title of the stage
      * */
     public void changeScene(Pane rootPane,String fxmlName,String title){
-            root =  getFXML(fxmlName);
-            stage = getStage(rootPane);
-            stage.setTitle(title);
+        root =  getFXML(fxmlName);
+        stage = getStage(rootPane);
+        stage.setTitle(title);
 
-            boolean isOnFull = stage.isFullScreen();
-            boolean isMaximized = stage.isMaximized();
-            double y,x,w,h,ww,hh;
-            y=stage.getY();
-            x=stage.getX();
-            w=stage.getWidth();
-            h=stage.getHeight();
-            hh = stage.getScene().getHeight();
-            ww = stage.getScene().getWidth();
-            scene = new Scene(root);
-            stage.setScene(scene);
+        boolean isOnFull = stage.isFullScreen();
+        boolean isMaximized = stage.isMaximized();
+        double y,x,w,h,ww,hh;
+        y=stage.getY();
+        x=stage.getX();
+        w=stage.getWidth();
+        h=stage.getHeight();
+        hh = stage.getScene().getHeight();
+        ww = stage.getScene().getWidth();
+        scene = new Scene(root,ww,hh);
+        stage.setScene(scene);
 
-            //stage.centerOnScreen();
-            stage.setMaximized(isMaximized);
-            stage.setFullScreenExitHint("");
-            stage.setFullScreen(isOnFull);//to full screen when switching a UI
+        //stage.centerOnScreen();
+        stage.setMaximized(isMaximized);
+        stage.setFullScreenExitHint("");
+        stage.setFullScreen(isOnFull);//to full screen when switching a UI
     }
+
 
     /**
      * A SceneManipulator method that changes the Window or the Stage
