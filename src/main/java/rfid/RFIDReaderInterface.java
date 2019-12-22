@@ -20,15 +20,16 @@ public class RFIDReaderInterface {
     private Scanner serialReader;
     private PrintWriter serialWriter;
     private byte[] bytesRead;
-    private final String RFIDcacheFilePath = "etc\\rfid-cache.file";
+    private String RFIDcacheFilePath = "etc\\rfid-cache.file";
     private boolean writeDataToCache = false;
     private boolean deviceReady = false;
     private boolean serialCommDebugging = true; // Set to true when checking data sent/received through serial
     private int lastCommand = 0;
     private long time;
+    private int smsConfirmationNet = 0;
 
     public RFIDReaderInterface() {
-        /**
+        /**x`
          * This constructor will prepare and establish a connection to allow you to communicate
          * with the Arduino with ease.
          */
@@ -189,6 +190,12 @@ public class RFIDReaderInterface {
         writeDataToCache = true;
     }
 
+    public void gsmSIMPresent() {
+        sendByte(143);
+        lastCommand = 143;
+        writeDataToCache = true;
+    }
+
     public void gsmSendSMS(String number, String message) {
         sendByte(136);
 
@@ -205,6 +212,8 @@ public class RFIDReaderInterface {
         sendByte(3);
 
         lastCommand = 136;
+        writeDataToCache = true;
+        smsConfirmationNet = 2;
     }
 
     public void challenge(String passcode) {
@@ -262,6 +271,7 @@ public class RFIDReaderInterface {
                     break;
                 default:
                     System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for checkGSM()");
+                    writeToCache("ERR:134", RFIDcacheFilePath);
                     returnValue = false;
                     break;
             }
@@ -274,6 +284,31 @@ public class RFIDReaderInterface {
             }
             writeToCache("gsmSignal=" + signal,RFIDcacheFilePath);
         }
+        // Check if SMS has sent
+        else if (lastCommand == 136) {
+            switch ((char) data[0]) {
+                case '0':
+                    writeToCache("smsSent=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("smsSent=1", RFIDcacheFilePath);
+                    break;
+                default:
+                    if (data[0] == (byte)-118) {
+                        if (smsConfirmationNet == 2) {
+                            lastCommand = 136;
+                            writeDataToCache = true;
+                            smsConfirmationNet--;
+                        }
+                        else {
+                            System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for sendSMS()");
+                            writeToCache("ERR:136", RFIDcacheFilePath);
+                            returnValue = false;
+                        }
+                    }
+                    break;
+            }
+        }
         // Challenge
         else if (lastCommand == 139) {
             switch ((char) data[0]) {
@@ -285,6 +320,7 @@ public class RFIDReaderInterface {
                     break;
                 default:
                     System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for challenge()");
+                    writeToCache("ERR:139", RFIDcacheFilePath);
                     returnValue = false;
                     break;
             }
@@ -308,12 +344,38 @@ public class RFIDReaderInterface {
                     break;
                 default:
                     System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for testConnection()");
+                    writeToCache("ERR:142", RFIDcacheFilePath);
+                    returnValue = false;
+                    break;
+            }
+        }
+        // Test SIM presence
+        else if (lastCommand == 143) {
+            switch ((char)data[0]) {
+                case '0':
+                    writeToCache("SIMpresence=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("SIMpresence=1", RFIDcacheFilePath);
+                    break;
+                case '2':
+                    writeToCache("SIMpresence=2", RFIDcacheFilePath);
+                    break;
+                default:
+                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for gsmSIMPresent()");
+                    writeToCache("ERR:143", RFIDcacheFilePath);
                     returnValue = false;
                     break;
             }
         }
 
-        lastCommand = 0;
+        if (smsConfirmationNet > 0) {
+            smsConfirmationNet = 0;
+        }
+        else {
+            lastCommand = 0;
+        }
+
         return returnValue;
     }
 
@@ -342,6 +404,9 @@ public class RFIDReaderInterface {
         return true;
     }
 
+    public void disconnect() {
+        selectedPort.closePort();
+    }
     public void clearCache(){
         writeToCache("",RFIDcacheFilePath);
     }
