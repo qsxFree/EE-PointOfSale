@@ -23,6 +23,8 @@ import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -58,9 +60,15 @@ public class POSCheckout extends POSCashier {
     private BufferedWriter writer;
     private Timeline cardIdScannerThread, checkPINThread;
     private String cardID=null,customerID=null;
+    private static String sql="";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            cacheClear();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 1);
         scanCard();
     }
@@ -82,7 +90,7 @@ public class POSCheckout extends POSCashier {
     }
 
     @FXML
-    void btnProceedOnAction(ActionEvent event) {
+    void btnProceedOnAction(ActionEvent event) throws SQLException {
         if (!cardDetected){
             createStandardMessage((Node) event.getSource(),
                     "Invalid Procedure",
@@ -93,6 +101,26 @@ public class POSCheckout extends POSCashier {
                     "Insufficient Balance",POSMessage.MessageType.ERROR);
         }else{
 
+            int orderID = insertToOrder();
+            insertAllOrders(orderID);
+            insertTransaction(orderID);
+            updateCardBalance();
+
+            JFXButton btnOk = new JFXButton("Ok");
+            btnOk.setOnAction(evt -> {
+                try {
+                    closeDialogs();
+                    clearAllData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                POSMessage.closeMessage();
+            });
+
+            POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(rootPane),
+                    "Transaction Complete",
+                    "Message",
+                    POSMessage.MessageType.INFORM, btnOk);
         }
     }
 
@@ -267,9 +295,86 @@ public class POSCheckout extends POSCashier {
         POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(node),message,title,type, btnOk);
     }
 
-    private final void insertToOrder(){
-        //String sql = "Insert into orders(itemCount,typeCount,subTotal,discount,total)" +
-                //"value ("+POSCashier.+")"
+
+
+    private final int insertToOrder() throws SQLException {
+        sql = "Insert into orders(itemCount,typeCount,subTotal,discount,total)" +
+                "value ("+POSCashier.items+","+POSCashier.type+","+POSCashier.subTotal+","+POSCashier.discount+","+POSCashier.total+")";
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
+        sql = "Select max(orderID) as lastID from Orders";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        result.next();
+        int id = result.getInt("lastID");
+        misc.dbHandler.closeConnection();
+
+        return id;
     }
 
+    private final void insertAllOrders(int orderID){
+
+        productList.forEach(e->{
+            String item[] = e.getProductID().split("-");
+            sql = "Insert into orderitem(itemID,quantity,subtotal,orderID) " +
+                   "values("+item[1]+","+e.getQuantity()+","+e.getTotal()+","+orderID+")";
+            misc.dbHandler.startConnection();
+            misc.dbHandler.execUpdate(sql);
+            misc.dbHandler.closeConnection();
+            try {
+                updateStocks(item[1],item[0],e.getQuantity());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+    }
+
+    private final void updateStocks(String itemID,String itemCode,int count) throws SQLException {
+
+        sql = "Select stock from item where itemID = "+itemID+"";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        result.next();
+        int newStock = (result.getInt("stock")-count);
+        misc.dbHandler.closeConnection();
+
+
+        sql = "Update item set stock = " + newStock + " where " +
+                "itemID = " + itemID + " and " +
+                "itemCode = '" + itemCode+ "'";
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+    }
+
+    private final void insertTransaction(int id){
+        Date d = new Date();
+        SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+        sql = "Insert into transaction(type,userID,customerID,typeID,date) " +
+                "values('Retail','"+POSCashier.userID+"',"+customerID+","+id+",'"+date.format(d)+"')";
+
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+    }
+
+    private final void updateCardBalance(){
+        sql = "Update card set credits = "+lblRemaining.getText()+" where customerID = "+customerID+" and cardID = '"+cardID+"'";
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+    }
+
+    private final void closeDialogs() throws IOException {
+        BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
+        sceneManipulator.closeDialog();
+    }
+
+    private final void clearAllData(){
+        POSCashier.productList.clear();
+        POSCashier.discount = 0;
+    }
 }

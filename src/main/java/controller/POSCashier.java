@@ -161,6 +161,7 @@ public class POSCashier implements Initializable {
     protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
                             // and easy to access the close method of the Dialog
+    public static String userID = "";
 
     protected static final SceneManipulator sceneManipulator = new SceneManipulator();
 
@@ -181,6 +182,8 @@ public class POSCashier implements Initializable {
 
         try {
             Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
+            userID = scan.nextLine();
+            scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
             scan.nextLine();
             scan.nextLine();
             scan.nextLine();
