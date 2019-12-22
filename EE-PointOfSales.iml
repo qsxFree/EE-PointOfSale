@@ -10,6 +10,6 @@
     <orderEntry type="library" exported="" name="JavaFX-11" level="project" />
     <orderEntry type="library" exported="" name="JFoenix-9.0.8" level="project" />
     <orderEntry type="library" exported="" name="MySQL-JDBC-Driver-8.0.18" level="project" />
-    <orderEntry type="library" name="JSerialComm" level="project" />
+    <orderEntry type="library" exported="" name="JSerialComm" level="project" />
   </component>
 </module>

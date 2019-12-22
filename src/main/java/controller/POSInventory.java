@@ -26,13 +26,12 @@ import main.java.data.entity.Item;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class POSInventory implements Initializable, CacheWriter {
     //TODO Restock function is not yet working
@@ -78,27 +77,43 @@ public class POSInventory implements Initializable, CacheWriter {
     private TreeTableColumn<Item, Double> chTotal;
 
 
-    protected static SceneManipulator sceneManipulator= new SceneManipulator();
+    protected static SceneManipulator sceneManipulator = new SceneManipulator();
     protected static MiscInstances misc = new MiscInstances();
     protected static ObservableList<Item> itemList = FXCollections.observableArrayList();
     private static ArrayList allItem = new ArrayList();
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
-            queryAllItems();
-            loadTable();
-            BackgroundProcesses.createCacheDir("etc\\cache-selected-item.file");
-        }),
-                new KeyFrame(Duration.millis(300))
-        );
-        clock.setCycleCount(1);
-        clock.play();
+    public static String userID = "";
 
+    public static void queryAllItems() {
+        itemList.clear();
+        String sql = "Select * from Item";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        try {
+            Item item;
+            while (result.next()) {
+                item = new Item(result.getInt("itemID")
+                        , result.getString("itemCode")
+                        , result.getString("itemName")
+                        , result.getDouble("itemPrice")
+                        , result.getInt("stock")
+                        , new JFXButton("Modify")
+                        , new HBox());
+                item.setManipulator(sceneManipulator);
+                item.setMisc(misc);
+                itemList.add(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            misc.dbHandler.closeConnection();
+        }
+        misc.dbHandler.closeConnection();
+        allItem.clear();
+        allItem.addAll(itemList);
     }
 
     @FXML
     void btnHomeOnAction(ActionEvent event) {
-        sceneManipulator.changeScene(rootPane,"POSDashboard","Dashboard");
+        sceneManipulator.changeScene(rootPane, "POSDashboard", "Dashboard");
     }
 
     @FXML
@@ -150,33 +165,25 @@ public class POSInventory implements Initializable, CacheWriter {
         queryAllItems();
     }
 
-
-    protected static void queryAllItems(){
-        itemList.clear();
-        String sql = "Select * from Item";
-        misc.dbHandler.startConnection();
-        ResultSet result = misc.dbHandler.execQuery(sql);
-        try{
-            Item item;
-            while(result.next()){
-                item = new Item(result.getInt("itemID")
-                        ,result.getString("itemCode")
-                        ,result.getString("itemName")
-                        ,result.getDouble("itemPrice")
-                        ,result.getInt("stock")
-                        ,new JFXButton("Modify")
-                        ,new HBox());
-                item.setManipulator(sceneManipulator);
-                item.setMisc(misc);
-                itemList.add(item);
-            }
-        }catch (Exception e){
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
+            userID = scan.nextLine();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-            misc.dbHandler.closeConnection();
         }
-        misc.dbHandler.closeConnection();
-        allItem.clear();
-        allItem.addAll(itemList);
+
+        Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
+            queryAllItems();
+            loadTable();
+            BackgroundProcesses.createCacheDir("etc\\cache-selected-item.file");
+        }),
+                new KeyFrame(Duration.millis(300))
+        );
+        clock.setCycleCount(1);
+        clock.play();
+
     }
 
     private void loadTable(){

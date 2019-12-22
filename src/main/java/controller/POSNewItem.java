@@ -13,9 +13,12 @@ import javafx.util.Duration;
 import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
 import main.java.data.entity.Item;
+import main.java.misc.BackgroundProcesses;
 import main.java.misc.InputRestrictor;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class POSNewItem extends POSInventory{
@@ -79,18 +82,31 @@ public class POSNewItem extends POSInventory{
             POSMessage.showMessage(rootPane, "You've entered an Invalid Code", "Invalid Code", POSMessage.MessageType.ERROR);
         }else {
             String sql = "Insert into item(itemCode,itemName,itemPrice,stock)" +
-                    " values ('"+tfItemCode.getText()+"'" +
-                    ",'"+tfItemName.getText()+"'" +
-                    ","+Double.parseDouble(tfPrice.getText())+"" +
-                    ","+Integer.parseInt(tfInititalStock.getText())+")";
+                    " values ('" + tfItemCode.getText() + "'" +
+                    ",'" + tfItemName.getText() + "'" +
+                    "," + Double.parseDouble(tfPrice.getText()) + "" +
+                    "," + Integer.parseInt(tfInititalStock.getText()) + ")";
 
             misc.dbHandler.startConnection();
             misc.dbHandler.execUpdate(sql);
+            misc.dbHandler.closeConnection();
 
-            POSMessage.showMessage(rootPane,"New Item has been Added"
-                    ,"Item Added"
+            Date d = new Date();
+            SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+            sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                    " VALUES ( 'Stock Management'" +
+                    ", 'Add'" +
+                    ", '" + date.format(d) + "'" +
+                    ", '" + POSInventory.userID + "'" +
+                    ", '" + tfItemCode.getText() + "');";
+
+            misc.dbHandler.startConnection();
+            misc.dbHandler.execUpdate(sql);
+            misc.dbHandler.closeConnection();
+
+            POSMessage.showMessage(rootPane, "New Item has been Added"
+                    , "Item Added"
                     , POSMessage.MessageType.INFORM);
-
 
 
             queryAllItems();

@@ -15,6 +15,7 @@ import main.java.Main;
 import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
 import main.java.data.AES;
+import main.java.misc.BackgroundProcesses;
 import main.java.misc.InputRestrictor;
 
 import java.io.FileInputStream;
@@ -175,8 +176,8 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
         misc.dbHandler.closeConnection();
 
         Date d = new Date();
-        SimpleDateFormat date = new SimpleDateFormat("MM-dd-YYYY");
-        String cardID,PIN,activation,expiry;
+        SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+        String cardID, PIN, activation, expiry;
         cardID = tfCardID.getText();
         PIN = pfPIN.getText();
         activation  = date.format(d);

@@ -3,15 +3,17 @@ package main.java.misc;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
-
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class BackgroundProcesses {
-
+    public static final String DATE_FORMAT = "MM-dd-YYYY";
 
     public static void realTimeClock(Label lblDate){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -36,7 +38,7 @@ public class BackgroundProcesses {
         }
     }
 
-    public static File getFile(String file){
+    public static File getFile(String file) {
         return new File(file);
     }
 
@@ -46,6 +48,27 @@ public class BackgroundProcesses {
             writer.write(String.valueOf(status));
             writer.close();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Node getRoot(Node control) {
+        Node node = control;
+        while (true) {
+            node = node.getParent();
+            if (node.getId() != null && node.getId().equals("rootPane")) break;
+        }
+        return node;
+    }
+
+    public static void populateComboFromFile(String fileName, ComboBox cb) {
+        try {
+            cb.getSelectionModel().clearSelection();
+            Scanner scan = new Scanner(new FileInputStream("etc\\loader\\" + fileName + ".file"));
+            do {
+                cb.getItems().add(scan.nextLine());
+            } while (scan.hasNextLine());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

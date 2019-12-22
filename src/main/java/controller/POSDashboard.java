@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.SceneManipulator;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -85,8 +86,10 @@ public class POSDashboard implements Initializable {
             manipulator.changeScene(rootPane,"POSCashier","Cashier");
         }else if (selectedButton.equals(this.btnCustomer)){
             manipulator.changeScene(rootPane,"POSCustomerAccount","Customer Account");
-        }else if (selectedButton.equals(this.btnInventory)){
-            manipulator.changeScene(rootPane,"POSInventory","Inventory and Stock Management");
+        }else if (selectedButton.equals(this.btnInventory)) {
+            manipulator.changeScene(rootPane, "POSInventory", "Inventory and Stock Management");
+        } else if (selectedButton.equals(this.btnLogs)) {
+            manipulator.changeScene(rootPane, "POSSystemLogs", "System Logs");
         }
 
     }

@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
+import main.java.controller.POSInventory;
 import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.misc.BackgroundProcesses;
@@ -22,6 +23,8 @@ import main.java.misc.SceneManipulator;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Item extends RecursiveTreeObject<Item> implements CacheWriter {
     private SimpleIntegerProperty itemID;
@@ -206,7 +209,37 @@ public class Item extends RecursiveTreeObject<Item> implements CacheWriter {
 
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(ev -> {
+                String sql = "Delete from item where itemID = " + itemID.intValue();
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
+                Date d = new Date();
+                SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+                sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                        " VALUES ( 'Stock Management'" +
+                        ", 'Delete'" +
+                        ", '" + date.format(d) + "'" +
+                        ", '" + POSInventory.userID + "'" +
+                        ", '" + this.itemCode.getValue() + "');";
+
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
                 POSMessage.closeMessage();
+                JFXButton btnOk = new JFXButton("Ok");
+                btnOk.setOnAction(evt -> {
+                    POSMessage.closeMessage();
+                    POSInventory.queryAllItems();
+                });
+
+                POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(btnRestock),
+                        "Item " + this.itemID.intValue() + " is now deleted",
+                        "Delete Success",
+                        POSMessage.MessageType.INFORM, btnOk);
+
+
             });
 
             // Confirmation Message
