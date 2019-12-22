@@ -3,6 +3,7 @@ package main.java.misc;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class BackgroundProcesses {
-
+    public static final String DATE_FORMAT = "MM-dd-YYYY";
 
     public static void realTimeClock(Label lblDate){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -37,8 +38,16 @@ public class BackgroundProcesses {
         }
     }
 
-    public static File getFile(String file){
+    public static File getFile(String file) {
         return new File(file);
     }
 
+    public static Node getRoot(Node control) {
+        Node node = control;
+        while (true) {
+            node = node.getParent();
+            if (node.getId() != null && node.getId().equals("rootPane")) break;
+        }
+        return node;
+    }
 }

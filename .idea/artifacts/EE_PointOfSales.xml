@@ -1,0 +1,34 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="EE-PointOfSales">
+    <output-path>$PROJECT_DIR$/out/artifacts/EE_PointOfSales</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="main.java.Main" />
+        <option name="description" value="" />
+        <option name="height" value="300" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="EE_PointOfSales.jar">
+        <element id="module-output" name="EE-PointOfSales" />
+      </element>
+      <element id="directory" name="lib">
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx-swt.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.base.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.controls.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.fxml.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.graphics.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.media.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.swing.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx/javafx.web.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/jfoenix-9.0.8.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/jSerialComm-2.5.2.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/mysql-connector-java-8.0.18.jar" path-in-jar="/" />
+      </element>
+    </root>
+  </artifact>
+</component>
