@@ -24,6 +24,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -106,6 +108,22 @@ public class POSCheckout extends POSCashier {
             insertTransaction(orderID);
             updateCardBalance();
 
+            String message = "Transaction No. : "+transactionNumber
+                    +"\nCost : "+transactionCost
+                    +"\nDate : "+this.date
+                    +"\nTime : "+this.time
+                    +"\nRemaining Balance : "+remainingBalance;
+
+            String intPhone = "63"+(phone.substring(1,phone.length()));
+            try {
+                System.out.println(message);
+                System.out.println(intPhone);
+                /*
+                    Main.rfid.gsmSendSMS(intPhone,message);
+                 */
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             JFXButton btnOk = new JFXButton("Ok");
             btnOk.setOnAction(evt -> {
                 try {
@@ -196,6 +214,7 @@ public class POSCheckout extends POSCashier {
 
     }
 
+    private String phone="";
     private void queryCard(){
         String sql = "Select * from card where cardID='"+cardID+"' and isActive = 1";
         misc.dbHandler.startConnection();
@@ -223,13 +242,14 @@ public class POSCheckout extends POSCashier {
                 result = misc.dbHandler.execQuery(sql);
                 result.next();
                 data="";
+                phone = result.getString("phoneNumber");
                 data += result.getInt("customerID")+"\n"+
                         result.getString("firstName")+"\n"+
                         result.getString("middleInitial")+"\n"+
                         result.getString("lastName")+"\n"+
                         result.getString("Sex")+"\n"+
                         result.getString("address")+"\n"+
-                        result.getString("phoneNumber")+"\n"+
+                        phone+"\n"+
                         result.getString("emailAddress");
                 writer = new BufferedWriter(new FileWriter("etc\\cache-checkout-customer.file"));
                 writer.write(data);
@@ -295,6 +315,9 @@ public class POSCheckout extends POSCashier {
         POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(node),message,title,type, btnOk);
     }
 
+    private int transactionNumber;
+    private double transactionCost,remainingBalance;
+    private String date,time;
 
 
     private final int insertToOrder() throws SQLException {
@@ -303,6 +326,7 @@ public class POSCheckout extends POSCashier {
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();
+        transactionCost = POSCashier.total;
 
         sql = "Select max(orderID) as lastID from Orders";
         misc.dbHandler.startConnection();
@@ -350,14 +374,24 @@ public class POSCheckout extends POSCashier {
         misc.dbHandler.closeConnection();
     }
 
-    private final void insertTransaction(int id){
+    private final void insertTransaction(int id) throws SQLException {
+        LocalDateTime currentTime = LocalDateTime.now();
         Date d = new Date();
         SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
-        sql = "Insert into transaction(type,userID,customerID,typeID,date) " +
-                "values('Retail','"+POSCashier.userID+"',"+customerID+","+id+",'"+date.format(d)+"')";
+        sql = "Insert into transaction(type,userID,customerID,typeID,date,time) " +
+                "values('Retail','"+POSCashier.userID+"',"+customerID+","+id+",'"+date.format(d)+"','"+currentTime.format(DateTimeFormatter.ofPattern("hh:mm a"))+"')";
 
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+        this.date = date.format(d);
+        this.time = currentTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
+
+        sql = "Select max(transactionID) as lastID from transaction";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        result.next();
+        transactionNumber = result.getInt("lastID");
         misc.dbHandler.closeConnection();
     }
 
@@ -366,6 +400,8 @@ public class POSCheckout extends POSCashier {
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();
+
+        remainingBalance = Double.parseDouble(lblRemaining.getText());
     }
 
     private final void closeDialogs() throws IOException {

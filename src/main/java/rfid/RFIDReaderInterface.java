@@ -264,14 +264,14 @@ public class RFIDReaderInterface {
         else if (lastCommand == 134) {
             switch ((char)data[0]) {
                 case '0':
-                    writeToCache("gsmStatus=0", RFIDcacheFilePath);
+                    writeToCache("gsmStatus=0", "etc\\status\\rfid-gsm-status.file");
                     break;
                 case '1':
-                    writeToCache("gsmStatus=1", RFIDcacheFilePath);
+                    writeToCache("gsmStatus=1", "etc\\status\\rfid-gsm-status.file");
                     break;
                 default:
                     System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for checkGSM()");
-                    writeToCache("ERR:134", RFIDcacheFilePath);
+                    writeToCache("ERR:134", "etc\\status\\rfid-gsm-status.file");
                     returnValue = false;
                     break;
             }
