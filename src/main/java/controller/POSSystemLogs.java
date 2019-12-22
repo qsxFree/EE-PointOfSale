@@ -13,17 +13,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
+import main.java.data.CacheWriter;
 import main.java.data.entity.SystemLog;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class POSSystemLogs implements Initializable {
+public class POSSystemLogs implements Initializable, CacheWriter {
 
     protected static SceneManipulator sceneManipulator = new SceneManipulator();
     protected static MiscInstances misc = new MiscInstances();
@@ -34,11 +37,11 @@ public class POSSystemLogs implements Initializable {
     @FXML
     private JFXButton btnHome;
     @FXML
-    private ComboBox<?> cbUser;
+    private ComboBox<String> cbUser;
     @FXML
-    private ComboBox<?> cbType;
+    private ComboBox<String> cbType;
     @FXML
-    private ComboBox<?> cbAction;
+    private ComboBox<String> cbAction;
     @FXML
     private DatePicker dpDate;
     @FXML
@@ -72,7 +75,10 @@ public class POSSystemLogs implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         queryAllItems();
         loadTable();
-
+        writeToCache("etc\\loader\\load-sl-users.file");
+        BackgroundProcesses.populateComboFromFile("load-sl-users", cbUser);
+        BackgroundProcesses.populateComboFromFile("load-sl-type", cbType);
+        BackgroundProcesses.populateComboFromFile("load-sl-all-action", cbAction);
 
     }
 
@@ -149,4 +155,25 @@ public class POSSystemLogs implements Initializable {
     }
 
 
+    @Override
+    public void writeToCache(String file) {
+        String sql = "Select userID,firstName,lastName from user";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        try {
+            String data = "";
+
+            while (result.next()) {
+                data += result.getString("userID")
+                        + ", " + result.getString("firstName")
+                        + " " + result.getString("lastName").charAt(0) + "\n";
+            }
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(data);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
