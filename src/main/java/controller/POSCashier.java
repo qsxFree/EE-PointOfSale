@@ -152,9 +152,9 @@ public class POSCashier implements Initializable {
     protected static ObservableList<ProductOrder> productList = FXCollections.observableArrayList();
     protected static ArrayList <Item>allItem = new ArrayList<Item>();
     protected static double discount = 0.0;
-    private double total = 0;
-    private int items = 0,type = 0;
-    private double subTotal = 0;
+    protected static double total = 0;
+    protected static int items = 0,type = 0;
+    protected static double subTotal = 0;
     private ProductOrder selectedProduct = null;
     protected MiscInstances misc = new MiscInstances();
     protected static double overAllTotal=0;

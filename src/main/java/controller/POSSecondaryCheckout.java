@@ -76,9 +76,9 @@ public class POSSecondaryCheckout extends POSSecondaryMain{
 
                             ivPrompt.setImage(new Image(DirectoryHandler.IMG+"pos-spinner.gif"));
                             lblStatus.setText("Processing transaction...");
-                                writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
-                                writer.write("0");
-                                writer.close();
+                                //writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
+                                //writer.write("0");
+                                //writer.close();
 
                             cardThread.stop();
                         }

@@ -7,6 +7,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,11 +47,17 @@ public class POSCheckout extends POSCashier {
     private Label lblStatus;
 
     @FXML
-    private Label lblTotal;
+    private Label lblRemaining;
 
     @FXML
     private ImageView ivPrompt;
 
+    private boolean cardDetected = false, validBalance=false;
+    private Scanner scan;
+    private String forChallenge;
+    private BufferedWriter writer;
+    private Timeline cardIdScannerThread, checkPINThread;
+    private String cardID=null,customerID=null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,6 +70,9 @@ public class POSCheckout extends POSCashier {
         cacheClear();
         try{
             Main.rfid.cancelOperation();
+            writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
+            writer.write("0");
+            writer.close();
         }catch (Exception e){
 
         }
@@ -73,11 +83,19 @@ public class POSCheckout extends POSCashier {
 
     @FXML
     void btnProceedOnAction(ActionEvent event) {
+        if (!cardDetected){
+            createStandardMessage((Node) event.getSource(),
+                    "Invalid Procedure",
+                    "Please scan the customer's card first",POSMessage.MessageType.ERROR);
+        }else if (!this.validBalance){
+            createStandardMessage((Node) event.getSource(),
+                    "Invalid Procedure",
+                    "Insufficient Balance",POSMessage.MessageType.ERROR);
+        }else{
 
+        }
     }
 
-    private Timeline cardIdScannerThread, checkPINThread;
-    private String cardID=null,customerID=null;
     private void scanCard(){
         try {
             Main.rfid.scanBasic();
@@ -113,8 +131,7 @@ public class POSCheckout extends POSCashier {
                     POSMessage.MessageType.ERROR,button);
         }
     }
-    private Scanner scan;
-    private String forChallenge;
+
     private void checkPIN() throws FileNotFoundException {
 
         scan = new Scanner(new FileInputStream("etc\\cache-checkout-card.file"));
@@ -151,7 +168,6 @@ public class POSCheckout extends POSCashier {
 
     }
 
-    private BufferedWriter writer;
     private void queryCard(){
         String sql = "Select * from card where cardID='"+cardID+"' and isActive = 1";
         misc.dbHandler.startConnection();
@@ -211,7 +227,6 @@ public class POSCheckout extends POSCashier {
         }
 
     }
-
     private void populateData() throws IOException {
 
         scan = new Scanner(new FileInputStream("etc\\cache-checkout-card.file"));
@@ -224,18 +239,37 @@ public class POSCheckout extends POSCashier {
         if (scan.hasNextLine())
             lblCheckout.setText(scan.nextLine());
 
-        lblTotal.setText(String.valueOf(Double.parseDouble(lblBalance.getText())
-                - Double.parseDouble(lblCheckout.getText())));
+        double total = Double.parseDouble(lblBalance.getText())
+                - Double.parseDouble(lblCheckout.getText());
+        lblRemaining.setStyle(total>0.0?"-fx-text-fill:#147696":"-fx-text-fill:#ff6475");
+        lblRemaining.setText(total+"");
 
         writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
         writer.write("1");
         writer.close();
-    }
 
+        validBalance = (total>0);
+        cardDetected = true;
+    }//TODO Edit the color of the Remaining balance if it turns negative
 
     private void cacheClear() throws IOException {
         writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
         writer.write("0");
         writer.close();
     }
+
+    private void createStandardMessage(Node node , String title,String message,POSMessage.MessageType type){
+        JFXButton btnOk = new JFXButton("Close");
+        btnOk.setOnAction(evt -> {
+            POSMessage.closeMessage();
+        });
+
+        POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(node),message,title,type, btnOk);
+    }
+
+    private final void insertToOrder(){
+        //String sql = "Insert into orders(itemCount,typeCount,subTotal,discount,total)" +
+                //"value ("+POSCashier.+")"
+    }
+
 }
