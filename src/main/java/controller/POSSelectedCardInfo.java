@@ -19,6 +19,8 @@ import main.java.misc.InputRestrictor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -176,6 +178,19 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
 
     private void doUpdate(){
         String sql = "Update card set PIN='"+AES.encrypt(pfNew.getText(),POSCustomerAccount.S_KEY)+"' where cardID = '"+tfCardID.getText()+"';";
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
+        Date d = new Date();
+        SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+        sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                " VALUES ( 'Customer Management'" +
+                ", 'Change PIN'" +
+                ", '" + date.format(d) + "'" +
+                ", '" + POSCustomerAccount.userID + "'" +
+                ", '" + customerID + "');";
+
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();

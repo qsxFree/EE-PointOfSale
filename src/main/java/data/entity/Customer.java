@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
 import main.java.controller.POSCustomerAccount;
+import main.java.controller.POSInventory;
 import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.misc.BackgroundProcesses;
@@ -22,6 +23,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Customer extends RecursiveTreeObject<Customer> implements CacheWriter {
 
@@ -220,6 +223,19 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
                 misc.dbHandler.closeConnection();
 
                 sql = "Delete from customer where customerID = "+customerID.intValue();
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
+                Date d = new Date();
+                SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+                sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                        " VALUES ( 'Customer Management'" +
+                        ", 'Delete'" +
+                        ", '" + date.format(d) + "'" +
+                        ", '" + POSCustomerAccount.userID + "'" +
+                        ", " + customerID.intValue() + ");";
+
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();

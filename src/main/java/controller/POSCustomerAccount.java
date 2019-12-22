@@ -24,10 +24,13 @@ import main.java.data.entity.Customer;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class POSCustomerAccount implements Initializable {
 
@@ -74,10 +77,16 @@ public class POSCustomerAccount implements Initializable {
     protected static MiscInstances misc = new MiscInstances();
     protected static ObservableList<Customer> itemList = FXCollections.observableArrayList();
     private static ArrayList allItem = new ArrayList();
+    public static String userID = "";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        try {
+            Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
+            userID = scan.nextLine();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         Timeline clock = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             queryAllItems();
             loadTable();

@@ -15,6 +15,8 @@ import main.java.misc.InputRestrictor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -124,6 +126,20 @@ public class POSCustomerEdit extends POSCustomerAccount{
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();
+
+                Date d = new Date();
+                SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+                sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                        " VALUES ( 'Customer Management'" +
+                        ", 'Edit'" +
+                        ", '" + date.format(d) + "'" +
+                        ", '" + POSCustomerAccount.userID + "'" +
+                        ", " + this.customerID + ");";
+
+                misc.dbHandler.startConnection();
+                misc.dbHandler.execUpdate(sql);
+                misc.dbHandler.closeConnection();
+
                 POSMessage.closeMessage();
 
                 JFXButton btnOk = new JFXButton("Ok");

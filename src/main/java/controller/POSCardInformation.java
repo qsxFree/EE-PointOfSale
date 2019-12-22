@@ -201,6 +201,18 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();
 
+        date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+        sql = "INSERT INTO systemlogs(type, eventAction, date, userID, referencedID)" +
+                " VALUES ( 'Customer Management'" +
+                ", 'Add'" +
+                ", '" + date.format(d) + "'" +
+                ", '" + POSCustomerAccount.userID + "'" +
+                ", " + id + ");";
+
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
+        misc.dbHandler.closeConnection();
+
         JFXButton close = new JFXButton("Close");
         close.setOnAction(e->{
             POSCustomerAccount.queryAllItems();
