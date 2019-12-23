@@ -94,7 +94,7 @@ public class POSTransactionLogs implements Initializable {
 
     @FXML
     void btnHomeOnAction(ActionEvent event) {
-
+        sceneManipulator.changeScene(rootPane, "POSDashboard", "POS | Dashboard");
     }
 
     @FXML
@@ -123,7 +123,7 @@ public class POSTransactionLogs implements Initializable {
                         ,result.getInt("typeID")
                         ,result.getString("date")
                         ,result.getString("time")
-                        ,new JFXButton("View"));
+                        ,new JFXButton("View"),misc.dbHandler);
                 log.setManipulator(sceneManipulator);
                 createListButton(log);
                 logs.add(log);

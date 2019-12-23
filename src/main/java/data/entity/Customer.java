@@ -217,12 +217,12 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
 
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(ev -> {
-                String sql ="Delete from card where customerID = "+customerID.intValue();
+                String sql ="Update card set isActive = 0 where customerID = "+customerID.intValue();
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();
 
-                sql = "Delete from customer where customerID = "+customerID.intValue();
+                sql = "Update customer set deleted = 1 where customerID = "+customerID.intValue();
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();

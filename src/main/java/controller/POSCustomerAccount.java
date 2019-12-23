@@ -150,7 +150,7 @@ public class POSCustomerAccount implements Initializable {
 
     public static void queryAllItems(){
         itemList.clear();
-        String sql = "Select * from customer";
+        String sql = "Select * from customer where deleted = 0";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
 

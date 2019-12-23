@@ -85,7 +85,7 @@ public class POSInventory implements Initializable, CacheWriter {
 
     public static void queryAllItems() {
         itemList.clear();
-        String sql = "Select * from Item";
+        String sql = "Select * from Item where deleted = 0";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
         try {
@@ -113,7 +113,7 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     void btnHomeOnAction(ActionEvent event) {
-        sceneManipulator.changeScene(rootPane, "POSDashboard", "Dashboard");
+        sceneManipulator.changeScene(rootPane, "POSDashboard", "POS | Dashboard");
     }
 
     @FXML

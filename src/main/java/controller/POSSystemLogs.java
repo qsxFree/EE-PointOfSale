@@ -125,7 +125,7 @@ public class POSSystemLogs implements Initializable {
                         , result.getString("date")
                         , result.getString("userID")
                         , result.getString("referencedID")
-                        , new JFXButton("View"));
+                        , new JFXButton("View"),misc.dbHandler);
                 log.setManipulator(sceneManipulator);
                 createListButton(log);
                 logs.add(log);

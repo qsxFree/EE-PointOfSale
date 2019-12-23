@@ -2,7 +2,11 @@ package main.java.data.entity;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import main.java.data.DatabaseHandler;
 import main.java.misc.SceneManipulator;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Transactions extends RecursiveTreeObject<Transactions> {
     private int transactionID;
@@ -13,11 +17,33 @@ public class Transactions extends RecursiveTreeObject<Transactions> {
     private JFXButton btnView;
     private SceneManipulator manipulator;
 
-    public Transactions(int transactionID, String type, String user, String customer, int typeID, String date, String time, JFXButton btnView) {
+    public Transactions(int transactionID, String type, String user, String customer, int typeID, String date, String time, JFXButton btnView, DatabaseHandler db) {
         this.transactionID = transactionID;
         this.type = type;
-        this.user = user;
-        this.customer = customer;
+
+        try {
+            String sql = "Select firstName,lastName from user where userID='"+user+"'";
+            db.startConnection();
+            ResultSet result = db.execQuery(sql);
+            result.next();
+            user +=(" : "+result.getString("firstName")+" "
+                    +(result.getString("lastName").charAt(0))+".");
+            db.closeConnection();
+            this.user = user;
+
+            sql = "Select firstName,lastName from customer where customerID="+customer+"";
+            db.startConnection();
+            result = db.execQuery(sql);
+            result.next();
+            customer +=(" : "+result.getString("firstName")+" "
+                    +(result.getString("lastName").charAt(0))+".");
+            this.customer = customer;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        db.closeConnection();
+
+
         this.typeID = typeID;
         this.date = date;
         this.time = time;

@@ -2,7 +2,11 @@ package main.java.data.entity;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import main.java.data.DatabaseHandler;
 import main.java.misc.SceneManipulator;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SystemLog extends RecursiveTreeObject<SystemLog> {
     private int logID;
@@ -10,11 +14,24 @@ public class SystemLog extends RecursiveTreeObject<SystemLog> {
     private JFXButton btnView;
     private SceneManipulator manipulator;
 
-    public SystemLog(int logID, String type, String eventAction, String date, String userID, String referencedID, JFXButton btnView) {
+    public SystemLog(int logID, String type, String eventAction, String date, String userID, String referencedID, JFXButton btnView, DatabaseHandler db) {
         this.logID = logID;
         this.type = type;
         this.eventAction = eventAction;
         this.date = date;
+        try {
+            String sql = "Select firstName,lastName from user where userID='"+userID+"'";
+            db.startConnection();
+            ResultSet result = db.execQuery(sql);
+
+                result.next();
+
+            userID +=(" : "+result.getString("firstName")+" "
+                    +(result.getString("lastName").charAt(0))+".");
+            db.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         this.userID = userID;
         this.referencedID = referencedID;
         this.btnView = btnView;

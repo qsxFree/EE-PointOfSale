@@ -209,7 +209,7 @@ public class Item extends RecursiveTreeObject<Item> implements CacheWriter {
 
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(ev -> {
-                String sql = "Delete from item where itemID = " + itemID.intValue();
+                String sql = "update item set deleted = 1 where itemID = " + itemID.intValue();
                 misc.dbHandler.startConnection();
                 misc.dbHandler.execUpdate(sql);
                 misc.dbHandler.closeConnection();
