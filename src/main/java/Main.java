@@ -36,7 +36,7 @@ public class Main extends Application {
         stage = new Stage();
         root =  FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSLogin.fxml"));
         stage.setScene(new Scene(root));
-        stage.setTitle("Point of Sales");
+        stage.setTitle("POS | Login");
         stage.setMinHeight(679);
         stage.setMinWidth(1137);
         stage.setMaximized(true);

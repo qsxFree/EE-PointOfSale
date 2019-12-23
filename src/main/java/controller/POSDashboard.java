@@ -94,5 +94,8 @@ public class POSDashboard implements Initializable {
 
     }
 
-
+    @FXML
+    void btnSignOutOnAction(ActionEvent event) {
+        manipulator.changeScene(rootPane,"POSLogin","POS | Login");
+    }
 }

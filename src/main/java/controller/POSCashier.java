@@ -29,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.MiscInstances;
+import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.data.entity.Item;
 import main.java.data.entity.ProductOrder;
@@ -221,14 +222,37 @@ public class POSCashier implements Initializable {
         }else if (selectedButton.equals(this.btnDiscount)){
             discount = Double.parseDouble(lblDiscount.getText());
             sceneManipulator.openDialog(rootPane,"POSDiscount");
-        }else if (selectedButton.equals(this.btnRemoveAll)){
-            productList.clear();
         }else if (selectedButton.equals(this.btnPriceInquiry)){
             sceneManipulator.openDialog(rootPane,"POSPriceInquiry");
         }else if (selectedButton.equals(this.btnAddCredits)){
             sceneManipulator.openDialog(rootPane,"POSAddBalance");
         }else if (selectedButton.equals(this.btnReturn)){
             sceneManipulator.openDialog(rootPane,"POSReturn");
+        }else if (selectedButton.equals(this.btnRemoveAll)){
+            JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
+            btnNo.setOnAction(ev -> POSMessage.closeMessage());// After pressing the No button, it simply close the messgae
+
+            JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
+            btnYes.setOnAction(ev -> {
+
+                productList.clear();
+                POSMessage.closeMessage();
+                JFXButton btnOk = new JFXButton("Ok");
+                btnOk.setOnAction(evt -> {
+                    POSMessage.closeMessage();
+                });
+
+                POSMessage.showConfirmationMessage(rootPane,
+                        "Item list has been cleared",
+                        "Process Complete",
+                        POSMessage.MessageType.INFORM, btnOk);
+
+
+            });
+
+            // Confirmation Message
+            POSMessage.showConfirmationMessage(rootPane, "Do you really want to void \nthe transaction?"
+                    , "Please confirm", POSMessage.MessageType.ERROR, btnNo, btnYes);
         }
 
     }

@@ -244,7 +244,7 @@ public class Item extends RecursiveTreeObject<Item> implements CacheWriter {
 
             // Confirmation Message
             POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete), "Do you really want to delete selected\nitem?"
-                    , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
+                    , "Please confirm", POSMessage.MessageType.ERROR, btnNo, btnYes);
         });
 
     }
