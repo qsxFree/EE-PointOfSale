@@ -53,6 +53,8 @@ public class POSReturn extends POSCashier implements Initializable {
 
     @FXML
     private TextField tfQuantity;
+    @FXML
+    private TextField tfTransaction;
 
     @FXML
     private Label lblTotal;
@@ -306,39 +308,43 @@ public class POSReturn extends POSCashier implements Initializable {
         sceneManipulator.closeDialog();
     }
     private Item item = null;
-    private int quantity = 0,orderID = 0;
+    private int quantity = 0,orderID = 0,secretID=0;
     private double toBeReturn = 0d;
     private final void scanOrderedItem() throws SQLException {
-        sql = "Select itemID,Quantity,orderID,subtotal  from orderitem" +
-                " where orderID in (Select TypeID from Transaction where Type = 'Retail' and customerID = "+customerID+");";
+        item = null;
+        quantity=0;
+        secretID=0;
+        sql = "Select typeID from transaction where transactionID = "+tfTransaction.getText();
         misc.dbHandler.startConnection();
         ResultSet result =  misc.dbHandler.execQuery(sql);
+        if (result.next()){
+            orderID= result.getInt("typeID");
+            misc.dbHandler.startConnection();
+        }else{
+            createStandardMessage(rootPane,"Invalid Value","You've entered an invalid\ntranscation number", POSMessage.MessageType.ERROR);
+            misc.dbHandler.closeConnection();
+            return;
+        }
+
+        sql = "Select itemID,quantity,subtotal from orderitem where orderID ="+orderID+"";
+        misc.dbHandler.startConnection();
+        result =  misc.dbHandler.execQuery(sql);
         while (result.next()){
-            tfQuantity.setText(result.getInt("Quantity")+"");
-            double total = Integer.parseInt(tfQuantity.getText())*Double.parseDouble(lblPrice.getText());
-            lblTotal.setText(String.valueOf(total));
+            quantity = result.getInt("quantity");
+            secretID = result.getInt("itemID");
             allItem.forEach(e->{
-                try {
-                    if (e.getItemCode().equals(tfProductCode.getText())){
-                        if (e.getItemID()==result.getInt("itemID")){
-                            item = e;
-                            quantity = result.getInt("Quantity");
-                            orderID = result.getInt("orderID");
-                            toBeReturn = result.getDouble("subtotal");
-                        }
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+                if (e.getItemID()==secretID)
+                    if (e.getItemCode().equals(tfProductCode.getText()))
+                        item = e;
             });
         }
+
         if (item!=null){
             lblName.setText(item.getItemName());
             tfQuantity.setText(quantity+"");
             lblPrice.setText(item.getItemPrice()+"");
             double total = Integer.parseInt(tfQuantity.getText())*Double.parseDouble(lblPrice.getText());
             lblTotal.setText(String.valueOf(total));
-            System.out.println(orderID);
         }else{
             createStandardMessage(rootPane,"Invalid Item","There's no such item from\ncustomer's logs", POSMessage.MessageType.ERROR);
         }
