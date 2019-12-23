@@ -13,77 +13,88 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
-import main.java.data.CacheWriter;
 import main.java.data.entity.SystemLog;
+import main.java.data.entity.Transactions;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.net.URL;
 import java.sql.ResultSet;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class POSSystemLogs implements Initializable {
+public class POSTransactionLogs implements Initializable {
 
     protected static SceneManipulator sceneManipulator = new SceneManipulator();
     protected static MiscInstances misc = new MiscInstances();
-    protected static ObservableList<SystemLog> logs = FXCollections.observableArrayList();
+    protected static ObservableList<Transactions> logs = FXCollections.observableArrayList();
     private static ArrayList allItem = new ArrayList();
+
     @FXML
     private StackPane rootPane;
+
     @FXML
     private JFXButton btnHome;
+
     @FXML
-    private ComboBox<String> cbUser;
+    private TextField tfTransac;
+
     @FXML
     private ComboBox<String> cbType;
+
     @FXML
-    private ComboBox<String> cbAction;
+    private ComboBox<String> cbUser;
+
     @FXML
     private DatePicker dpDate;
+
     @FXML
     private JFXButton btnSearch;
+
     @FXML
     private Label lblResult;
+
     @FXML
     private Label lblAll;
+
     @FXML
     private JFXButton btnSave;
+
     @FXML
-    private JFXTreeTableView<SystemLog> ttvLogTable;
+    private JFXTreeTableView<Transactions> ttvLogTable;
+
     @FXML
-    private TreeTableColumn<SystemLog, Integer> chLogID;
+    private TreeTableColumn<Transactions, Integer> chTransactionID;
+
     @FXML
-    private TreeTableColumn<SystemLog, String> chType;
+    private TreeTableColumn<Transactions, String>  chType;
+
     @FXML
-    private TreeTableColumn<SystemLog, String> chEvent;
+    private TreeTableColumn<Transactions, String>  chUser;
+
     @FXML
-    private TreeTableColumn<SystemLog, String> chDate;
+    private TreeTableColumn<Transactions, String>  chCustomer;
+
     @FXML
-    private TreeTableColumn<SystemLog, String> chUser;
+    private TreeTableColumn<Transactions, String>  chDate;
+
     @FXML
-    private TreeTableColumn<SystemLog, JFXButton> chAction;
+    private TreeTableColumn<Transactions, Integer> chSourceId;
+
     @FXML
-    private TreeTableColumn<SystemLog, String> chReference;
-    @FXML
-    private TextField tfReferencedID;
+    private TreeTableColumn<Transactions, JFXButton> chAction;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        BackgroundProcesses.populateComboFromFile("load-sl-users", cbUser);
         queryAllItems();
         loadTable();
-        BackgroundProcesses.populateComboFromFile("load-sl-users", cbUser);
-        BackgroundProcesses.populateComboFromFile("load-sl-type", cbType);
-        BackgroundProcesses.populateComboFromFile("load-sl-all-action", cbAction);
-
     }
 
     @FXML
     void btnHomeOnAction(ActionEvent event) {
-        sceneManipulator.changeScene(rootPane, "POSDashboard", "Dashboard");
+
     }
 
     @FXML
@@ -93,39 +104,26 @@ public class POSSystemLogs implements Initializable {
 
     @FXML
     void btnSearchOnAction(ActionEvent event) {
-        System.out.println(dpDate.getValue().format(DateTimeFormatter.ofPattern(BackgroundProcesses.DATE_FORMAT)));
+
     }
 
-
-    private void loadTable() {
-
-        chLogID.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, Integer>("logID"));
-        chType.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, String>("type"));
-        chEvent.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, String>("eventAction"));
-        chDate.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, String>("date"));
-        chUser.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, String>("userID"));
-        chReference.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, String>("referencedID"));
-        chAction.setCellValueFactory(new TreeItemPropertyValueFactory<SystemLog, JFXButton>("btnView"));
-        TreeItem<SystemLog> dataItem = new RecursiveTreeItem<SystemLog>(logs, RecursiveTreeObject::getChildren);
-        ttvLogTable.setRoot(dataItem);
-        ttvLogTable.setShowRoot(false);
-    }
 
     protected void queryAllItems() {
         logs.clear();
-        String sql = "Select * from systemlogs";
+        String sql = "Select * from Transaction";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
         try {
-            SystemLog log;
+            Transactions log;
             while (result.next()) {
-                log = new SystemLog(result.getInt("logID")
-                        , result.getString("type")
-                        , result.getString("eventAction")
-                        , result.getString("date")
-                        , result.getString("userID")
-                        , result.getString("referencedID")
-                        , new JFXButton("View"));
+                log = new Transactions(result.getInt("transactionID")
+                        ,result.getString("type")
+                        ,result.getString("userID")
+                        ,result.getString("customerID")
+                        ,result.getInt("typeID")
+                        ,result.getString("date")
+                        ,result.getString("time")
+                        ,new JFXButton("View"));
                 log.setManipulator(sceneManipulator);
                 createListButton(log);
                 logs.add(log);
@@ -140,9 +138,22 @@ public class POSSystemLogs implements Initializable {
         lblAll.setText(String.valueOf(allItem.size()));
     }
 
+    private void loadTable() {
+
+        chTransactionID.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, Integer>("transactionID"));
+        chSourceId.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, Integer>("typeID"));
+        chType.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, String>("type"));
+        chUser.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, String>("user"));
+        chCustomer.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, String>("customer"));
+        chDate.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, String>("date"));
+        chAction.setCellValueFactory(new TreeItemPropertyValueFactory<Transactions, JFXButton>("btnView"));
+        TreeItem<Transactions> dataItem = new RecursiveTreeItem<Transactions>(logs, RecursiveTreeObject::getChildren);
+        ttvLogTable.setRoot(dataItem);
+        ttvLogTable.setShowRoot(false);
+    }
 
     private void createListButton(RecursiveTreeObject src) {
-        SystemLog log = (SystemLog) src;
+        Transactions log = (Transactions) src;
         log.getBtnView().setStyle("-fx-background-color:#1ca8d6;" +
                 "-fx-border-radius: 5px;" +
                 "-fx-border-color:#1994bd;" +
@@ -152,7 +163,5 @@ public class POSSystemLogs implements Initializable {
             //log.getManipulator().openDialog((StackPane) BackgroundProcesses.getRoot(log.getBtnView()), "POSRestock");
         });
     }
-
-
 
 }
