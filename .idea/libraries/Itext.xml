@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="Itext">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/itext/barcodes-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/forms-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/io-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/kernel-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/layout-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/pdfa-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/pdftest-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/sign-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/styled-xml-parser-7.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itext/svg-7.1.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
