@@ -123,20 +123,21 @@
                         </HBox>
                     </children>
                 </HBox>
-                <JFXTreeTableView fx:id="ttvLogTable" layoutX="15.0" layoutY="85.0" prefHeight="576.0" prefWidth="1107.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="88.0">
+                <JFXTreeTableView fx:id="ttvLogTable" layoutX="15.0" layoutY="117.0" prefHeight="547.0" prefWidth="1108.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="117.0">
                     <columns>
-                        <TreeTableColumn fx:id="chLogID" prefWidth="104.0" styleClass="center-cell-item" text="Log ID" />
-                        <TreeTableColumn fx:id="chType" prefWidth="264.0" styleClass="center-cell-item" text="Type" />
-                        <TreeTableColumn fx:id="chEvent" prefWidth="277.0" styleClass="center-cell-item" text="Event Action" />
-                        <TreeTableColumn fx:id="chDate" prefWidth="139.0" styleClass="center-cell-item" text="Date" />
-                        <TreeTableColumn fx:id="chUser" prefWidth="135.0" styleClass="center-cell-item" text="User" />
-                        <TreeTableColumn fx:id="chReference" prefWidth="135.0" styleClass="center-cell-item" text="Referenced ID" />
-                        <TreeTableColumn fx:id="chAction" prefWidth="135.0" styleClass="center-cell-item" text="Action" />
+                        <TreeTableColumn fx:id="chLogID" editable="false" prefWidth="104.0" styleClass="center-cell-item" text="Log ID" />
+                        <TreeTableColumn fx:id="chType" editable="false" prefWidth="264.0" styleClass="center-cell-item" text="Type" />
+                        <TreeTableColumn fx:id="chEvent" editable="false" prefWidth="277.0" styleClass="center-cell-item" text="Event Action" />
+                        <TreeTableColumn fx:id="chDate" editable="false" prefWidth="139.0" styleClass="center-cell-item" text="Date" />
+                        <TreeTableColumn fx:id="chUser" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="User" />
+                        <TreeTableColumn fx:id="chReference" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="Referenced ID" />
+                        <TreeTableColumn fx:id="chAction" editable="false" prefWidth="135.0" sortable="false" styleClass="center-cell-item" text="Action" />
                     </columns>
                     <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </JFXTreeTableView>
+            <JFXButton layoutX="15.0" layoutY="84.0" onAction="#btnSearchAllOnAction" prefHeight="26.0" prefWidth="107.0" styleClass="controls-container" text="Search All" />
 
             </children>
         </AnchorPane>

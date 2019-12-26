@@ -155,7 +155,7 @@ public class POSAddBalance extends POSCashier implements Initializable {
     }
 
     private void queryCard() {
-        String sql = "Select * from card where cardID='"+cardID+"'";
+        String sql = "Select * from card where cardID='"+cardID+"' and isActive = 1";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
 

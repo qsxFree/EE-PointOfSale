@@ -89,6 +89,11 @@ public class POSReturn extends POSCashier implements Initializable {
     @FXML
     void btnCancelOnAction(ActionEvent event) {
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
+        try{
+            Main.rfid.cancelOperation();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         sceneManipulator.closeDialog();
     }
 
@@ -143,7 +148,7 @@ public class POSReturn extends POSCashier implements Initializable {
 
     private void scanCard(){
         try {
-            Main.rfid.scanBasic();
+            Main.rfid.scanExtensive();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 Scanner scan = null;
                 try {
@@ -153,7 +158,7 @@ public class POSReturn extends POSCashier implements Initializable {
                 }
                 if (scan.hasNextLine()){
                     String scanned[] = scan.nextLine().split("=");
-                    if (scanned[0].equals("scanBasic")){
+                    if (scanned[0].equals("scanExtensive")){
                         cardID = scanned[1];
                         queryCard();
                         Main.rfid.clearCache();
@@ -177,7 +182,7 @@ public class POSReturn extends POSCashier implements Initializable {
     }
 
     private void queryCard() {
-        String sql = "Select * from card where cardID='"+cardID+"'";
+        String sql = "Select * from card where cardID='"+cardID+"' and isActive = 1";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
 

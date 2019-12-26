@@ -66,7 +66,7 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
         try{
             Main.rfid.cancelOperation();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
 
         sceneManipulator.closeDialog();

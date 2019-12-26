@@ -13,15 +13,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
-import main.java.data.entity.SystemLog;
 import main.java.data.entity.Transactions;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
 import java.net.URL;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 public class POSTransactionLogs implements Initializable {
 
@@ -88,6 +89,7 @@ public class POSTransactionLogs implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         BackgroundProcesses.populateComboFromFile("load-sl-users", cbUser);
+        BackgroundProcesses.populateComboFromFile("load-tl-type",cbType);
         queryAllItems();
         loadTable();
     }
@@ -103,8 +105,36 @@ public class POSTransactionLogs implements Initializable {
     }
 
     @FXML
-    void btnSearchOnAction(ActionEvent event) {
+    void btnSearchAllOnAction(ActionEvent event){
+        logs.clear();
+        logs.addAll(allItem);
+        lblResult.setText(logs.size()+"");
+    }
 
+    @FXML
+    void btnSearchOnAction(ActionEvent event) {
+        logs.clear();
+        logs.addAll(allItem);
+        if (dpDate.getValue()!=null){
+            searchFilter(e->
+                    e.getDate()
+                            .equals(dpDate.getValue().format(DateTimeFormatter.ofPattern(BackgroundProcesses.DATE_FORMAT))));
+        }
+        if (comboHasSelected(cbUser)){
+            searchFilter(e->
+                    e.getUser().split(" : ")[0]
+                            .contains(
+                                    cbUser.getSelectionModel().getSelectedItem().split(",")[0]));
+        }
+        if (comboHasSelected(cbType)){
+            searchFilter(e->e.getType().equals(cbType.getSelectionModel().getSelectedItem()));
+        }
+        if (!tfTransac.getText().equals("")){
+            searchFilter(e->
+                    String.valueOf(e.getTransactionID()).contains(tfTransac.getText())
+                    || e.getCustomer().contains(tfTransac.getText()));
+        }
+        lblResult.setText(logs.size()+"");
     }
 
 
@@ -163,5 +193,20 @@ public class POSTransactionLogs implements Initializable {
             //log.getManipulator().openDialog((StackPane) BackgroundProcesses.getRoot(log.getBtnView()), "POSRestock");
         });
     }
+
+    private boolean comboHasSelected(ComboBox box){
+        return !(box.getSelectionModel().getSelectedIndex()== -1 || box.getSelectionModel().getSelectedItem().equals("---"));
+    }
+
+    private void searchFilter(Predicate<Transactions> d){
+        ArrayList result = new ArrayList() ;
+        logs.stream()
+                .filter(d).forEach(e->
+                result.add(e)
+        );
+        logs.clear();
+        logs.addAll(result);
+    }
+
 
 }

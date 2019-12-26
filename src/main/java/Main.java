@@ -46,7 +46,7 @@ public class Main extends Application {
         });
         stage.show();
 
-
+        Main.rfid.gsmSendSMS("639475959164","Message Sample");
     }
 
     public static void main(String[] args) {

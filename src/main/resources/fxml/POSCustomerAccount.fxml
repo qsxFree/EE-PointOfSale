@@ -67,14 +67,14 @@
             </VBox>
             <JFXTreeTableView fx:id="ttvCustomer" prefHeight="562.0" prefWidth="1098.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="96.80000000000007">
                <columns>
-                  <TreeTableColumn fx:id="chCustomerID" prefWidth="124.0" styleClass="center-cell-item" text="Customer ID" />
-                  <TreeTableColumn fx:id="chCustomerName" prefWidth="189.0" styleClass="center-cell-item" text="Customer Name" />
-                  <TreeTableColumn fx:id="chAddress" prefWidth="364.0" styleClass="center-cell-item" text="Address" />
-                  <TreeTableColumn fx:id="chSex" minWidth="0.0" prefWidth="104.0" styleClass="center-cell-item" text="Sex" />
-                  <TreeTableColumn fx:id="chMobileNumber" prefWidth="139.0" styleClass="center-cell-item" text="Mobile Number" />
-                  <TreeTableColumn fx:id="chEmail" prefWidth="135.0" styleClass="center-cell-item" text="Email" />
-                  <TreeTableColumn fx:id="chCardInfo" prefWidth="135.0" styleClass="center-cell-item" text="Card" />
-                  <TreeTableColumn fx:id="chAction" prefWidth="135.0" styleClass="center-cell-item" text="Action" />
+                  <TreeTableColumn fx:id="chCustomerID" editable="false" prefWidth="124.0" styleClass="center-cell-item" text="Customer ID" />
+                  <TreeTableColumn fx:id="chCustomerName" editable="false" prefWidth="189.0" styleClass="center-cell-item" text="Customer Name" />
+                  <TreeTableColumn fx:id="chAddress" editable="false" prefWidth="364.0" styleClass="center-cell-item" text="Address" />
+                  <TreeTableColumn fx:id="chSex" editable="false" minWidth="0.0" prefWidth="104.0" styleClass="center-cell-item" text="Sex" />
+                  <TreeTableColumn fx:id="chMobileNumber" editable="false" prefWidth="139.0" styleClass="center-cell-item" text="Mobile Number" />
+                  <TreeTableColumn fx:id="chEmail" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="Email" />
+                  <TreeTableColumn fx:id="chCardInfo" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="Card" />
+                  <TreeTableColumn fx:id="chAction" editable="false" prefWidth="135.0" sortable="false" styleClass="center-cell-item" text="Action" />
                </columns>
                <columnResizePolicy>
                   <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

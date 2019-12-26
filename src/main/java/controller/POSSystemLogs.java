@@ -1,6 +1,7 @@
 package main.java.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
@@ -25,6 +26,7 @@ import java.sql.ResultSet;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 public class POSSystemLogs implements Initializable {
 
@@ -92,8 +94,39 @@ public class POSSystemLogs implements Initializable {
     }
 
     @FXML
+    void btnSearchAllOnAction(ActionEvent event){
+        logs.clear();
+        logs.addAll(allItem);
+        lblResult.setText(logs.size()+"");
+    }
+
+    @FXML
     void btnSearchOnAction(ActionEvent event) {
-        System.out.println(dpDate.getValue().format(DateTimeFormatter.ofPattern(BackgroundProcesses.DATE_FORMAT)));
+        logs.clear();
+        logs.addAll(allItem);
+        if (dpDate.getValue()!=null){
+            searchFilter(e->
+                    e.getDate()
+                            .equals(dpDate.getValue().format(DateTimeFormatter.ofPattern(BackgroundProcesses.DATE_FORMAT))));
+        }
+        if (comboHasSelected(cbUser)){
+            searchFilter(e->
+                    e.getUserID().split(" : ")[0]
+                            .contains(
+                                    cbUser.getSelectionModel().getSelectedItem().split(",")[0]));
+        }
+        if (comboHasSelected(cbAction)){
+            searchFilter(e->
+                e.getEventAction().equals(cbAction.getSelectionModel().getSelectedItem())
+            );
+        }
+        if (comboHasSelected(cbType)){
+            searchFilter(e->e.getType().equals(cbType.getSelectionModel().getSelectedItem()));
+        }
+        if (!tfReferencedID.getText().equals("")){
+            searchFilter(e->e.getReferencedID().contains(tfReferencedID.getText()));
+        }
+        lblResult.setText(logs.size()+"");
     }
 
 
@@ -153,6 +186,20 @@ public class POSSystemLogs implements Initializable {
         });
     }
 
+    private boolean comboHasSelected(ComboBox box){
+        return !(box.getSelectionModel().getSelectedIndex()== -1 || box.getSelectionModel().getSelectedItem().equals("---"));
+    }
+
+
+    private void searchFilter(Predicate<SystemLog> d){
+        ArrayList result = new ArrayList() ;
+        logs.stream()
+                .filter(d).forEach(e->
+                result.add(e)
+        );
+        logs.clear();
+        logs.addAll(result);
+    }
 
 
 }

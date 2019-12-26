@@ -63,7 +63,7 @@ public class BackgroundProcesses {
 
     public static void populateComboFromFile(String fileName, ComboBox cb) {
         try {
-            cb.getSelectionModel().clearSelection();
+            cb.getItems().clear();
             Scanner scan = new Scanner(new FileInputStream("etc\\loader\\" + fileName + ".file"));
             do {
                 cb.getItems().add(scan.nextLine());
