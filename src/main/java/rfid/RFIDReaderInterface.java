@@ -29,7 +29,7 @@ public class RFIDReaderInterface {
     private int smsConfirmationNet = 0;
 
     public RFIDReaderInterface() {
-        /**x`
+        /**
          * This constructor will prepare and establish a connection to allow you to communicate
          * with the Arduino with ease.
          */
@@ -216,6 +216,12 @@ public class RFIDReaderInterface {
         smsConfirmationNet = 2;
     }
 
+    public void gsmPowerOff() {
+        sendByte(145);
+        lastCommand = 145;
+        writeDataToCache = true;
+    }
+
     public void challenge(String passcode) {
         sendByte(139);
         sendByte(2);
@@ -241,6 +247,12 @@ public class RFIDReaderInterface {
         time = System.currentTimeMillis();
     }
 
+    public void gsmPowerOn() {
+        sendByte(144);
+        lastCommand = 144;
+        writeDataToCache = true;
+    }
+
     private boolean translateCacheData(byte data[]) {
         boolean returnValue = true;
 
@@ -264,14 +276,17 @@ public class RFIDReaderInterface {
         else if (lastCommand == 134) {
             switch ((char)data[0]) {
                 case '0':
-                    writeToCache("gsmStatus=0", "etc\\status\\rfid-gsm-status.file");
+                    writeToCache("gsmStatus=0", RFIDcacheFilePath);
                     break;
                 case '1':
-                    writeToCache("gsmStatus=1", "etc\\status\\rfid-gsm-status.file");
+                    writeToCache("gsmStatus=1", RFIDcacheFilePath);
+                    break;
+                case '2':
+                    writeToCache("gsmStatus=2", RFIDcacheFilePath);
                     break;
                 default:
                     System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for checkGSM()");
-                    writeToCache("ERR:134", "etc\\status\\rfid-gsm-status.file");
+                    writeToCache("ERR:134", RFIDcacheFilePath);
                     returnValue = false;
                     break;
             }
@@ -368,6 +383,38 @@ public class RFIDReaderInterface {
                     break;
             }
         }
+        // Toggle GSM Power
+        else if (lastCommand == 144) {
+            switch ((char)data[0]) {
+                case '0':
+                    writeToCache("gsmPowerOn=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("gsmPowerOn=1", RFIDcacheFilePath);
+                    break;
+                default:
+                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for gsmPowerOn()");
+                    writeToCache("ERR:144", RFIDcacheFilePath);
+                    returnValue = false;
+                    break;
+            }
+        }
+        // Reset GSM Module
+        else if (lastCommand == 145) {
+            switch ((char)data[0]) {
+                case '0':
+                    writeToCache("gsmPowerOff=0", RFIDcacheFilePath);
+                    break;
+                case '1':
+                    writeToCache("gsmPowerOff=1", RFIDcacheFilePath);
+                    break;
+                default:
+                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for gsmOff()");
+                    writeToCache("ERR:144", RFIDcacheFilePath);
+                    returnValue = false;
+                    break;
+            }
+        }
 
         if (smsConfirmationNet > 0) {
             smsConfirmationNet = 0;
@@ -407,6 +454,7 @@ public class RFIDReaderInterface {
     public void disconnect() {
         selectedPort.closePort();
     }
+
     public void clearCache(){
         writeToCache("",RFIDcacheFilePath);
     }
