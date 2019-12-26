@@ -13,5 +13,6 @@
     <orderEntry type="library" exported="" name="JSerialComm" level="project" />
     <orderEntry type="library" name="itext" level="project" />
     <orderEntry type="library" name="Itext" level="project" />
+    <orderEntry type="library" name="SL4J" level="project" />
   </component>
 </module>

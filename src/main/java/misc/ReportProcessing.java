@@ -1,4 +1,7 @@
 package main.java.misc;
 
-public class ReportProcessing {
+
+
+public interface ReportProcessing {
+
 }

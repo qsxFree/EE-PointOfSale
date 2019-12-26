@@ -1,5 +1,11 @@
 package main.java.controller;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.UnitValue;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -14,17 +20,19 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
+import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.data.entity.SystemLog;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
@@ -34,6 +42,10 @@ public class POSSystemLogs implements Initializable {
     protected static MiscInstances misc = new MiscInstances();
     protected static ObservableList<SystemLog> logs = FXCollections.observableArrayList();
     private static ArrayList allItem = new ArrayList();
+    private PdfWriter writer;
+    private PdfDocument pdfDocument;
+    private Document document;
+
     @FXML
     private StackPane rootPane;
     @FXML
@@ -88,9 +100,81 @@ public class POSSystemLogs implements Initializable {
         sceneManipulator.changeScene(rootPane, "POSDashboard", "Dashboard");
     }
 
+    private File file;
     @FXML
-    void btnSaveOnAction(ActionEvent event) {
+    void btnSaveOnAction(ActionEvent event) throws IOException {
+        int fileNum = 1;
+        Date d = new Date();
+        SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
+        file = new File("C:/POS-Reports/System Logs/SystemLogs("+date.format(d)+"-)"+fileNum+".pdf");
+        do {
 
+            if (file.exists()){
+                fileNum++;
+                file = new File("C:/POS-Reports/System Logs/SystemLogs("+date.format(d)+"-)"+fileNum+".pdf");
+                continue;
+            }else{
+                file.createNewFile();
+                break;
+            }
+        }while (true);
+        writer = new PdfWriter(file);
+        pdfDocument = new PdfDocument(writer);
+        pdfDocument.addNewPage();
+        document = new Document(pdfDocument);
+        Paragraph title = new Paragraph("System Logs");
+        title.setFontSize(20);
+        title.setBold();
+
+
+        Paragraph metadata = new Paragraph("Date : "+date.format(d));
+        metadata.setFontSize(10);
+        metadata.setItalic();
+
+        Paragraph results = new Paragraph("Results : "+lblResult.getText()+"\t\t\tAll : "+lblAll.getText());
+        results.setFontSize(10);
+        results.setItalic();
+
+        Table table = new Table(UnitValue.createPercentArray(6)).useAllAvailableWidth();
+        table.setFontSize(11);
+        table.addHeaderCell("Log ID");
+        table.addHeaderCell("Type");
+        table.addHeaderCell("Event Action");
+        table.addHeaderCell("Date");
+        table.addHeaderCell("User");
+        table.addHeaderCell("Referenced ID");
+        for (SystemLog logs:logs) {
+            table.addCell(logs.getLogID()+"");
+            table.addCell(logs.getType());
+            table.addCell(logs.getEventAction());
+            table.addCell(logs.getDate());
+            table.addCell(logs.getUserID());
+            table.addCell(logs.getReferencedID());
+        }
+        document.add(title);
+        document.add(metadata);
+        document.add(table);
+        document.add(results);
+        document.close();
+
+        JFXButton btnNo = new JFXButton("Close");
+        btnNo.setOnAction(ev -> POSMessage.closeMessage());
+
+        JFXButton btnYes = new JFXButton("Open");
+        btnYes.setOnAction(ev -> {
+            try {
+                Runtime.getRuntime().exec("explorer.exe /select," + file.getPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            POSMessage.closeMessage();
+        });
+        btnYes.setStyle("-fx-background-color:#1ca8d6;" +
+                "-fx-border-radius: 5px;" +
+                "-fx-text-fill:#ffffff;");
+
+        POSMessage.showConfirmationMessage(rootPane, "Report has been saved"
+                , "Saved", POSMessage.MessageType.INFORM, btnNo, btnYes);
     }
 
     @FXML
