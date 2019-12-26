@@ -128,7 +128,7 @@
                   <TreeTableColumn fx:id="chUser" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="User" />
                   <TreeTableColumn fx:id="chCustomer" editable="false" prefWidth="277.0" styleClass="center-cell-item" text="Customer" />
                   <TreeTableColumn fx:id="chDate" editable="false" prefWidth="139.0" styleClass="center-cell-item" text="Date" />
-                  <TreeTableColumn fx:id="chSourceId" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="Source ID" />
+                  <TreeTableColumn fx:id="chSourceId" editable="false" prefWidth="135.0" styleClass="center-cell-item" text="Type ID" />
                   <TreeTableColumn fx:id="chAction" editable="false" prefWidth="135.0" sortable="false" styleClass="center-cell-item" text="Action" />
                </columns>
                <columnResizePolicy>

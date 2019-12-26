@@ -29,6 +29,7 @@ import main.java.misc.SceneManipulator;
 import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -266,7 +267,47 @@ public class POSSystemLogs implements Initializable {
                 "-fx-text-fill:#ffffff;");
 
         log.getBtnView().setOnAction(e -> {
-            //log.getManipulator().openDialog((StackPane) BackgroundProcesses.getRoot(log.getBtnView()), "POSRestock");
+            try {
+                BufferedWriter bwriter = new BufferedWriter(new FileWriter("etc\\cache-sl-view.file"));
+                String str = "";
+                String sql ;
+                if (log.getType().equals("Stock Management")){
+                    sql = "Select itemName from item where itemCode = '"+log.getReferencedID()+"'";
+                    misc.dbHandler.startConnection();
+                    ResultSet result = misc.dbHandler.execQuery(sql);
+                    result.next();
+                    str+=log.getLogID()+"\n"+
+                            log.getType()+"\n"+
+                            log.getEventAction()+"\n"+
+                            log.getDate()+"\n"+
+                            log.getUserID()+"\n"+
+                            log.getReferencedID()+"\n"+
+                            result.getString("itemName");
+                    misc.dbHandler.closeConnection();
+                    bwriter.write(str);
+                    bwriter.close();
+                }else if(log.getType().equals("Customer Management")){
+                    sql = "Select firstName,lastName from customer where customerID = "+log.getReferencedID()+"";
+                    misc.dbHandler.startConnection();
+                    ResultSet result = misc.dbHandler.execQuery(sql);
+                    result.next();
+                    str+=log.getLogID()+"\n"+
+                            log.getType()+"\n"+
+                            log.getEventAction()+"\n"+
+                            log.getDate()+"\n"+
+                            log.getUserID()+"\n"+
+                            log.getReferencedID()+"\n"+
+                            result.getString("firstName")+" "+result.getString("lastName").charAt(0)+".";
+                    misc.dbHandler.closeConnection();
+                    bwriter.write(str);
+                    bwriter.close();
+                }
+                sceneManipulator.openDialog(rootPane,"POSSystemLogsView");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 

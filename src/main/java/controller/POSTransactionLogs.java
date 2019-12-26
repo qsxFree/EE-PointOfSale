@@ -24,10 +24,13 @@ import main.java.data.entity.Transactions;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.SceneManipulator;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -276,7 +279,44 @@ public class POSTransactionLogs implements Initializable {
                 "-fx-text-fill:#ffffff;");
 
         log.getBtnView().setOnAction(e -> {
-            //log.getManipulator().openDialog((StackPane) BackgroundProcesses.getRoot(log.getBtnView()), "POSRestock");
+            try {
+                BufferedWriter bwriter = new BufferedWriter(new FileWriter("etc\\cache-tl-view.file"));
+                String str = "";
+                String sql ;
+                if (log.getType().equals("Retail")){
+                    sql = "Select * from orders where orderID = "+log.getTypeID()+"";
+                    misc.dbHandler.startConnection();
+                    ResultSet result = misc.dbHandler.execQuery(sql);
+                    result.next();
+                    str += log.getTransactionID()+"\n"+
+                            log.getType()+"\n"+
+                            log.getUser()+"\n"+
+                            log.getCustomer()+"\n"+
+                            log.getDate()+"\n"+
+                            log.getTime()+"\n"+
+                            log.getTypeID()+"\n"+
+                            result.getInt("itemCount")+"\n"+
+                            result.getInt("typeCount")+"\n"+
+                            result.getDouble("subTotal")+"\n"+
+                            result.getDouble("discount")+"\n"+
+                            result.getDouble("total")+"\n";
+                    misc.dbHandler.closeConnection();
+                    bwriter.write(str);
+                    bwriter.close();
+                    sceneManipulator.openDialog(rootPane,"POSTransactionRetailView");
+                }
+
+
+
+
+
+
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
