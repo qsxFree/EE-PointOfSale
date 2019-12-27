@@ -202,7 +202,7 @@ public class POSCashier implements Initializable {
 
     @FXML
     protected void btnHomeOnAction(ActionEvent event) {
-        sceneManipulator.changeScene(rootPane,"POSDashboard", "Dashboard");
+        sceneManipulator.changeScene(rootPane,"POSDashboard", " | Dashboard");
     }
 
     @FXML

@@ -54,7 +54,7 @@
                               </ImageView>
                               <ImageView fx:id="ivGsmSignal" fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../img/pos-connection-medium.png" />
+                                    <Image url="@../img/pos-connection-dc.png" />
                                  </image>
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -79,7 +79,29 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" />
                      </BorderPane.margin>
                      <children>
-                        <JFXButton focusTraversable="false" onAction="#btnSignOutOnAction" prefHeight="46.0" prefWidth="118.0" styleClass="controls-container" text="Sign Out">
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="lblActive" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="469.0" text="Active Customers :">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lblAvailable" prefHeight="30.0" prefWidth="462.0" text="Available Products : ">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lblTotalValue" layoutX="10.0" layoutY="40.0" prefHeight="30.0" prefWidth="469.0" text="Total Value of Products : ">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <JFXButton focusTraversable="false" onAction="#btnSignOutOnAction" prefHeight="46.0" prefWidth="104.0" styleClass="controls-container" text="Sign Out">
                            <HBox.margin>
                               <Insets right="15.0" />
                            </HBox.margin>

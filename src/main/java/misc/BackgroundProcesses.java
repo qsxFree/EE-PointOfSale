@@ -72,4 +72,20 @@ public class BackgroundProcesses {
             e.printStackTrace();
         }
     }
+
+    public static String getStoreName(){
+        Scanner scan = null;
+        try {
+            scan = new Scanner(new FileInputStream("etc\\initial.file"));
+            if (scan.hasNextLine()){
+                return  scan.nextLine();
+            }else{
+                return "";
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+       return "";
+    }
 }

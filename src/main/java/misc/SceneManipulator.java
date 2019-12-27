@@ -26,7 +26,7 @@ public class SceneManipulator {
     public void changeScene(Pane rootPane,String fxmlName,String title){
         root =  getFXML(fxmlName);
         stage = getStage(rootPane);
-        stage.setTitle(title);
+        stage.setTitle(BackgroundProcesses.getStoreName()+title);
 
         boolean isOnFull = stage.isFullScreen();
         boolean isMaximized = stage.isMaximized();

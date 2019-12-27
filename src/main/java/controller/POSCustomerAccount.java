@@ -104,7 +104,7 @@ public class POSCustomerAccount implements Initializable {
 
     @FXML
     void btnHomeOnAction(ActionEvent event) {
-        sceneManipulator.changeScene(rootPane,"POSDashboard","Dashboard");
+        sceneManipulator.changeScene(rootPane,"POSDashboard"," | Dashboard");
     }
 
     @FXML

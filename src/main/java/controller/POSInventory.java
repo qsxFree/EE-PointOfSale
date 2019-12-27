@@ -113,7 +113,7 @@ public class POSInventory implements Initializable, CacheWriter {
 
     @FXML
     void btnHomeOnAction(ActionEvent event) {
-        sceneManipulator.changeScene(rootPane, "POSDashboard", "POS | Dashboard");
+        sceneManipulator.changeScene(rootPane, "POSDashboard", " | Dashboard");
     }
 
     @FXML
