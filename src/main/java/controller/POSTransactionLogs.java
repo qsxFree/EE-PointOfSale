@@ -304,13 +304,49 @@ public class POSTransactionLogs implements Initializable {
                     bwriter.write(str);
                     bwriter.close();
                     sceneManipulator.openDialog(rootPane,"POSTransactionRetailView");
+                }else if(log.getType().equals("Item Return")){
+                    sql = "select returnitem.returnID as iid,item.ItemName as itemName, returnitem.reason as reason,returnitem.Quantity as Quantity, returnitem.totalAmount as total \n" +
+                            "FROM returnitem \n" +
+                            "JOIN item on returnitem.itemID = item.itemID \n" +
+                            "where returnID = "+log.getTypeID()+"";
+                    misc.dbHandler.startConnection();
+                    ResultSet result = misc.dbHandler.execQuery(sql);
+                    result.next();
+                    str += log.getTransactionID()+"\n"+
+                            log.getType()+"\n"+
+                            log.getUser()+"\n"+
+                            log.getCustomer()+"\n"+
+                            log.getDate()+"\n"+
+                            log.getTime()+"\n"+
+                            log.getTypeID()+"\n"+
+                            result.getInt("iid")+"\n"+
+                            result.getString("itemName")+"\n"+
+                            result.getString("reason")+"\n"+
+                            result.getInt("Quantity")+"\n"+
+                            result.getDouble("total")+"\n";
+                    misc.dbHandler.closeConnection();
+                    bwriter.write(str);
+                    bwriter.close();
+                    sceneManipulator.openDialog(rootPane,"POSTransactionReturn");
+                }else if(log.getType().equals("Add Balance")){
+                    sql = "Select * from recredit where recreditID = "+log.getTypeID()+"";
+                    misc.dbHandler.startConnection();
+                    ResultSet result = misc.dbHandler.execQuery(sql);
+                    result.next();
+                    str += log.getTransactionID()+"\n"+
+                            log.getType()+"\n"+
+                            log.getUser()+"\n"+
+                            log.getCustomer()+"\n"+
+                            log.getDate()+"\n"+
+                            log.getTime()+"\n"+
+                            log.getTypeID()+"\n"+
+                            result.getDouble("Amount")+"\n"+
+                            result.getString("cardID");
+                    misc.dbHandler.closeConnection();
+                    bwriter.write(str);
+                    bwriter.close();
+                    sceneManipulator.openDialog(rootPane,"POSTransactionAddBalance");
                 }
-
-
-
-
-
-
 
             } catch (IOException ex) {
                 ex.printStackTrace();

@@ -260,14 +260,15 @@ public class POSReturn extends POSCashier implements Initializable {
 
 
     private void updateCustomer(){
-        sql = "Update card set credits = "+subTotal+" where cardID = '"+cardID+"'";
+        //update card set card.credits =  ((Select card.credits from card where card.customerID=4)+500) where card.cardID='4
+        sql = "update card set card.credits =  ((Select card.credits from card where card.cardID='"+cardID+"')+"+item.getItemPrice()+") where card.cardID='"+cardID+"'";
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();
     }
 
     private int insertReturnItem() throws SQLException {
-        sql = "Insert into returnItem(itemID,reason,Quantity,totalAmount) values("+itemId+",'"+taReasons.getText()+"',"+tfQuantity.getText()+","+lblTotal.getText()+")";
+        sql = "Insert into returnItem(itemID,reason,Quantity,totalAmount) values("+item.getItemID()+",'"+taReasons.getText()+"',"+tfQuantity.getText()+","+lblTotal.getText()+")";
 
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
