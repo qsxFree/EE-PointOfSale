@@ -64,7 +64,7 @@ public class Main extends Application {
 
 
 
-        //Main.rfid.gsmSendSMS("639475959164","Message Sample");
+        //Main.rfid.gsmSendSMS("639955109622","Message Sample");
     }
 
     public static void main(String[] args) {

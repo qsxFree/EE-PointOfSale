@@ -184,6 +184,14 @@ public class RFIDReaderInterface {
         writeDataToCache = true;
     }
 
+    public void forceSendMessage(String message) {
+        sendByte(2);
+        for(char c: message.toCharArray()) {
+            sendByte((int)c);
+        }
+        sendByte(3);
+    }
+
     public void gsmSignal() {
         sendByte(135);
         lastCommand = 135;

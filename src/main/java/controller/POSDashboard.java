@@ -80,7 +80,7 @@ public class POSDashboard implements Initializable , CacheWriter {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         checkGsmSignal();
-        checkRFIDStatus();
+        //checkRFIDStatus();
         BackgroundProcesses.realTimeClock(lblDate);
         BackgroundProcesses.changeSecondaryFormStageStatus((short)2);
         writeToCache("etc\\loader\\load-sl-users.file");
@@ -109,6 +109,8 @@ public class POSDashboard implements Initializable , CacheWriter {
     @FXML
     void menuButtonsOnAction(ActionEvent event) {
         JFXButton selectedButton = (JFXButton) event.getSource();
+        gsmSignalThread.stop();
+        //rfidStatus.stop();
         if (selectedButton.equals(this.btnCashier)){
             manipulator.changeScene(rootPane,"POSCashier"," | Cashier");
         }else if (selectedButton.equals(this.btnCustomer)){
@@ -234,7 +236,7 @@ public class POSDashboard implements Initializable , CacheWriter {
 
                         ivRfidSignal.setImage(new Image(url));
                         rfidToolTip();
-                       // Main.rfid.clearStatusCache();
+                        Main.rfid.clearStatusCache();
                     }
                 }else{
                     String url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";

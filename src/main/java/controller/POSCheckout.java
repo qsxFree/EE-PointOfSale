@@ -118,10 +118,9 @@ public class POSCheckout extends POSCashier {
             try {
                 System.out.println(message);
                 System.out.println(intPhone);
-                /*
-                    Main.rfid.gsmSendSMS(intPhone,message);
-
-                 */
+                //Main.rfid.gsmSendSMS(intPhone,message);
+                //System.out.println("Forcing message sending");
+                //Main.rfid.forceSendMessage(message);
             }catch (Exception e){
                 e.printStackTrace();
             }
