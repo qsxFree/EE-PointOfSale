@@ -21,7 +21,7 @@
             </Label>
             <HBox alignment="CENTER" layoutY="59.0" prefHeight="168.0" prefWidth="523.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="115.0" prefWidth="463.0" style="-fx-text-fill: #ff6475;" styleClass="controls-container" text="OFFLINE" textFill="#ff6475">
+                  <Label fx:id="lblOffline" alignment="CENTER" prefHeight="115.0" prefWidth="463.0" style="-fx-text-fill: #ff6475;" styleClass="controls-container" text="OFFLINE" textFill="#ff6475">
                      <font>
                         <Font name="System Bold" size="37.0" />
                      </font>

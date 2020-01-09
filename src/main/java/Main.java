@@ -11,9 +11,6 @@ import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.rfid.RFIDReaderInterface;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Scanner;
 
 
 public class Main extends Application {
@@ -57,7 +54,7 @@ public class Main extends Application {
         }else{
             Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSInitialSetup.fxml"));
             stage.setScene(new Scene(root));
-            stage.setTitle("POS : Initial Setup");
+            stage.setTitle("POS | Initial Setup");
             stage.setResizable(false);
             stage.show();
         }

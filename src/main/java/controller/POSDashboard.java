@@ -79,6 +79,7 @@ public class POSDashboard implements Initializable , CacheWriter {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //TODO Uncomment status Checker
         checkGsmSignal();
         //checkRFIDStatus();
         BackgroundProcesses.realTimeClock(lblDate);
@@ -121,6 +122,8 @@ public class POSDashboard implements Initializable , CacheWriter {
             manipulator.changeScene(rootPane, "POSSystemLogs", " | System Logs");
         }else if (selectedButton.equals(this.btnTransaction)){
             manipulator.changeScene(rootPane, "POSTransactionLogs", " | Transaction Logs");
+        }else if (selectedButton.equals(this.btnAdmin)){
+            manipulator.changeScene(rootPane, "POSAdminPanel", " | Admin Panel");
         }
 
     }
@@ -206,7 +209,8 @@ public class POSDashboard implements Initializable , CacheWriter {
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //TODO Stacktrace : status : OFF
+                //ex.printStackTrace();
                 String url = DirectoryHandler.IMG+"pos-connection-dc.png";
 
                 ivGsmSignal.setImage(new Image(url));
