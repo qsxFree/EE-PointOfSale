@@ -96,6 +96,29 @@ public class POSDashboard implements Initializable , CacheWriter {
             ivAdmin.setImage(scan.nextLine().equals("1")
                     ? new Image(DirectoryHandler.IMG+"pos-admin.png")
                     : new Image(DirectoryHandler.IMG+"pos-admin-disable.png") );
+            String accessArray[] = scan.nextLine().split(",");
+            for (String access:accessArray) {
+                switch (access){
+                    case "cashier":
+                        btnCashier.setDisable(false);
+                        break;
+                    case "inventory":
+                        btnInventory.setDisable(false);
+                        break;
+                    case "customer":
+                        btnCustomer.setDisable(false);
+                        break;
+                    case "transaction":
+                        btnTransaction.setDisable(false);
+                        break;
+                    case "system":
+                        btnLogs.setDisable(false);
+                        break;
+                    case "admin":
+                        btnAdmin.setDisable(false);
+                        break;
+                }
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

@@ -21,6 +21,7 @@
                <columns>
                   <TreeTableColumn fx:id="chCustomerID" editable="false" prefWidth="124.0" styleClass="center-cell-item" text="User ID" />
                   <TreeTableColumn fx:id="chCustomerName" editable="false" prefWidth="497.6000061035156" styleClass="center-cell-item" text="Name" />
+                  <TreeTableColumn fx:id="chAccess" editable="false" prefWidth="497.6000061035156" styleClass="center-cell-item" text="Access" />
                   <TreeTableColumn fx:id="chAction" editable="false" minWidth="-Infinity" prefWidth="235.199951171875" sortable="false" styleClass="center-cell-item" text="Action" />
                </columns>
                <columnResizePolicy>

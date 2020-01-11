@@ -56,6 +56,7 @@ public class POSLogin implements Initializable, CacheWriter {
     private String fname = "";
     private String mi = "";
     private String lname = "";
+    private String access = "";
     private int accountType=0;
 
     @Override
@@ -80,6 +81,7 @@ public class POSLogin implements Initializable, CacheWriter {
                 mi = result.getString("middleInitial");
                 lname = result.getString("lastName");
                 accountType = result.getInt("accountType");
+                access = result.getString("access");
                 writeToCache("etc\\cache-user.file");
 
                 misc.dbHandler.closeConnection();
@@ -92,7 +94,7 @@ public class POSLogin implements Initializable, CacheWriter {
                 Timeline changeSceneThread = new Timeline(new KeyFrame(
                         Duration.seconds(1),
                         e -> {
-                            misc.sceneManipulator.changeScene(rootPane,"POSDashboard","Dashboard");
+                            misc.sceneManipulator.changeScene(rootPane,"POSDashboard"," | Dashboard");
                         })
                 );
                 changeSceneThread.setDelay(Duration.seconds(2));
@@ -143,6 +145,7 @@ public class POSLogin implements Initializable, CacheWriter {
         cacheData += "\n"+mi;
         cacheData += "\n"+lname;
         cacheData += "\n"+accountType;
+        cacheData += "\n"+access;
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile(file)));

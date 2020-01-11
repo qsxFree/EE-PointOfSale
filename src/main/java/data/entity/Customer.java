@@ -248,7 +248,7 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
                 });
 
                 POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete),
-                        "Customer "+customerID+" is has been deleted",
+                        "Customer "+customerID+" has been deleted",
                         "Delete Success",
                         POSMessage.MessageType.INFORM,btnOk);
             });
@@ -256,7 +256,7 @@ public class Customer extends RecursiveTreeObject<Customer> implements CacheWrit
             // Confirmation Message
             POSMessage.showConfirmationMessage((StackPane) getRoot(btnDelete), "Do you really want to delete the" +
                             "\nselected customer from list?"
-                    , "No Selected Item", POSMessage.MessageType.ERROR, btnNo, btnYes);
+                    , "Please Confirm", POSMessage.MessageType.ERROR, btnNo, btnYes);
         });
 
     }
