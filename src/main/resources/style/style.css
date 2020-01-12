@@ -154,3 +154,9 @@
 .combo-box:focused {
     -fx-border-color: -posNormalBlue;
 }
+
+
+.jfx-check-box {
+    -jfx-checked-color: -posHighBlue;
+    -fx-rippler-fill: -posHighBlue;
+}

@@ -17,7 +17,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
-import main.java.data.entity.Customer;
 import main.java.data.entity.User;
 
 import java.net.URL;
@@ -57,7 +56,7 @@ public class POSAdminUser extends POSAdminPanel implements Initializable {
 
     @FXML
     void btnNewOnACtion(ActionEvent event) {
-
+        misc.sceneManipulator.openDialog(rootPane, "POSAdminNewUser");
     }
 
     @FXML

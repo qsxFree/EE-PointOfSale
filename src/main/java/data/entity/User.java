@@ -32,7 +32,7 @@ public class User extends RecursiveTreeObject<User> {
         this.lname = lname;
         fullName = (fname + " " + (mi.equals("N/A")?" ":(mi+". ")) + lname);
         String accessArray[] = access.split(",");
-        access = new String("");
+        access = "";
         for (String a:accessArray) {
             switch (a){
                 case "cashier":
@@ -68,11 +68,13 @@ public class User extends RecursiveTreeObject<User> {
         buildEditButton();
         buildDeleteButton();
         builPassRecoverButton();
+        if (accountType == 1) hbActionContainer.setDisable(true);
         hbActionContainer.getChildren().addAll(btnpass,btnEdit, btnDelete);
         HBox.setMargin(btnEdit, new Insets(2, 2, 2, 2));
         HBox.setMargin(btnDelete, new Insets(2, 2, 2, 2));
         HBox.setMargin(btnpass, new Insets(2, 2, 2, 2));
     }
+
     private void buildEditButton() {
         btnEdit = new JFXButton();
         Image trash = new Image(DirectoryHandler.IMG+"pos-edit.png");
