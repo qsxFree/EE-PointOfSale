@@ -54,6 +54,7 @@ public class POSAdminUser extends POSAdminPanel implements Initializable {
     protected static ObservableList<User> itemList = FXCollections.observableArrayList();
     private static ArrayList allItem = new ArrayList();
 
+
     @FXML
     void btnNewOnACtion(ActionEvent event) {
         misc.sceneManipulator.openDialog(rootPane, "POSAdminNewUser");

@@ -11,11 +11,16 @@ import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
 import main.java.controller.POSCustomerAccount;
 import main.java.controller.message.POSMessage;
+import main.java.data.CacheWriter;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.SceneManipulator;
 
-public class User extends RecursiveTreeObject<User> {
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class User extends RecursiveTreeObject<User> implements CacheWriter {
     private String uid,fname,mi,lname,access,fullName;
     private int accountType;
     private HBox hbActionContainer;
@@ -108,6 +113,8 @@ public class User extends RecursiveTreeObject<User> {
 
         btnEdit.setOnAction(e->{
             //TODO Edit Action
+            writeToCache("etc\\cache-admin-selected-user.file");
+            manipulator.openDialog((StackPane) BackgroundProcesses.getRoot(btnEdit),"POSAdminEditUser");
         });
 
     }
@@ -158,9 +165,6 @@ public class User extends RecursiveTreeObject<User> {
 
     }
 
-    private void buildPinButton(){
-
-    }
 
     public String getFullName() {
         return fullName;
@@ -228,4 +232,21 @@ public class User extends RecursiveTreeObject<User> {
         this.hbActionContainer = hbActionContainer;
     }
 
+    @Override
+    public void writeToCache(String file) {
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+            //    private String uid,fname,mi,lname,access,fullName;
+            //    private int accountType;
+            String data=uid+"\n"+fname+"\n"+mi+"\n"+lname+"\n"+access+"\n"+accountType;
+            writer.write(data);
+            writer.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
