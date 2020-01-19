@@ -20,4 +20,11 @@ public class InputRestrictor {
         });
     }
 
+    public static void withouDecimal(TextField textField){
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.matches("\\d*")) return;
+            textField.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+    }
+
 }

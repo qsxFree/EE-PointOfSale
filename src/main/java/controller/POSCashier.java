@@ -155,7 +155,7 @@ public class POSCashier implements Initializable {
     protected static int items = 0,type = 0;
     protected static double subTotal = 0;
     private ProductOrder selectedProduct = null;
-    protected MiscInstances misc = new MiscInstances();
+    protected static MiscInstances misc = new MiscInstances();
     protected static double overAllTotal=0;
     protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
@@ -381,7 +381,7 @@ public class POSCashier implements Initializable {
         ttvOrderList.setShowRoot(false);
     }
 
-    private void queryAllItem(){
+    protected static void queryAllItem(){
         allItem.clear();
         String sql = "Select * from Item";
         misc.dbHandler.startConnection();

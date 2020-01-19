@@ -14,7 +14,8 @@ import java.util.Scanner;
 
 public class BackgroundProcesses {
     public static final String DATE_FORMAT = "MM-dd-YYYY";
-
+    public static final int MIN_BARCODE_LENGTH = 8;
+    public static final int MAX_BARCODE_LENGTH = 13;
     public static void realTimeClock(Label lblDate){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             LocalDateTime currentTime = LocalDateTime.now();
