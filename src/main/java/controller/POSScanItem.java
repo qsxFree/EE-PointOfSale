@@ -76,7 +76,7 @@ public class POSScanItem extends POSCashier implements Initializable {
 
     private void addProduct(){
         if (lblID.getText().split(" : ").length!=1){
-            String productID = tfBarcode.getText()+"-"+lblID.getText().split(" : ")[1];
+            String productID = lblBarcode.getText().split(" : ")[1]+"-"+lblID.getText().split(" : ")[1];
             String product = lblProduct.getText().split(" : ")[1];
             double unitPrice = Double.parseDouble(lblUnitPrice.getText().split(" : ")[1]);
             int quantity = Integer.parseInt(tbQuantity.getText());

@@ -128,6 +128,7 @@ public class POSCheckout extends POSCashier {
             btnOk.setOnAction(evt -> {
                 try {
                     closeDialogs();
+                    queryAllItem();
                     clearAllData();
                 } catch (IOException e) {
                     e.printStackTrace();
