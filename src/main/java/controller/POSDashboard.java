@@ -20,6 +20,7 @@ import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.SceneManipulator;
 
+import javax.tools.Tool;
 import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -58,6 +59,13 @@ public class POSDashboard implements Initializable , CacheWriter {
 
     @FXML
     private JFXButton btnCashier;
+
+
+    @FXML
+    private JFXButton btnChangePin;
+
+    @FXML
+    private JFXButton btnSignOut;
 
     @FXML
     private JFXButton btnInventory;
@@ -126,6 +134,12 @@ public class POSDashboard implements Initializable , CacheWriter {
         }
 
         adminToolTip();
+        Tooltip p =  new Tooltip("Change Password");
+        p.setStyle("-fx-text-fill:white");
+        Tooltip s =  new Tooltip("Sign Out");
+        s.setStyle("-fx-text-fill:white");
+        Tooltip.install(btnChangePin,p);
+        Tooltip.install(btnSignOut,s);
 
 
     }
@@ -153,7 +167,10 @@ public class POSDashboard implements Initializable , CacheWriter {
 
     @FXML
     void btnSignOutOnAction(ActionEvent event) {
-        manipulator.changeScene(rootPane,"POSLogin","POS | Login");
+        if(event.getSource().equals(btnSignOut))
+            manipulator.changeScene(rootPane,"POSLogin"," | Login");
+        else if (event.getSource().equals(btnChangePin))
+            misc.sceneManipulator.openDialog(rootPane,"POSPasswordManagement");
     }
 
     @Override
