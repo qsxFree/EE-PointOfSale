@@ -73,25 +73,26 @@ public class POSReturn extends POSCashier implements Initializable {
 
     private int itemId;
     private BufferedWriter writer;
-    private String phone="";
+    private String phone = "";
     private Timeline cardIdScannerThread;
-    private String cardID=null,customerID=null;
+    private String cardID = null, customerID = null;
     private Scanner scan;
     private boolean cardDetected = false;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 2);
         InputRestrictor.numbersInput(tfQuantity);
-        InputRestrictor.limitInput(tfQuantity,11);
+        InputRestrictor.limitInput(tfQuantity, 11);
         scanCard();
     }
 
     @FXML
     void btnCancelOnAction(ActionEvent event) {
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
-        try{
+        try {
             Main.rfid.cancelOperation();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         sceneManipulator.closeDialog();
@@ -99,12 +100,13 @@ public class POSReturn extends POSCashier implements Initializable {
 
     @FXML
     void btnProceedOnAction(ActionEvent event) throws SQLException {
-        if (lblName.getText().equals("N/A")){
-            createStandardMessage(rootPane,"Invalid Item","Please specify the Item", POSMessage.MessageType.ERROR);
-        }else if (taReasons.getText().equals("")){
-            createStandardMessage(rootPane,"Invalid Value","Please specify the Reason(s)", POSMessage.MessageType.ERROR);
-        }else{
-            updateCustomer();
+        if (lblName.getText().equals("N/A")) {
+            createStandardMessage(rootPane, "Invalid Item", "Please specify the Item", POSMessage.MessageType.ERROR);
+        } else if (taReasons.getText().equals("")) {
+            createStandardMessage(rootPane, "Invalid Value", "Please specify the Reason(s)", POSMessage.MessageType.ERROR);
+        } else {
+            //updateCustomer();
+            updateStocks(tfProductCode.getText(),Integer.parseInt(tfQuantity.getText()));
             int id = insertReturnItem();
             insertTransaction(id);
 
@@ -126,10 +128,14 @@ public class POSReturn extends POSCashier implements Initializable {
     }
 
     @FXML
-    void checkBtn(ActionEvent event) throws SQLException {
-        if (tfProductCode.getText().length()>=12){
-            scanOrderedItem();
-        }else{
+    void checkBtn(ActionEvent event) {
+        if (tfProductCode.getText().length() >= 12) {
+            try {
+                scanOrderedItem();
+            } catch (Exception e) {
+                e.getMessage();
+            }
+        } else {
             lblName.setText("N/A");
             lblPrice.setText("0.0");
             lblTotal.setText("0.0");
@@ -138,15 +144,15 @@ public class POSReturn extends POSCashier implements Initializable {
 
     @FXML
     void tfQuantityOnReleased(KeyEvent event) {
-        if (!tfQuantity.getText().equals("") && Integer.parseInt(tfQuantity.getText())>0){
-            double total = Integer.parseInt(tfQuantity.getText())*Double.parseDouble(lblPrice.getText());
+        if (!tfQuantity.getText().equals("") && Integer.parseInt(tfQuantity.getText()) > 0) {
+            double total = Integer.parseInt(tfQuantity.getText()) * Double.parseDouble(lblPrice.getText());
             lblTotal.setText(String.valueOf(total));
-        }else{
+        } else {
             tfQuantity.setText("1");
         }
     }
 
-    private void scanCard(){
+    private void scanCard() {
         try {
             Main.rfid.scanExtensive();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -156,9 +162,9 @@ public class POSReturn extends POSCashier implements Initializable {
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 }
-                if (scan.hasNextLine()){
+                if (scan.hasNextLine()) {
                     String scanned[] = scan.nextLine().split("=");
-                    if (scanned[0].equals("scanExtensive")){
+                    if (scanned[0].equals("scanExtensive")) {
                         cardID = scanned[1];
                         queryCard();
                         Main.rfid.clearCache();
@@ -170,46 +176,46 @@ public class POSReturn extends POSCashier implements Initializable {
             );
             cardIdScannerThread.setCycleCount(Animation.INDEFINITE);
             cardIdScannerThread.play();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             JFXButton button = new JFXButton("Ok");
-            button.setOnAction(s->{
+            button.setOnAction(s -> {
                 POSMessage.closeMessage();
             });
-            POSMessage.showConfirmationMessage(rootPane,"Please connect the RFID Scanner to complete Task",
+            POSMessage.showConfirmationMessage(rootPane, "Please connect the RFID Scanner to complete Task",
                     "Cannot Detect Scanner",
-                    POSMessage.MessageType.ERROR,button);
+                    POSMessage.MessageType.ERROR, button);
         }
     }
 
     private void queryCard() {
-        String sql = "Select * from card where cardID='"+cardID+"' and isActive = 1";
+        String sql = "Select * from card where cardID='" + cardID + "' and isActive = 1";
         misc.dbHandler.startConnection();
         ResultSet result = misc.dbHandler.execQuery(sql);
 
         try {
-            String data="";
-            if (result.next()){
-                data+=result.getString("cardId")+"\n"
-                        + result.getDouble("credits")+"\n"
+            String data = "";
+            if (result.next()) {
+                data += result.getString("cardId") + "\n"
+                        + result.getDouble("credits") + "\n"
                         + result.getInt("customerID");
 
-                customerID = result.getInt("customerID")+"";
+                customerID = result.getInt("customerID") + "";
                 writer = new BufferedWriter(new FileWriter("etc\\cache-reload-card.file"));
                 writer.write(data);
                 writer.close();
                 misc.dbHandler.closeConnection();
 
-                sql = "Select * from customer where customerID = "+customerID+"";
+                sql = "Select * from customer where customerID = " + customerID + "";
                 misc.dbHandler.startConnection();
                 result = misc.dbHandler.execQuery(sql);
                 result.next();
-                data="";
+                data = "";
                 phone = result.getString("phoneNumber");
-                data += result.getInt("customerID")+"\n"+
-                        result.getString("firstName")+"\n"+
-                        result.getString("middleInitial")+"\n"+
-                        result.getString("lastName")+"\n"+
-                        phone+"\n";
+                data += result.getInt("customerID") + "\n" +
+                        result.getString("firstName") + "\n" +
+                        result.getString("middleInitial") + "\n" +
+                        result.getString("lastName") + "\n" +
+                        phone + "\n";
                 writer = new BufferedWriter(new FileWriter("etc\\cache-reload-customer.file"));
                 writer.write(data);
                 writer.close();
@@ -218,15 +224,15 @@ public class POSReturn extends POSCashier implements Initializable {
                 taReasons.setDisable(false);
                 vbSearchProduct.setDisable(false);
                 lblScanCardNotifier.setVisible(false);
-            }else{
+            } else {
                 JFXButton button = new JFXButton("Ok");
-                button.setOnAction(s->{
+                button.setOnAction(s -> {
                     POSMessage.closeMessage();
                     scanCard();
                 });
-                POSMessage.showConfirmationMessage(rootPane,"Card doesn't exist",
+                POSMessage.showConfirmationMessage(rootPane, "Card doesn't exist",
                         "Invalid Card",
-                        POSMessage.MessageType.ERROR,button);
+                        POSMessage.MessageType.ERROR, button);
                 misc.dbHandler.closeConnection();
             }
         } catch (SQLException e) {
@@ -242,33 +248,32 @@ public class POSReturn extends POSCashier implements Initializable {
 
         scan = new Scanner(new FileInputStream("etc\\cache-reload-customer.file"));
         scan.nextLine();
-        lblCardOwner.setText(scan.nextLine()+" "+scan.nextLine()+". "+(scan.nextLine().charAt(0))+".");
+        lblCardOwner.setText(scan.nextLine() + " " + scan.nextLine() + ". " + (scan.nextLine().charAt(0)) + ".");
         cardDetected = true;
     }
 
-    private void createStandardMessage(Node node , String title, String message, POSMessage.MessageType type){
+    private void createStandardMessage(Node node, String title, String message, POSMessage.MessageType type) {
         JFXButton btnOk = new JFXButton("Close");
         btnOk.setOnAction(evt -> {
             POSMessage.closeMessage();
         });
 
-        POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(node),message,title,type, btnOk);
+        POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(node), message, title, type, btnOk);
     }
 
     private String sql;
 
 
-
-    private void updateCustomer(){
+    private void updateCustomer() {
         //update card set card.credits =  ((Select card.credits from card where card.customerID=4)+500) where card.cardID='4
-        sql = "update card set card.credits =  ((Select card.credits from card where card.cardID='"+cardID+"')+"+item.getItemPrice()+") where card.cardID='"+cardID+"'";
+        sql = "update card set card.credits =  ((Select card.credits from card where card.cardID='" + cardID + "')+" + item.getItemPrice() + ") where card.cardID='" + cardID + "'";
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
         misc.dbHandler.closeConnection();
     }
 
     private int insertReturnItem() throws SQLException {
-        sql = "Insert into returnItem(itemID,reason,Quantity,totalAmount) values("+item.getItemID()+",'"+taReasons.getText()+"',"+tfQuantity.getText()+","+lblTotal.getText()+")";
+        sql = "Insert into returnItem(itemID,reason,Quantity,totalAmount) values(" + item.getItemID() + ",'" + taReasons.getText() + "'," + tfQuantity.getText() + "," + lblTotal.getText() + ")";
 
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
@@ -285,14 +290,15 @@ public class POSReturn extends POSCashier implements Initializable {
     }
 
 
-    private String date,time;
+    private String date, time;
     private int transactionNumber;
+
     private final void insertTransaction(int id) throws SQLException {
         LocalDateTime currentTime = LocalDateTime.now();
         Date d = new Date();
         SimpleDateFormat date = new SimpleDateFormat(BackgroundProcesses.DATE_FORMAT);
         sql = "Insert into transaction(type,userID,customerID,typeID,date,time) " +
-                "values('Item Return','"+POSCashier.userID+"',"+customerID+","+id+",'"+date.format(d)+"','"+currentTime.format(DateTimeFormatter.ofPattern("hh:mm a"))+"')";
+                "values('Item Return','" + POSCashier.userID + "'," + customerID + "," + id + ",'" + date.format(d) + "','" + currentTime.format(DateTimeFormatter.ofPattern("hh:mm a")) + "')";
 
         misc.dbHandler.startConnection();
         misc.dbHandler.execUpdate(sql);
@@ -313,47 +319,66 @@ public class POSReturn extends POSCashier implements Initializable {
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 0);
         sceneManipulator.closeDialog();
     }
+
     private Item item = null;
-    private int quantity = 0,orderID = 0,secretID=0;
+    private int quantity = 0, orderID = 0, secretID = 0;
     private double toBeReturn = 0d;
+
     private final void scanOrderedItem() throws SQLException {
         item = null;
-        quantity=0;
-        secretID=0;
-        sql = "Select typeID from transaction where transactionID = "+tfTransaction.getText();
+        quantity = 0;
+        secretID = 0;
+        sql = "Select typeID from transaction where transactionID = " + tfTransaction.getText();
         misc.dbHandler.startConnection();
-        ResultSet result =  misc.dbHandler.execQuery(sql);
-        if (result.next()){
-            orderID= result.getInt("typeID");
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        if (result.next()) {
+            orderID = result.getInt("typeID");
             misc.dbHandler.startConnection();
-        }else{
-            createStandardMessage(rootPane,"Invalid Value","You've entered an invalid\ntranscation number", POSMessage.MessageType.ERROR);
+        } else {
+            createStandardMessage(rootPane, "Invalid Value", "You've entered an invalid\ntranscation number", POSMessage.MessageType.ERROR);
             misc.dbHandler.closeConnection();
             return;
         }
 
-        sql = "Select itemID,quantity,subtotal from orderitem where orderID ="+orderID+"";
+        sql = "Select itemID,quantity,subtotal from orderitem where orderID =" + orderID + "";
         misc.dbHandler.startConnection();
-        result =  misc.dbHandler.execQuery(sql);
-        while (result.next()){
+        result = misc.dbHandler.execQuery(sql);
+        while (result.next()) {
             quantity = result.getInt("quantity");
             secretID = result.getInt("itemID");
-            allItem.forEach(e->{
-                if (e.getItemID()==secretID)
+            allItem.forEach(e -> {
+                if (e.getItemID() == secretID)
                     if (e.getItemCode().equals(tfProductCode.getText()))
                         item = e;
             });
         }
 
-        if (item!=null){
+        if (item != null) {
             lblName.setText(item.getItemName());
-            tfQuantity.setText(quantity+"");
-            lblPrice.setText(item.getItemPrice()+"");
-            double total = Integer.parseInt(tfQuantity.getText())*Double.parseDouble(lblPrice.getText());
+            tfQuantity.setText(quantity + "");
+            lblPrice.setText(item.getItemPrice() + "");
+            double total = Integer.parseInt(tfQuantity.getText()) * Double.parseDouble(lblPrice.getText());
             lblTotal.setText(String.valueOf(total));
-        }else{
-            createStandardMessage(rootPane,"Invalid Item","There's no such item from\ncustomer's logs", POSMessage.MessageType.ERROR);
+        } else {
+            createStandardMessage(rootPane, "Invalid Item", "There's no such item from\ncustomer's logs", POSMessage.MessageType.ERROR);
         }
 
+    }
+
+
+    private final void updateStocks( String itemCode, int count) throws SQLException {
+
+        sql = "Select stock from item where itemCode = " + itemCode + "";
+        misc.dbHandler.startConnection();
+        ResultSet result = misc.dbHandler.execQuery(sql);
+        result.next();
+        int newStock = (result.getInt("stock") - count);
+        misc.dbHandler.closeConnection();
+
+
+        sql = "Update item set stock = " + newStock + " where " +
+                "itemCode = '" + itemCode + "'";
+        misc.dbHandler.startConnection();
+        misc.dbHandler.execUpdate(sql);
     }
 }
