@@ -53,7 +53,7 @@ public class POSNewItem extends POSInventory{
         InputRestrictor.limitInput(tfItemCode,13);
         InputRestrictor.numbersInput(tfItemCode);
         InputRestrictor.numbersInput(tfPrice);
-        InputRestrictor.numbersInput(tfInititalStock);
+        InputRestrictor.withouDecimal(tfInititalStock);
 
         tfItemCode.requestFocus();
         misc = new MiscInstances();
