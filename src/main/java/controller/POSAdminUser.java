@@ -62,7 +62,22 @@ public class POSAdminUser extends POSAdminPanel implements Initializable {
 
     @FXML
     void tfSearchOnKeyReleased(KeyEvent event) {
-
+        String basis = tfSearch.getText().toLowerCase();
+        ArrayList result = new ArrayList() ;
+        itemList.clear();
+        itemList.addAll(allItem);
+        if (!basis.equals("")){
+            itemList.parallelStream()
+                    .filter(e->
+                            e.getFullName().toLowerCase().contains(basis)
+                                    || e.getUid().toLowerCase().contains(basis)
+                    ).forEach(e->
+                    result.add(e)
+            );
+            itemList.clear();
+            itemList.addAll(result);
+        }
+        System.gc();
     }
 
     @Override
