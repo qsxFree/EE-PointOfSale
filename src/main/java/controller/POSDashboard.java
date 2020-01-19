@@ -81,10 +81,12 @@ public class POSDashboard implements Initializable , CacheWriter {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //TODO Uncomment status Checker
         checkGsmSignal();
-        //checkRFIDStatus();
+        checkRFIDStatus();
+
         BackgroundProcesses.realTimeClock(lblDate);
         BackgroundProcesses.changeSecondaryFormStageStatus((short)2);
         writeToCache("etc\\loader\\load-sl-users.file");
+
         try {
             initReport();
             Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
@@ -255,6 +257,7 @@ public class POSDashboard implements Initializable , CacheWriter {
                     String value[] = scan.nextLine().split("=");
                     if (value[0].equals("connectionStatus")){
                         int val = Integer.parseInt(value[1]);
+                        System.out.println("///////////////////////////////////////////////////\n\n"+val);
                         String url = "";
                         if (val==0)
                             url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
@@ -262,22 +265,16 @@ public class POSDashboard implements Initializable , CacheWriter {
                             url = DirectoryHandler.IMG+"pos-rfid-signal.png";
 
                         ivRfidSignal.setImage(new Image(url));
-                        rfidToolTip();
                         Main.rfid.clearStatusCache();
                     }
-                }else{
-                    String url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
-
-                    ivRfidSignal.setImage(new Image(url));
-                    rfidToolTip();
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
                 String url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
 
                 ivRfidSignal.setImage(new Image(url));
-                rfidToolTip();
             }
+            rfidToolTip();
         }),
                 new KeyFrame(Duration.seconds(5))
         );

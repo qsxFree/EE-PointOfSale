@@ -469,6 +469,6 @@ public class RFIDReaderInterface {
 
     public void clearStatusCache(){
         writeToCache("","etc/status/rfid-device-signal.file");
-        writeToCache("","etc/status/rfid-gsm-signal.fil");
+        writeToCache("","etc/status/rfid-device-signal.file");
     }
 }
