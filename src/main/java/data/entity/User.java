@@ -94,6 +94,8 @@ public class User extends RecursiveTreeObject<User> implements CacheWriter {
                 "-fx-text-fill:#ffffff;");
         btnEdit.setOnAction(e->{
             //TODO Edit Action
+            writeToCache("etc\\cache-admin-selected-user.file");
+            manipulator.openDialog((StackPane) BackgroundProcesses.getRoot(btnEdit),"POSAdminEditUser");
         });
 
     }
@@ -111,10 +113,10 @@ public class User extends RecursiveTreeObject<User> implements CacheWriter {
                 "-fx-border-radius: 5px;" +
                 "-fx-text-fill:#ffffff;");
 
-        btnEdit.setOnAction(e->{
+        btnpass.setOnAction(e->{
             //TODO Edit Action
             writeToCache("etc\\cache-admin-selected-user.file");
-            manipulator.openDialog((StackPane) BackgroundProcesses.getRoot(btnEdit),"POSAdminEditUser");
+            manipulator.openDialog((StackPane) BackgroundProcesses.getRoot(btnpass),"POSAdminPinRecovery");
         });
 
     }
