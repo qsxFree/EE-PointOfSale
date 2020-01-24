@@ -42,7 +42,7 @@
                                                         <Label prefHeight="59.0" prefWidth="103.0"
                                                                text="Business Name"/>
                                                         <TextField fx:id="tfBName" prefHeight="50.0" prefWidth="227.0"
-                                                                   HBox.hgrow="ALWAYS"/>
+                                                                   promptText="Required" HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -53,7 +53,8 @@
                                                     <children>
                                                         <Label prefHeight="59.0" prefWidth="103.0" text="Address"/>
                                                         <TextField fx:id="tfBAddress" prefHeight="50.0"
-                                                                   prefWidth="227.0" HBox.hgrow="ALWAYS"/>
+                                                                   prefWidth="227.0" promptText="Required"
+                                                                   HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -64,7 +65,7 @@
                                                     <children>
                                                         <Label prefHeight="59.0" prefWidth="103.0" text="Email"/>
                                                         <TextField fx:id="tfBEmail" prefHeight="50.0" prefWidth="227.0"
-                                                                   HBox.hgrow="ALWAYS"/>
+                                                                   promptText="Optional" HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -75,7 +76,7 @@
                                                     <children>
                                                         <Label prefHeight="59.0" prefWidth="103.0" text="Phone No."/>
                                                         <TextField fx:id="tfBPhone" prefHeight="50.0" prefWidth="227.0"
-                                                                   HBox.hgrow="ALWAYS"/>
+                                                                   promptText="Required" HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -155,7 +156,8 @@
                                                     <children>
                                                         <Label prefHeight="59.0" prefWidth="103.0" text="First Name"/>
                                                         <TextField fx:id="tfAFirstName" prefHeight="50.0"
-                                                                   prefWidth="227.0" HBox.hgrow="ALWAYS"/>
+                                                                   prefWidth="227.0" promptText="Required"
+                                                                   HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -166,7 +168,8 @@
                                                     <children>
                                                         <Label prefHeight="59.0" prefWidth="103.0" text="MI"/>
                                                         <TextField fx:id="tfAMiddleInitial" prefHeight="50.0"
-                                                                   prefWidth="227.0" HBox.hgrow="ALWAYS"/>
+                                                                   prefWidth="227.0" promptText="Optional"
+                                                                   HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -177,7 +180,8 @@
                                                     <children>
                                                         <Label prefHeight="59.0" prefWidth="103.0" text="Last Name"/>
                                                         <TextField fx:id="tfLastName" prefHeight="50.0"
-                                                                   prefWidth="227.0" HBox.hgrow="ALWAYS"/>
+                                                                   prefWidth="227.0" promptText="Required"
+                                                                   HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -246,7 +250,7 @@
                                                         <Label prefHeight="59.0" prefWidth="103.0"
                                                                text="Minimum Balance"/>
                                                         <TextField fx:id="tfBalance" prefHeight="27.0" prefWidth="193.0"
-                                                                   HBox.hgrow="ALWAYS"/>
+                                                                   promptText="Required" HBox.hgrow="ALWAYS"/>
                                                     </children>
                                                     <VBox.margin>
                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
@@ -270,7 +274,7 @@
                                                         <Insets right="4.0"/>
                                                     </HBox.margin>
                                                 </JFXButton>
-                                                <JFXButton fx:id="btnOCancel" layoutX="241.0" layoutY="19.0"
+                                                <JFXButton fx:id="btnOEdit" layoutX="241.0" layoutY="19.0"
                                                            onAction="#btnMainOnAction" prefHeight="36.0"
                                                            prefWidth="92.0" styleClass="btn-high" text="Edit">
                                                     <font>
