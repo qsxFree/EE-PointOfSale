@@ -110,11 +110,11 @@ public class POSCheckout extends POSCashier {
             insertAllOrders(orderID);
             insertTransaction(orderID);
             updateCardBalance();
-            String message = "Number : "+transactionNumber//+"\n"
-                    +" - Cost : "+String.valueOf(transactionCost)//+"\n"
+            String message = "Transaction : "+transactionNumber+"\n"
+                    +"Cost : "+String.valueOf(transactionCost)+"\n"
                     //+"Date : "+this.date+"\n"
                     //+"Time : "+this.time+"\n"
-                    +" - Balance : "+remainingBalance;
+                    +"Balance : "+remainingBalance;
 
             String intPhone = "63".concat(phone.substring(1,phone.length())).toString();
             try {
