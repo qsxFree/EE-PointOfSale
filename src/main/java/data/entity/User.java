@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import main.java.MiscInstances;
-import main.java.controller.POSCustomerAccount;
+import main.java.controller.POSAdminUser;
 import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
 import main.java.misc.BackgroundProcesses;
@@ -150,7 +150,7 @@ public class User extends RecursiveTreeObject<User> implements CacheWriter {
                 JFXButton btnOk = new JFXButton("Ok");
                 btnOk.setOnAction(evt->{
                     POSMessage.closeMessage();
-                    POSCustomerAccount.queryAllItems();
+                    POSAdminUser.queryAllItems();
                 });
 
                 POSMessage.showConfirmationMessage((StackPane) BackgroundProcesses.getRoot(btnDelete),
