@@ -333,6 +333,13 @@ public class POSCashier implements Initializable {
 
     private void checkoutStatusRefresher(){//for refreshing the checkout Status
         Timeline itemCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            if (lblTotal.getText().equals("0.0")){
+                btnCheckout.setDisable(true);
+                btnRemoveAll.setDisable(true);
+            }else{
+                btnCheckout.setDisable(false);
+                btnRemoveAll.setDisable(false);
+            }
             checkoutStatusCalculate();
             lblDiscount.setText(String.valueOf(discount));
             writeToCache("etc\\cache-secondary-table.file");

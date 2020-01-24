@@ -62,6 +62,8 @@ public class POSDashboard implements Initializable , CacheWriter {
 
 
     @FXML
+    private JFXButton btnAbout;
+    @FXML
     private JFXButton btnChangePin;
 
     @FXML
@@ -140,8 +142,11 @@ public class POSDashboard implements Initializable , CacheWriter {
         p.setStyle("-fx-text-fill:white");
         Tooltip s =  new Tooltip("Sign Out");
         s.setStyle("-fx-text-fill:white");
+        Tooltip n=  new Tooltip("About");
+        n.setStyle("-fx-text-fill:white");
         Tooltip.install(btnChangePin,p);
         Tooltip.install(btnSignOut,s);
+        Tooltip.install(btnAbout,n);
 
 
     }
@@ -173,6 +178,12 @@ public class POSDashboard implements Initializable , CacheWriter {
             manipulator.changeScene(rootPane,"POSLogin"," | Login");
         else if (event.getSource().equals(btnChangePin))
             misc.sceneManipulator.openDialog(rootPane,"POSPasswordManagement");
+    }
+
+
+    @FXML
+    void btnAboutOnAction(ActionEvent event) {
+        misc.sceneManipulator.openDialog(rootPane,"POSAbout");
     }
 
     @Override

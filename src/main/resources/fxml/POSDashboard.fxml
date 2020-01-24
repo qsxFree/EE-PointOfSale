@@ -101,6 +101,21 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                         </VBox>
+                        <JFXButton fx:id="btnAbout" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="946.0" layoutY="20.0" onAction="#btnAboutOnAction" prefHeight="58.0" prefWidth="46.0" styleClass="controls-container" text="Sign Out">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="46.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/pos-about.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </JFXButton>
                         <JFXButton fx:id="btnChangePin" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="988.0" layoutY="20.0" onAction="#btnSignOutOnAction" prefHeight="58.0" prefWidth="46.0" styleClass="controls-container" text="Sign Out">
                            <font>
                               <Font name="System Bold" size="14.0" />
