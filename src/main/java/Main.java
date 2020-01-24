@@ -20,7 +20,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         if (!BackgroundProcesses.getStoreName().equals("")){
-
+            BackgroundProcesses.changeSecondaryFormStageStatus((short)0);
             Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSSecondaryMain.fxml"));
             stage.setScene(new Scene(root));
             stage.setTitle(BackgroundProcesses.getStoreName()+" | Customer View");
