@@ -18,6 +18,7 @@ import main.java.controller.message.POSMessage;
 import main.java.data.AES;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
+import main.java.rfid.RFIDReaderInterface;
 
 import java.io.*;
 import java.net.URL;
@@ -83,6 +84,8 @@ public class POSCheckout extends POSCashier {
             writer = new BufferedWriter(new FileWriter("etc\\cache-secondary-check-card.file"));
             writer.write("0");
             writer.close();
+            gsmSignalThread.play();
+            rfidStatus.play();
         }catch (Exception e){
 
         }
@@ -107,19 +110,19 @@ public class POSCheckout extends POSCashier {
             insertAllOrders(orderID);
             insertTransaction(orderID);
             updateCardBalance();
-
-            String message = "Transaction No. : "+String.valueOf(transactionNumber).toString()+"\n"
-                    +"Cost : "+String.valueOf(transactionCost).toString()+"\n"
-                    +"Date : "+this.date.toString()+"\n"
-                    +"Time : "+this.time.toString()+"\n"
-                    +"Remaining Balance : "+String.valueOf(remainingBalance).toString();
+            String message = "Number : "+transactionNumber//+"\n"
+                    +" - Cost : "+String.valueOf(transactionCost)//+"\n"
+                    //+"Date : "+this.date+"\n"
+                    //+"Time : "+this.time+"\n"
+                    +" - Balance : "+remainingBalance;
 
             String intPhone = "63".concat(phone.substring(1,phone.length())).toString();
             try {
-                System.out.println(message);
-                System.out.println(intPhone);
-                //Main.rfid.gsmSendSMS(intPhone,message);
-                //System.out.println("Forcing message sending");
+
+                System.out.println("Message\n============================================\n"+message);
+                System.out.println("PhoneNo\n============================================\n"+intPhone);
+                Main.rfid.gsmSendSMS(intPhone,message);
+                System.out.println("Forcing message sending");
                 //Main.rfid.forceSendMessage(message);
             }catch (Exception e){
                 e.printStackTrace();
@@ -130,6 +133,8 @@ public class POSCheckout extends POSCashier {
                     closeDialogs();
                     queryAllItem();
                     clearAllData();
+                    gsmSignalThread.play();
+                    rfidStatus.play();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

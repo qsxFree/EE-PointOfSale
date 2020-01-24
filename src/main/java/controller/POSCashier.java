@@ -209,12 +209,15 @@ public class POSCashier implements Initializable {
         writer = new BufferedWriter(new FileWriter("etc\\cache-checkout-total.file"));
         writer.write(lblTotal.getText());
         writer.close();
+        gsmSignalThread.stop();
+        rfidStatus.stop();
         if (event.getSource().equals(this.btnCheckout))
             sceneManipulator.openDialog(rootPane,"POSCheckout");
     }
 
     @FXML
     protected void btnFunctionalitiesOnAction(ActionEvent event) {
+
         JFXButton selectedButton = (JFXButton) event.getSource();
         if (selectedButton.equals(this.btnScanItem)){
             sceneManipulator.openDialog(rootPane,"POSScanItem");
@@ -224,8 +227,12 @@ public class POSCashier implements Initializable {
         }else if (selectedButton.equals(this.btnPriceInquiry)){
             sceneManipulator.openDialog(rootPane,"POSPriceInquiry");
         }else if (selectedButton.equals(this.btnAddCredits)){
+            gsmSignalThread.stop();
+            rfidStatus.stop();
             sceneManipulator.openDialog(rootPane,"POSAddBalance");
         }else if (selectedButton.equals(this.btnReturn)){
+            gsmSignalThread.stop();
+            rfidStatus.stop();
             sceneManipulator.openDialog(rootPane,"POSReturn");
         }else if (selectedButton.equals(this.btnRemoveAll)){
             JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
@@ -430,7 +437,7 @@ public class POSCashier implements Initializable {
 
 
 
-    Timeline gsmSignalThread,rfidStatus;
+    protected static Timeline gsmSignalThread,rfidStatus;
     private void checkGsmSignal(){
 
 

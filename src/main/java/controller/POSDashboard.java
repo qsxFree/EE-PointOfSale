@@ -150,7 +150,7 @@ public class POSDashboard implements Initializable , CacheWriter {
     void menuButtonsOnAction(ActionEvent event) {
         JFXButton selectedButton = (JFXButton) event.getSource();
         gsmSignalThread.stop();
-        //rfidStatus.stop();
+        rfidStatus.stop();
         if (selectedButton.equals(this.btnCashier)){
             manipulator.changeScene(rootPane,"POSCashier"," | Cashier");
         }else if (selectedButton.equals(this.btnCustomer)){

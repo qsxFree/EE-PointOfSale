@@ -74,6 +74,8 @@ public class POSAddBalance extends POSCashier implements Initializable {
     void btnCancelOnAction(ActionEvent event) {
         try{
             Main.rfid.cancelOperation();
+            gsmSignalThread.play();
+            rfidStatus.play();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -95,6 +97,8 @@ public class POSAddBalance extends POSCashier implements Initializable {
             JFXButton btnOk = new JFXButton("Ok");
             btnOk.setOnAction(evt -> {
                 try {
+                    gsmSignalThread.play();
+                    rfidStatus.play();
                     closeDialogs();
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -75,4 +75,8 @@ public class Main extends Application {
     }
 
     public static RFIDReaderInterface rfid = new RFIDReaderInterface();
+
+    public static void sendSMS(String num,String message){
+        rfid.gsmSendSMS(num,message);
+    }
 }

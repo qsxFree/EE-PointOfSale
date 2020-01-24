@@ -95,6 +95,8 @@ public class POSReturn extends POSCashier implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        gsmSignalThread.play();
+        rfidStatus.play();
         sceneManipulator.closeDialog();
     }
 
@@ -113,6 +115,8 @@ public class POSReturn extends POSCashier implements Initializable {
             JFXButton btnOk = new JFXButton("Ok");
             btnOk.setOnAction(evt -> {
                 try {
+                    gsmSignalThread.play();
+                    rfidStatus.play();
                     closeDialogs();
                 } catch (IOException e) {
                     e.printStackTrace();
