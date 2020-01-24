@@ -54,11 +54,18 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
     private MiscInstances misc = new MiscInstances();
     private Timeline cardIdScannerThread;
     private Timeline pinThread = null;
-
+    private double minimum = 0;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         InputRestrictor.numbersInput(tfInitialBalance);
         initCardScan();
+        try {
+            Scanner scan = new Scanner(new FileInputStream("etc\\cache-others.file"));
+            minimum = Double.parseDouble(scan.nextLine());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        tfInitialBalance.setPromptText("Required (Min. "+minimum+")");
     }
 
     @FXML
@@ -73,19 +80,26 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
     }
 
     @FXML
-    void btnCreateOnAction(ActionEvent event){
-        if (hasEmptyField()){
-            POSMessage.showMessage(rootPane,"Please fill all the required fields","Invalid Value", POSMessage.MessageType.ERROR);
-        }else{
+    void btnCreateOnAction(ActionEvent event) {
+        JFXButton msgCloser = new JFXButton("Close");
+        msgCloser.setOnAction(e -> {
+            POSMessage.closeMessage();
+        });
+        if (hasEmptyField()) {
+            POSMessage.showMessage(rootPane, "Please fill all the required fields", "Invalid Value", POSMessage.MessageType.ERROR);
+        } else if (Integer.parseInt(tfInitialBalance.getText()) < minimum) {
+            POSMessage.showConfirmationMessage(rootPane, "Please Insert at least\n" + minimum + " initial Balance"
+                    , "Invalid Value", POSMessage.MessageType.ERROR, msgCloser);
+        } else {
             JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
             btnNo.setOnAction(e -> POSMessage.closeMessage());// After pressing the No button, it simply close the message
 
             JFXButton btnYes = new JFXButton("Yes");// Confirmation button - "Yes"
             btnYes.setOnAction(e -> {
                 try {
-                    String sql = "Select cardID from card where cardID = '"+tfCardID.getText()+"'";
+                    String sql = "Select cardID from card where cardID = '" + tfCardID.getText() + "'";
                     misc.dbHandler.startConnection();
-                    if (misc.dbHandler.execQuery(sql).next()){
+                    if (misc.dbHandler.execQuery(sql).next()) {
                         JFXButton btnOk = new JFXButton("Rescan");
                         btnOk.setOnAction(rescan->{
                             tfCardID.setText("");
@@ -108,7 +122,7 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
             // Confirmation Message
             POSMessage.showConfirmationMessage(rootPane, "Do your really want to create\nnew account?"
-                    , "Please Confirm Insertion", POSMessage.MessageType.INFORM, btnNo, btnYes);
+                    , "Please Confirm", POSMessage.MessageType.INFORM, btnNo, btnYes);
 
         }
     }
