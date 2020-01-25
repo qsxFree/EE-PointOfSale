@@ -109,9 +109,9 @@ public class POSInitialSetup implements Initializable {
             writer.write(min);
             writer.close();
 
-            String sql = "insert into user values ('" + tfAccountID.getText() + "','" + tfFirstName.getText() + "'" +
+            String sql = "insert into user(userID,firstname,middleInitial,lastName,accountType,password,access) values ('" + tfAccountID.getText() + "','" + tfFirstName.getText() + "'" +
                     ",'" + (tfMiddleInitial.getText().equals("") ? "N/A" : tfMiddleInitial.getText()) + "'" +
-                    ",'" + tfLastName.getText() + "',1,md5('" + tfConfirmPassword.getText() + "'))";
+                    ",'" + tfLastName.getText() + "',1,md5('" + tfConfirmPassword.getText() + "'),'cashier,inventory,customer,transaction,system,admin')";
             misc.dbHandler.startConnection();
             misc.dbHandler.execUpdate(sql);
             misc.dbHandler.closeConnection();
