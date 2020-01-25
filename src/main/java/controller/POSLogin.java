@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -49,6 +50,11 @@ public class POSLogin implements Initializable, CacheWriter {
 
     @FXML
     private JFXButton btnSignIn;
+    @FXML
+    private Label lblSystemInfo;
+
+    @FXML
+    private Label lblStoreName;
 
     private static MiscInstances misc;
 
@@ -61,6 +67,8 @@ public class POSLogin implements Initializable, CacheWriter {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        lblSystemInfo.setText(BackgroundProcesses.getStoreName()+" | Point of Sale System | Version 1.0.0");
+        lblStoreName.setText(BackgroundProcesses.getStoreName());
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 2);
         InputRestrictor.numbersInput(tfEmpID);
         InputRestrictor.limitInput(tfEmpID,5);

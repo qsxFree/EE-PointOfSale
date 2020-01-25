@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -18,7 +19,16 @@
          <children>
             <VBox alignment="CENTER" layoutX="569.0" layoutY="183.0" prefHeight="679.0" prefWidth="1137.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="415.0" prefWidth="1137.0">
+                  <VBox alignment="BOTTOM_CENTER" minHeight="-Infinity" prefHeight="129.0" styleClass="lbl-name" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="lblStoreName" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="86.0" prefWidth="680.0" styleClass="lbl-value" text="Store Name">
+                           <font>
+                              <Font name="System Bold" size="36.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="415.0" prefWidth="1137.0">
                      <children>
                         <VBox fx:id="vbControlCenteredBox" alignment="CENTER" prefHeight="421.0" prefWidth="367.0" styleClass="container-pane">
                            <children>
@@ -64,6 +74,15 @@
                         </VBox>
                      </children>
                   </HBox>
+                  <VBox alignment="BOTTOM_CENTER" minHeight="-Infinity" prefHeight="129.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="lblSystemInfo" alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="1138.0" text="Point of Sale System v1.0.0">
+                           <VBox.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
                </children>
             </VBox>
          </children>

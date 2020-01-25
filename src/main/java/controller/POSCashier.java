@@ -206,11 +206,12 @@ public class POSCashier implements Initializable {
 
     @FXML
     protected void btnCheckoutOnAction(ActionEvent event) throws IOException {
+        gsmSignalThread.stop();
+        rfidStatus.stop();
         writer = new BufferedWriter(new FileWriter("etc\\cache-checkout-total.file"));
         writer.write(lblTotal.getText());
         writer.close();
-        gsmSignalThread.stop();
-        rfidStatus.stop();
+
         if (event.getSource().equals(this.btnCheckout))
             sceneManipulator.openDialog(rootPane,"POSCheckout");
     }

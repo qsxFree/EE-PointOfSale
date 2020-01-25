@@ -26,7 +26,7 @@ public class POSAbout extends POSDashboard  implements Initializable {
             bEmail = scan.nextLine();
             scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
             cUser = scan.nextLine()+", "+scan.nextLine()+" "+scan.nextLine()+". "+scan.nextLine();
-            copy = "Copyright (c) 2019-2020, All rights Reserved.";
+            copy = "Copyright (c) 2019-2020, All Rights Reserved.";
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

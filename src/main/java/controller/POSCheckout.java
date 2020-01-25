@@ -68,6 +68,8 @@ public class POSCheckout extends POSCashier {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            gsmSignalThread.stop();
+            rfidStatus.stop();
             cacheClear();
         } catch (IOException e) {
             e.printStackTrace();
@@ -200,8 +202,8 @@ public class POSCheckout extends POSCashier {
                         if (scanned[1].equals("1")){
                             populateData();
                             Main.rfid.clearCache();
-                            lblStatus.setText("Processing transaction...");
-                            ivPrompt.setImage(new Image(DirectoryHandler.IMG+"pos-spinner.gif"));
+                            lblStatus.setText("You may now Proceed");
+                            ivPrompt.setImage(new Image(DirectoryHandler.IMG+"pos-done.png"));
                             checkPINThread.stop();
                             break;
                         }
