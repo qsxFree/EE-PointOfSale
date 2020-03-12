@@ -90,6 +90,8 @@ public class SceneManipulator {
         AnchorPane.setLeftAnchor(root,0.0);
         AnchorPane.setRightAnchor(root,0.0);
         AnchorPane.setTopAnchor(root,0.0);
+        if (parent.getChildren().size()==1)
+            parent.getChildren().clear();
         parent.getChildren().add(root);
     }
 

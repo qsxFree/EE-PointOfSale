@@ -5,15 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.rfid.RFIDReaderInterface;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Scanner;
 
 
 public class Main extends Application {
@@ -22,12 +20,14 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         if (!BackgroundProcesses.getStoreName().equals("")){
-
+            BackgroundProcesses.changeSecondaryFormStageStatus((short)0);
             Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSSecondaryMain.fxml"));
             stage.setScene(new Scene(root));
             stage.setTitle(BackgroundProcesses.getStoreName()+" | Customer View");
             stage.setMinHeight(679);
             stage.setMinWidth(1137);
+            Image icon = new Image(DirectoryHandler.IMG+"pos-icon.png");
+            stage.getIcons().add(icon);
             //stage.setMaximized(true);
             if ( Screen.getScreens().size()>1){
                 Rectangle2D bounds = Screen.getScreens().get(1).getVisualBounds();
@@ -48,6 +48,7 @@ public class Main extends Application {
             stage.setMinHeight(679);
             stage.setMinWidth(1137);
             stage.setMaximized(true);
+            stage.getIcons().add(icon);
             //stage.setFullScreen(true);
             stage.setOnCloseRequest(e->{
                 System.exit(0);
@@ -57,8 +58,10 @@ public class Main extends Application {
         }else{
             Parent root = FXMLLoader.load(getClass().getResource("/"+ DirectoryHandler.FXML+"POSInitialSetup.fxml"));
             stage.setScene(new Scene(root));
-            stage.setTitle("POS : Initial Setup");
+            stage.setTitle("POS | Initial Setup");
             stage.setResizable(false);
+            Image icon = new Image(DirectoryHandler.IMG+"pos-icon.png");
+            stage.getIcons().add(icon);
             stage.show();
         }
 
@@ -72,4 +75,8 @@ public class Main extends Application {
     }
 
     public static RFIDReaderInterface rfid = new RFIDReaderInterface();
+
+    public static void sendSMS(String num,String message){
+        rfid.gsmSendSMS(num,message);
+    }
 }

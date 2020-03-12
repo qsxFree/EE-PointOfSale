@@ -14,10 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,6 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import main.java.Main;
 import main.java.MiscInstances;
 import main.java.controller.message.POSMessage;
 import main.java.data.CacheWriter;
@@ -157,7 +155,7 @@ public class POSCashier implements Initializable {
     protected static int items = 0,type = 0;
     protected static double subTotal = 0;
     private ProductOrder selectedProduct = null;
-    protected MiscInstances misc = new MiscInstances();
+    protected static MiscInstances misc = new MiscInstances();
     protected static double overAllTotal=0;
     protected static POSDialog dialog;// static dialog to make it accessible
                             // to the Dialog that is currently open
@@ -180,7 +178,6 @@ public class POSCashier implements Initializable {
         InputRestrictor.limitInput(this.tfQuantity,3);
         BackgroundProcesses.realTimeClock(lblDate);
         loadTable();
-
         try {
             Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
             userID = scan.nextLine();
@@ -196,7 +193,9 @@ public class POSCashier implements Initializable {
             e.printStackTrace();
         }
         checkoutStatusRefresher();
-
+        checkGsmSignal();
+        checkRFIDStatus();
+        adminToolTip();
     }
 
 
@@ -207,15 +206,19 @@ public class POSCashier implements Initializable {
 
     @FXML
     protected void btnCheckoutOnAction(ActionEvent event) throws IOException {
+        gsmSignalThread.stop();
+        rfidStatus.stop();
         writer = new BufferedWriter(new FileWriter("etc\\cache-checkout-total.file"));
         writer.write(lblTotal.getText());
         writer.close();
+
         if (event.getSource().equals(this.btnCheckout))
             sceneManipulator.openDialog(rootPane,"POSCheckout");
     }
 
     @FXML
     protected void btnFunctionalitiesOnAction(ActionEvent event) {
+
         JFXButton selectedButton = (JFXButton) event.getSource();
         if (selectedButton.equals(this.btnScanItem)){
             sceneManipulator.openDialog(rootPane,"POSScanItem");
@@ -225,8 +228,12 @@ public class POSCashier implements Initializable {
         }else if (selectedButton.equals(this.btnPriceInquiry)){
             sceneManipulator.openDialog(rootPane,"POSPriceInquiry");
         }else if (selectedButton.equals(this.btnAddCredits)){
+            gsmSignalThread.stop();
+            rfidStatus.stop();
             sceneManipulator.openDialog(rootPane,"POSAddBalance");
         }else if (selectedButton.equals(this.btnReturn)){
+            gsmSignalThread.stop();
+            rfidStatus.stop();
             sceneManipulator.openDialog(rootPane,"POSReturn");
         }else if (selectedButton.equals(this.btnRemoveAll)){
             JFXButton btnNo = new JFXButton("No");// Confirmation button - "No"
@@ -327,6 +334,13 @@ public class POSCashier implements Initializable {
 
     private void checkoutStatusRefresher(){//for refreshing the checkout Status
         Timeline itemCountRefresher = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            if (lblTotal.getText().equals("0.0")){
+                btnCheckout.setDisable(true);
+                btnRemoveAll.setDisable(true);
+            }else{
+                btnCheckout.setDisable(false);
+                btnRemoveAll.setDisable(false);
+            }
             checkoutStatusCalculate();
             lblDiscount.setText(String.valueOf(discount));
             writeToCache("etc\\cache-secondary-table.file");
@@ -382,7 +396,7 @@ public class POSCashier implements Initializable {
         ttvOrderList.setShowRoot(false);
     }
 
-    private void queryAllItem(){
+    protected static void queryAllItem(){
         allItem.clear();
         String sql = "Select * from Item";
         misc.dbHandler.startConnection();
@@ -427,5 +441,118 @@ public class POSCashier implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+
+
+    protected static Timeline gsmSignalThread,rfidStatus;
+    private void checkGsmSignal(){
+
+
+        gsmSignalThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            try {
+                Main.rfid.gsmSignal();
+                Scanner scan = new Scanner(new FileInputStream("etc/status/rfid-gsm-signal.file"));
+                if (scan.hasNextLine()){
+                    String value[] = scan.nextLine().split("=");
+                    if (value[0].equals("gsmSignal")){
+                        int val = Integer.parseInt(value[1]);
+                        String url = "";
+                        if (val>=1 && val<=10)
+                            url = DirectoryHandler.IMG+"pos-connection-low.png";
+                        else if (val>=11 && val<=20)
+                            url = DirectoryHandler.IMG+"pos-connection-medium.png";
+                        else if (val>=21 && val<=30)
+                            url = DirectoryHandler.IMG+"pos-connection-high.png";
+                        ivGsmSignal.setImage(new Image(url));
+                        gsmSignalToolTip();
+                        Main.rfid.clearStatusCache();
+                    }else{
+                        String url = DirectoryHandler.IMG+"pos-connection-dc.png";
+
+                        ivGsmSignal.setImage(new Image(url));
+                        gsmSignalToolTip();
+                    }
+                }
+
+            } catch (Exception ex) {
+                //TODO Stacktrace : status : OFF
+                //ex.printStackTrace();
+                String url = DirectoryHandler.IMG+"pos-connection-dc.png";
+
+                ivGsmSignal.setImage(new Image(url));
+                gsmSignalToolTip();
+            }
+        }),
+                new KeyFrame(Duration.seconds(3))
+        );
+        gsmSignalThread.setCycleCount(Animation.INDEFINITE);
+        gsmSignalThread.play();
+    }
+
+    private void checkRFIDStatus(){
+        rfidStatus = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            try {
+                Main.rfid.testConnection();
+                Scanner scan = new Scanner(new FileInputStream("etc/status/rfid-device-signal.file"));
+                if (scan.hasNextLine()){
+                    String value[] = scan.nextLine().split("=");
+                    if (value[0].equals("connectionStatus")){
+                        int val = Integer.parseInt(value[1]);
+                        System.out.println("///////////////////////////////////////////////////\n\n"+val);
+                        String url = "";
+                        if (val==0)
+                            url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
+                        else if (val==1)
+                            url = DirectoryHandler.IMG+"pos-rfid-signal.png";
+
+                        ivRfidSignal.setImage(new Image(url));
+                        Main.rfid.clearStatusCache();
+                    }
+                }
+            } catch (Exception ex) {
+                //ex.printStackTrace();
+                String url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
+
+                ivRfidSignal.setImage(new Image(url));
+            }
+            rfidToolTip();
+        }),
+                new KeyFrame(Duration.seconds(5))
+        );
+        rfidStatus.setCycleCount(Animation.INDEFINITE);
+        rfidStatus.play();
+
+    }
+    private void adminToolTip(){
+        File file = new File(ivAdmin.getImage().getUrl());
+        String value = file.getName().equals("pos-admin-disable.png") ? "Non-Administrator" : "Administrator";
+        Tooltip.install(ivAdmin,new Tooltip(value));
+
+    }
+
+    private void gsmSignalToolTip(){
+        File file = new File(ivGsmSignal.getImage().getUrl());
+        String value = file.getName();
+        if (value.equals("pos-connection-low.png")){
+            value = "GSM Signal : Weak";
+        }else if (value.equals("pos-connection-medium.png"))
+            value = "GSM Signal : Moderate";
+        else if (value.equals("pos-connection-high.png"))
+            value = "GSM Signal : Strong";
+        else if (value.equals("pos-connection-dc.png"))
+            value = "GSM Disconnected / No Signal";
+        Tooltip.install(ivGsmSignal,new Tooltip(value));
+    }
+
+    private void rfidToolTip(){
+        File file = new File(ivRfidSignal.getImage().getUrl());
+        String value = file.getName();
+        if (value.equals("pos-rfid-signal.png")){
+            value="RFID Device | Connected";
+        }else if (value.equals("pos-rfid-signal-dc.png")){
+            value="RFID Device | Disconnected";
+        }
+        Tooltip.install(ivRfidSignal,new Tooltip(value));
     }
 }

@@ -74,8 +74,6 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
 
         if (hasEmptyField()){
             POSMessage.showMessage(rootPane,"Please fill all the required fields","Invalid Value", POSMessage.MessageType.ERROR);
-        }else if (!emailIsValid()){
-            POSMessage.showMessage(rootPane,"The email you've entered is invalid","Invalid Value", POSMessage.MessageType.ERROR);
         }else if (!mobileIsValid()){
             POSMessage.showMessage(rootPane,"The mobile number you've entered is invalid","Invalid Value", POSMessage.MessageType.ERROR);
         }else{
@@ -84,9 +82,9 @@ public class POSCustomerAccountForm extends POSCustomerAccount{
             newAcc += tfFirstName.getText();
             newAcc += "\n"+(tfMiddleInitial.getText().equals("")?"N/A":tfMiddleInitial.getText());
             newAcc += "\n"+tfLastName.getText();
-            newAcc += "\n"+tfAddress.getText();
-            newAcc += "\n"+tfEmailAddress.getText();
-            newAcc += "\n"+tfMobileNumber.getText();
+            newAcc += "\n" + tfAddress.getText();
+            newAcc += "\n" + (tfEmailAddress.getText().equals("") ? "N/A" : tfEmailAddress.getText());
+            newAcc += "\n" + tfMobileNumber.getText();
             newAcc += "\n"+(rbMale.isSelected() ? "Male" : "Female");
 
             writer.write(newAcc);

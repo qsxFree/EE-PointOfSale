@@ -6,8 +6,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
+import javafx.scene.robot.Robot;
 import main.java.data.entity.ProductOrder;
 import main.java.misc.InputRestrictor;
 
@@ -53,6 +56,10 @@ public class POSScanItem extends POSCashier implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Robot robot = new Robot();
+        robot.keyPress(KeyCode.TAB);
+        //FXRobot robot = FXRobotFactory.createRobot(scene);
+        //robot.keyPress(javafx.scene.input.KeyCode.A);
         InputRestrictor.numbersInput(tbQuantity);
         InputRestrictor.limitInput(tbQuantity,3);
         InputRestrictor.limitInput(tfBarcode,13);
@@ -64,8 +71,12 @@ public class POSScanItem extends POSCashier implements Initializable {
     private ProductOrder existingOrder= null;
     @FXML
     void btnAddOnAction(ActionEvent event) {
+        addProduct();
+    }
+
+    private void addProduct(){
         if (lblID.getText().split(" : ").length!=1){
-            String productID = tfBarcode.getText()+"-"+lblID.getText().split(" : ")[1];
+            String productID = lblBarcode.getText().split(" : ")[1]+"-"+lblID.getText().split(" : ")[1];
             String product = lblProduct.getText().split(" : ")[1];
             double unitPrice = Double.parseDouble(lblUnitPrice.getText().split(" : ")[1]);
             int quantity = Integer.parseInt(tbQuantity.getText());
@@ -78,7 +89,6 @@ public class POSScanItem extends POSCashier implements Initializable {
                 POSCashier.addItemToList(new ProductOrder(productID,product,unitPrice,quantity,(unitPrice*quantity)));
             }
         }
-
     }
 
     private boolean orderExist(String productID){
@@ -111,7 +121,10 @@ public class POSScanItem extends POSCashier implements Initializable {
                     else
                         lblStock.setStyle("-fx-text-fill: #000000");
                     lblStock.setText(item.getStock()+"");
+                    tfBarcode.setText("");
+                    addProduct();
                 }
+
             });
         }
     }

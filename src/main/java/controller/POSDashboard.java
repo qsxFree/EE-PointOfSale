@@ -20,6 +20,7 @@ import main.java.misc.BackgroundProcesses;
 import main.java.misc.DirectoryHandler;
 import main.java.misc.SceneManipulator;
 
+import javax.tools.Tool;
 import java.io.*;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -59,6 +60,15 @@ public class POSDashboard implements Initializable , CacheWriter {
     @FXML
     private JFXButton btnCashier;
 
+
+    @FXML
+    private JFXButton btnAbout;
+    @FXML
+    private JFXButton btnChangePin;
+
+    @FXML
+    private JFXButton btnSignOut;
+
     @FXML
     private JFXButton btnInventory;
 
@@ -79,11 +89,14 @@ public class POSDashboard implements Initializable , CacheWriter {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //TODO Uncomment status Checker
         checkGsmSignal();
-        //checkRFIDStatus();
+        checkRFIDStatus();
+
         BackgroundProcesses.realTimeClock(lblDate);
         BackgroundProcesses.changeSecondaryFormStageStatus((short)2);
         writeToCache("etc\\loader\\load-sl-users.file");
+
         try {
             initReport();
             Scanner scan = new Scanner(new FileInputStream("etc\\cache-user.file"));
@@ -95,6 +108,29 @@ public class POSDashboard implements Initializable , CacheWriter {
             ivAdmin.setImage(scan.nextLine().equals("1")
                     ? new Image(DirectoryHandler.IMG+"pos-admin.png")
                     : new Image(DirectoryHandler.IMG+"pos-admin-disable.png") );
+            String accessArray[] = scan.nextLine().split(",");
+            for (String access:accessArray) {
+                switch (access){
+                    case "cashier":
+                        btnCashier.setDisable(false);
+                        break;
+                    case "inventory":
+                        btnInventory.setDisable(false);
+                        break;
+                    case "customer":
+                        btnCustomer.setDisable(false);
+                        break;
+                    case "transaction":
+                        btnTransaction.setDisable(false);
+                        break;
+                    case "system":
+                        btnLogs.setDisable(false);
+                        break;
+                    case "admin":
+                        btnAdmin.setDisable(false);
+                        break;
+                }
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -102,6 +138,15 @@ public class POSDashboard implements Initializable , CacheWriter {
         }
 
         adminToolTip();
+        Tooltip p =  new Tooltip("Change Password");
+        p.setStyle("-fx-text-fill:white");
+        Tooltip s =  new Tooltip("Sign Out");
+        s.setStyle("-fx-text-fill:white");
+        Tooltip n=  new Tooltip("About");
+        n.setStyle("-fx-text-fill:white");
+        Tooltip.install(btnChangePin,p);
+        Tooltip.install(btnSignOut,s);
+        Tooltip.install(btnAbout,n);
 
 
     }
@@ -110,7 +155,7 @@ public class POSDashboard implements Initializable , CacheWriter {
     void menuButtonsOnAction(ActionEvent event) {
         JFXButton selectedButton = (JFXButton) event.getSource();
         gsmSignalThread.stop();
-        //rfidStatus.stop();
+        rfidStatus.stop();
         if (selectedButton.equals(this.btnCashier)){
             manipulator.changeScene(rootPane,"POSCashier"," | Cashier");
         }else if (selectedButton.equals(this.btnCustomer)){
@@ -121,13 +166,24 @@ public class POSDashboard implements Initializable , CacheWriter {
             manipulator.changeScene(rootPane, "POSSystemLogs", " | System Logs");
         }else if (selectedButton.equals(this.btnTransaction)){
             manipulator.changeScene(rootPane, "POSTransactionLogs", " | Transaction Logs");
+        }else if (selectedButton.equals(this.btnAdmin)){
+            manipulator.changeScene(rootPane, "POSAdminPanel", " | Admin Panel");
         }
 
     }
 
     @FXML
     void btnSignOutOnAction(ActionEvent event) {
-        manipulator.changeScene(rootPane,"POSLogin","POS | Login");
+        if(event.getSource().equals(btnSignOut))
+            manipulator.changeScene(rootPane,"POSLogin"," | Login");
+        else if (event.getSource().equals(btnChangePin))
+            misc.sceneManipulator.openDialog(rootPane,"POSPasswordManagement");
+    }
+
+
+    @FXML
+    void btnAboutOnAction(ActionEvent event) {
+        misc.sceneManipulator.openDialog(rootPane,"POSAbout");
     }
 
     @Override
@@ -206,7 +262,8 @@ public class POSDashboard implements Initializable , CacheWriter {
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //TODO Stacktrace : status : OFF
+                //ex.printStackTrace();
                 String url = DirectoryHandler.IMG+"pos-connection-dc.png";
 
                 ivGsmSignal.setImage(new Image(url));
@@ -228,6 +285,7 @@ public class POSDashboard implements Initializable , CacheWriter {
                     String value[] = scan.nextLine().split("=");
                     if (value[0].equals("connectionStatus")){
                         int val = Integer.parseInt(value[1]);
+                        System.out.println("///////////////////////////////////////////////////\n\n"+val);
                         String url = "";
                         if (val==0)
                             url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
@@ -235,22 +293,16 @@ public class POSDashboard implements Initializable , CacheWriter {
                             url = DirectoryHandler.IMG+"pos-rfid-signal.png";
 
                         ivRfidSignal.setImage(new Image(url));
-                        rfidToolTip();
                         Main.rfid.clearStatusCache();
                     }
-                }else{
-                    String url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
-
-                    ivRfidSignal.setImage(new Image(url));
-                    rfidToolTip();
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
                 String url = DirectoryHandler.IMG+"pos-rfid-signal-dc.png";
 
                 ivRfidSignal.setImage(new Image(url));
-                rfidToolTip();
             }
+            rfidToolTip();
         }),
                 new KeyFrame(Duration.seconds(5))
         );

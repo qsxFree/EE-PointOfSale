@@ -104,7 +104,7 @@
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </JFXButton>
-                              <TextField fx:id="tfAddStock" alignment="CENTER" prefHeight="33.0" prefWidth="83.0">
+                              <TextField fx:id="tfAddStock" alignment="CENTER" prefHeight="33.0" prefWidth="83.0" promptText="0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

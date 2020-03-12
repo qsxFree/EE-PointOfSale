@@ -45,7 +45,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfItemCode" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfItemCode" alignment="CENTER" focusTraversable="false" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -65,7 +65,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfItemName" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfItemName" alignment="CENTER" focusTraversable="false" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -85,7 +85,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfPrice" focusTraversable="false" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfPrice" alignment="CENTER" focusTraversable="false" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -49,6 +50,11 @@ public class POSLogin implements Initializable, CacheWriter {
 
     @FXML
     private JFXButton btnSignIn;
+    @FXML
+    private Label lblSystemInfo;
+
+    @FXML
+    private Label lblStoreName;
 
     private static MiscInstances misc;
 
@@ -56,10 +62,13 @@ public class POSLogin implements Initializable, CacheWriter {
     private String fname = "";
     private String mi = "";
     private String lname = "";
+    private String access = "";
     private int accountType=0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        lblSystemInfo.setText(BackgroundProcesses.getStoreName()+" | Point of Sale System | Version 1.0.0");
+        lblStoreName.setText(BackgroundProcesses.getStoreName());
         BackgroundProcesses.changeSecondaryFormStageStatus((short) 2);
         InputRestrictor.numbersInput(tfEmpID);
         InputRestrictor.limitInput(tfEmpID,5);
@@ -80,6 +89,7 @@ public class POSLogin implements Initializable, CacheWriter {
                 mi = result.getString("middleInitial");
                 lname = result.getString("lastName");
                 accountType = result.getInt("accountType");
+                access = result.getString("access");
                 writeToCache("etc\\cache-user.file");
 
                 misc.dbHandler.closeConnection();
@@ -92,7 +102,7 @@ public class POSLogin implements Initializable, CacheWriter {
                 Timeline changeSceneThread = new Timeline(new KeyFrame(
                         Duration.seconds(1),
                         e -> {
-                            misc.sceneManipulator.changeScene(rootPane,"POSDashboard","Dashboard");
+                            misc.sceneManipulator.changeScene(rootPane,"POSDashboard"," | Dashboard");
                         })
                 );
                 changeSceneThread.setDelay(Duration.seconds(2));
@@ -143,6 +153,7 @@ public class POSLogin implements Initializable, CacheWriter {
         cacheData += "\n"+mi;
         cacheData += "\n"+lname;
         cacheData += "\n"+accountType;
+        cacheData += "\n"+access;
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(BackgroundProcesses.getFile(file)));

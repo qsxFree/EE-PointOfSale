@@ -36,7 +36,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfItemCode" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfItemCode" alignment="CENTER" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -56,7 +56,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfItemName" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfItemName" alignment="CENTER" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -76,7 +76,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfPrice" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfPrice" alignment="CENTER" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -96,7 +96,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfInititalStock" prefHeight="35.0" prefWidth="315.0">
+                              <TextField fx:id="tfInititalStock" alignment="CENTER" prefHeight="35.0" prefWidth="315.0" promptText="Required">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

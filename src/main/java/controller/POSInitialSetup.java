@@ -96,17 +96,22 @@ public class POSInitialSetup implements Initializable {
         }else{
             BufferedWriter writer = new BufferedWriter(new FileWriter("etc\\initial.file"));
             String business = "";
-            business+=tfStoreName.getText()+"\n"+
-                    tfStoreAddress.getText()+"\n"+
-                    tfStoreNumber.getText()+"\n"+
-                    tfStoreEmail.getText()+"\n";
+            business += tfStoreName.getText() + "\n" +
+                    tfStoreAddress.getText() + "\n" +
+                    tfStoreNumber.getText() + "\n" +
+                    tfStoreEmail.getText() + "\n";
             writer.write(business);
             writer.close();
 
+            writer = new BufferedWriter(new FileWriter("etc\\cache-others.file"));
+            String min = "500";
 
-            String sql = "insert into user values ('"+tfAccountID.getText()+"','"+tfFirstName.getText()+"'" +
-                    ",'"+(tfMiddleInitial.getText().equals("")? "N/A" : tfMiddleInitial.getText())+"'" +
-                    ",'"+tfLastName.getText()+"',1,md5('"+tfConfirmPassword.getText()+"'))";
+            writer.write(min);
+            writer.close();
+
+            String sql = "insert into user(userID,firstname,middleInitial,lastName,accountType,password,access) values ('" + tfAccountID.getText() + "','" + tfFirstName.getText() + "'" +
+                    ",'" + (tfMiddleInitial.getText().equals("") ? "N/A" : tfMiddleInitial.getText()) + "'" +
+                    ",'" + tfLastName.getText() + "',1,md5('" + tfConfirmPassword.getText() + "'),'cashier,inventory,customer,transaction,system,admin')";
             misc.dbHandler.startConnection();
             misc.dbHandler.execUpdate(sql);
             misc.dbHandler.closeConnection();
