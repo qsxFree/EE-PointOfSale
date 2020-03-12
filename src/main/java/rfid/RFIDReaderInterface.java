@@ -305,7 +305,7 @@ public class RFIDReaderInterface {
             for (byte b: data) {
                 signal += (char)b;
             }
-            writeToCache("gsmSignal=" + signal,"etc/status/rfid-gsm-signal.file");
+            writeToCache("gsmSignal=" + signal,"etc/status/rfid-gsm-signal.file");//EDITED
         }
         // Check if SMS has sent
         else if (lastCommand == 136) {
@@ -360,10 +360,10 @@ public class RFIDReaderInterface {
         else if (lastCommand == 142) {
             switch ((char) data[0]) {
                 case '0':
-                    writeToCache("connectionStatus=0", "etc/status/rfid-device-signal.file");
+                    writeToCache("connectionStatus=0", "etc/status/rfid-device-signal.file");//EDITED
                     break;
                 case '1':
-                    writeToCache("connectionStatus=1", "etc/status/rfid-device-signal.file");
+                    writeToCache("connectionStatus=1", "etc/status/rfid-device-signal.file");//EDITED
                     break;
                 default:
                     System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for testConnection()");
@@ -465,10 +465,10 @@ public class RFIDReaderInterface {
 
     public void clearCache(){
         writeToCache("",RFIDcacheFilePath);
-    }
+    }//EDITED
 
     public void clearStatusCache(){
         writeToCache("","etc/status/rfid-device-signal.file");
         writeToCache("","etc/status/rfid-gsm-signal.fil");
-    }
+    }//EDITED
 }
