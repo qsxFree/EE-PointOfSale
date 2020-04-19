@@ -64,19 +64,13 @@ public class Main extends Application {
             stage.getIcons().add(icon);
             stage.show();
         }
-
-
-
-        //Main.rfid.gsmSendSMS("639955109622","Message Sample");
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public static RFIDReaderInterface rfid = new RFIDReaderInterface();
-
-    public static void sendSMS(String num,String message){
-        rfid.gsmSendSMS(num,message);
-    }
+    // 2 parameters, one for each line. This doesn't have a character length limiter, so make sure to only pass Strings
+    // that are 39 characters long (it can handle up to 40, but I wouldn't recommend using that max
+    public static RFIDReaderInterface rfid = new RFIDReaderInterface("Welcome to " + BackgroundProcesses.getStoreName(),"");
 }

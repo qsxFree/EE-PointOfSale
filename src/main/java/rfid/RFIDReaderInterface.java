@@ -2,14 +2,14 @@ package main.java.rfid;
 
 import com.fazecast.jSerialComm.*;
 import java.io.*;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * <h1>RFID Reader Interface</h1>
- * This program will allow you to communicate with the RFID Card Scanner
- * (to be implemented with a Point of Sale System) through serial commands,
- * without having to mess with the serial commands and communication yourself.
+ * This class allows the simplified implementation of the RFID Scanner Device
+ * into a Point-of-Sale System. It facilitates the communication between Java
+ * and the device through Serial communication.
  * @author Jeremy Andrews Zantua
  * @version 1.0
  * @since 2019-11-5
@@ -20,24 +20,48 @@ public class RFIDReaderInterface {
     private Scanner serialReader;
     private PrintWriter serialWriter;
     private byte[] bytesRead;
-    private String RFIDcacheFilePath = "etc\\rfid-cache.file";
-    private boolean writeDataToCache = false;
+    private String RFIDCacheFilePath = "etc\\rfid-cache.file";
+    private String DeviceSignalFilePath = "etc\\status\\rfid-device-signal.file";
+    private String GSMSignalFilePath = "etc\\status\\rfid-gsm-signal.file";
+    private boolean interpretNextByte = false;
     private boolean deviceReady = false;
-    private boolean serialCommDebugging = true; // Set to true when checking data sent/received through serial
+    private boolean serialCommDebugging = false; // Set to true when checking data sent/received through serial
     private int lastCommand = 0;
     private long time;
     private int smsConfirmationNet = 0;
+    private boolean interpretNextByteStream = false;
+    private boolean byteStreamActive = false;
+    // Stores the current byte stream in a buffer which will be returned as a String when the complete data has arrived
+    private ArrayList<Byte> byteStreamBuffer = new ArrayList<>();
+    private boolean SMSMode = false; // Keeps track if the device is in SMS Sending mode
+    private String SMSRecipientNumber;
+    private String SMSContent;
+    // Is true when the thread waiting for the device's response to a connection inquiry (the interface checking if the
+    // device is still there, or has been disconnected. It will revert back to false when the reply has been received
+    // within the allocated time in the wait thread
+    private boolean deviceConnectionQueryIsWaiting = false;
 
-    public RFIDReaderInterface() {
-        /**
-         * This constructor will prepare and establish a connection to allow you to communicate
-         * with the Arduino with ease.
-         */
-        System.out.println("==== RFIDReaderInterface: Start of Initialization ====");
 
-        System.out.println("> Fetching available COM Ports...");
-        SerialPort availablePorts[] = SerialPort.getCommPorts(); // Gets all available COM Ports
-        System.out.println("> " + availablePorts.length + " COM Port/s found");
+    /**
+     * Prepares and establishes a serial communication line with the device.
+     * @param splashText_line1 is the text that will be displayed on the splash screen on line 1
+     * @param splashText_line2 os the text that will be displayed on the splash screen on line 2
+     */
+    public RFIDReaderInterface(String splashText_line1, String splashText_line2) {
+        System.out.println("Establishing connection with the device");
+
+        System.out.println("Fetching available COM Ports...");
+        // Fetch all available COM ports and store them in an array
+        SerialPort availablePorts[] = SerialPort.getCommPorts();
+        System.out.println(availablePorts.length);
+
+        // Prints the number of COM ports found with proper grammar
+        if (availablePorts.length == 1)  { // If only one COM port is found
+            System.out.print(" COM Port found");
+        }
+        else { // If zero or more than one COM prots have been found
+            System.out.print(" COM Ports found");
+        }
 
         int portNumbers = 1; // gives port numbers when printed
         // lists all available ports to console
@@ -45,44 +69,52 @@ public class RFIDReaderInterface {
             System.out.println("  " + portNumbers++ + ". " + sp.getDescriptivePortName());
         }
 
-        // Enhanced for loop to iterate through all available COM ports
-        // Each port will be tried 3 times before moving on to the next available port
-        System.out.println("> Attempting to open serial port");
-        boolean portOpened = false;
-        availablePortsLoop:
+        // Try to look through the list of COM ports to see if a device with "Arduino" in the name exists
+        boolean portOpened = false; // Will keep track if a port was opened by picking the devices with "Arduino" in its name
         for (SerialPort sp: availablePorts) {
-            System.out.println("> Attempting to open " + sp.getSystemPortName());
-            sp.setComPortParameters(115200, 8, 1, 0); // default connection settings for arduino
-            sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-
-            portOpenAttemptsLoop:
-            // This loop will only iterate 3 times, or 3 attempts to open the currently selected COM port
-            for (int attempt = 0; attempt < 3; attempt++) {
-                if (sp.openPort()) {
-                    // if port is successfully opened
-                    System.out.println("> " + sp.getSystemPortName() + " successfully opened");
-                    selectedPort = sp; // assigns opened port to selectedPort;
+            // If a COM device has been found with "Arduino" in its name, immediately attempt to open that port
+            if (sp.getDescriptivePortName().contains("Arduino")) {
+                System.out.println("Attempting to open " + sp.getDescriptivePortName());
+                if (attemptOpeningPort(sp,115200)) { // If the port has been successfully opened
+                    System.out.println("Successfully opened " + sp.getSystemPortName());
                     portOpened = true;
-                    break portOpenAttemptsLoop; // stop attempting to open other ports
+                    break;
                 }
-                else {
-                    // if port cannot be opened
-                    System.out.println("[!] Cannot open \"" + sp.getSystemPortName() + "\". Will try again... (Attempt " + (attempt + 1) + ")");
+                else { // If the port could not be opened
+                    System.out.println("Could not open " + sp.getSystemPortName());
+                    portOpened = false;
                 }
-            }
-
-            // after a port is opened, or all attempts for the current port are exhausted,
-            // check if a port has been successfully opened
-            if (portOpened) {
-                break availablePortsLoop;
-            }
-            else {
-                System.out.println("[!] Failed to open \"" + sp.getSystemPortName() + "\" after 3 attempts.");
             }
         }
 
-        // if port is opened, initialize a data listener for receiving responses from the Arduino through serial
-        if (portOpened) {
+        // If an "Arduino" labelled-port has not been found yet
+        if (!portOpened) {
+            for (SerialPort sp: availablePorts) {
+                // This time, only check the COM devices that DO NOT have "Arduino" in their names
+                if (!sp.getDescriptivePortName().contains("Arduino")) {
+                    System.out.println("Attempting to open " + sp.getDescriptivePortName());
+
+                    // If the port has been successfully opened
+                    if (attemptOpeningPort(sp,115200)) {
+                        System.out.println("Successfully opened " + sp.getSystemPortName());
+                        portOpened = true;
+                        break;
+                    }
+                    // If the port could not be opened
+                    else {
+                        System.out.println("Could not open " + sp.getSystemPortName());
+                        portOpened = false;
+                    }
+                }
+            }
+        }
+
+        // If a port could still not be opened
+        if (!portOpened) {
+            System.out.println("ERROR: Could not open any ports");
+        }
+        // If a port was successfully opened
+        else {
             selectedPort.addDataListener(new SerialPortDataListener() {
                 @Override
                 public int getListeningEvents() {
@@ -97,15 +129,15 @@ public class RFIDReaderInterface {
                     int numRead = (selectedPort.readBytes(bytesRead, bytesRead.length));
                     // For checking data received through serial, uncomment the line below
                     if (serialCommDebugging) {
-                        System.out.print("[RECEIVED] ");
-                        System.out.print(numRead + " bytes, dec: ");
+                        System.out.println("[Received " + numRead + " bytes]");
+                        System.out.print("dec: ");
                         for (int x = 0; x < numRead; x++) {
                             System.out.print(bytesRead[x]);
                             if (x != (numRead - 1)) {
                                 System.out.print(" ");
                             }
                         }
-                        System.out.print(", char:\"");
+                        System.out.print("\nchar: \"");
                         for (int x = 0; x < numRead; x++) {
                             System.out.print((char)bytesRead[x]);
                             if (x != (numRead - 1)) {
@@ -115,17 +147,89 @@ public class RFIDReaderInterface {
                         System.out.println("\"");
                     }
 
-                    // Writes the next received data to a cache file
-                    if (writeDataToCache) {
-                        writeDataToCache = false;
-                        translateCacheData(bytesRead);
+                    if (!byteStreamActive) { // If the byte stream is inactive, check if a byte stream start marker is received
+                        // Check each byte in the bytesRead array
+                        for (byte b : bytesRead) {
+                            if (b == (byte)2) { // If a start marker is found, set the byteStreamActive status to true
+                                byteStreamActive = true;
+                                byteStreamBuffer.clear(); // Clear the old contents of the byte stream buffer
+                            }
+                            else if (b == (byte)3) { // If an end marker is found, set the byteStreamActive status to false
+                                byteStreamActive = false;
+                                if (interpretNextByteStream) {
+                                    interpretNextByteStream = false;
+                                    byte byteStreamArray[] = new byte[byteStreamBuffer.size()];
+                                    for (int x = 0; x < byteStreamBuffer.size(); x++) {
+                                        byteStreamArray[x] = byteStreamBuffer.get(x);
+                                    }
+                                    interpretReceivedData(byteStreamArray);
+                                }
+                            }
+                            else { // For any other byte, store it to the byteStream buffer
+                                byteStreamBuffer.add(b);
+                            }
+                        }
+                    }
+                    else { // In case the data isn't complete from the last serial event, the byte stream is still active
+                        // Check each byte in the bytesRead array
+                        for (byte b : bytesRead) {
+                            if (b == (byte)3) { // If the end marker is found
+                                byteStreamActive = false;
+                                if (interpretNextByteStream) {
+                                    interpretNextByteStream = false;
+                                    byte byteStreamArray[] = new byte[byteStreamBuffer.size()];
+                                    for (int x = 0; x < byteStreamBuffer.size(); x++) {
+                                        byteStreamArray[x] = byteStreamBuffer.get(x);
+                                    }
+                                    interpretReceivedData(byteStreamArray);
+                                }
+                            }
+                            else { // For any other byte, store it to the byteStream buffer
+                                byteStreamBuffer.add(b);
+                            }
+                        }
                     }
 
-                    if (!deviceReady) {
-                        if (bytesRead[0] == -128) {
-                            sendByte(129);
+                    // Writes the next received data to a cache file
+                    // This is usually true when we want to record the response of the device to the cache file
+                    if (interpretNextByte) {
+                        interpretNextByte = false;
+                        interpretReceivedData(bytesRead);
+                    }
+
+                    // Waits for queries from the device during SMS sending mode
+                    if (SMSMode) {
+                        if (bytesRead[0] == 17) { // If the recipient's number is being requested
+                            sendStringToDevice(SMSRecipientNumber);
+                            sendByteToDevice(3);
                         }
-                        else if (bytesRead[0] == 49)  {
+                        else if (bytesRead[0] == 18) { // If the message content is being requested
+                            sendStringToDevice(SMSContent);
+                            sendByteToDevice(3);
+                        }
+                        else if (bytesRead[0] == 49) { // If the SMS was sent successfully
+                            writeToCache("sendSMS=1", RFIDCacheFilePath);
+                            SMSMode = false;
+                        }
+                        else if (bytesRead[0] == 48) { // If the SMS was NOT sent successfully
+                            writeToCache("sendSMS=0", RFIDCacheFilePath);
+                            SMSMode = false;
+                        }
+                        else if (bytesRead[0] == 50) { // If there is an error with setting up the SMS
+                            writeToCache("sendSMS=2", RFIDCacheFilePath);
+                            SMSMode = false;
+                        }
+                    }
+
+                    // During startup, the device won't be ready yet
+                    // This will wait for the handshake signal from the device to arrive and send a reply
+                    // Therefore setting the device's status to "Ready"
+                    if (!deviceReady) {
+                        if (bytesRead[0] == 5) {
+                            sendStringToDevice(splashText_line1);
+                            sendByteToDevice(3);
+                            sendStringToDevice(splashText_line2);
+                            sendByteToDevice(3);
                             deviceReady = true;
                         }
                     }
@@ -133,313 +237,95 @@ public class RFIDReaderInterface {
             });
             serialReader = new Scanner(selectedPort.getInputStream()); // Start input stream for receiving data over serial
             serialWriter = new PrintWriter(selectedPort.getOutputStream()); // Start output stream for receiving data over serial
-            // TODO Continue documenting code from here
-            System.out.println("> Establishing connection with device...");
-            while (!deviceReady) {
-                System.out.print("");
-            }
-            System.out.println("> Connection Established!");
-        }
-        else {
-            System.out.println("[!] Could not open any ports.");
         }
 
-        System.out.println("===== RFIDReaderInterface: End of Initialization =====");
+        System.out.println("Device initialization routine finished");
     }
 
-    public void sendByte(int input) {
-        /**
-         * This method sends a byte to serial.
-         * This is where Java will send commands to the Arduino.
-         * @param intput This will be the byte that will be sent to serial.
-         */
-        if (serialCommDebugging) {
-            System.out.println("[SENT] dec:" + input + ", char:\"" + (char)input + "\"");
-        }
-        serialWriter.print((char)input);
-        serialWriter.flush();
-    }
-
-    public void cancelOperation() {
-        sendByte(131);
-        lastCommand = 0;
-        writeDataToCache = false;
-    }
-
-    public void scanBasic() {
-        sendByte(132);
-        lastCommand = 132;
-        writeDataToCache = true;
-    }
-
-    public void scanExtensive() {
-        sendByte(133);
-        lastCommand = 133;
-        writeDataToCache = true;
-    }
-
-    public void gsmStatus() {
-        sendByte(134);
-        lastCommand = 134;
-        writeDataToCache = true;
-    }
-
-    public void forceSendMessage(String message) {
-        sendByte(2);
-        for(char c: message.toCharArray()) {
-            sendByte((int)c);
-        }
-        sendByte(3);
-    }
-
-    public void gsmSignal() {
-        sendByte(135);
-        lastCommand = 135;
-        writeDataToCache = true;
-    }
-
-    public void gsmSIMPresent() {
-        sendByte(143);
-        lastCommand = 143;
-        writeDataToCache = true;
-    }
-
-    public void gsmSendSMS(String number, String message) {
-        sendByte(136);
-
-        sendByte(2);
-        for (char c: number.toCharArray()) {
-            sendByte(c);
-        }
-        sendByte(3);
-
-        sendByte(2);
-        for (char c: message.toCharArray()) {
-            sendByte(c);
-        }
-        sendByte(3);
-
-        lastCommand = 136;
-        writeDataToCache = true;
-        smsConfirmationNet = 2;
-    }
-
-    public void gsmPowerOff() {
-        sendByte(145);
-        lastCommand = 145;
-        writeDataToCache = true;
-    }
-
-    public void challenge(String passcode) {
-        sendByte(139);
-        sendByte(2);
-        for (char c: passcode.toCharArray()) {
-            sendByte(c);
-        }
-        sendByte(3);
-
-        lastCommand = 139;
-        writeDataToCache = true;
-    }
-
-    public void newPIN() {
-        sendByte(141);
-        lastCommand = 141;
-        writeDataToCache = true;
-    }
-
-    public void testConnection() {
-        sendByte(142);
+    /**
+     * Checks if the device is still connected
+     */
+    public void queryDevice() {
+        sendByteToDevice(142);
+        interpretNextByte = true; // Will write the reply to cache
+        // Keep track of the last command that was called to help with determining what to write to the cache file
         lastCommand = 142;
-        writeDataToCache = true;
-        time = System.currentTimeMillis();
     }
 
-    public void gsmPowerOn() {
-        sendByte(144);
-        lastCommand = 144;
-        writeDataToCache = true;
+    /**
+     * Sends a byte to the device via Serial.
+     * @param input This will be the decimal form of the byte that will be sent to serial.
+     */
+    private void sendByteToDevice(int input) {
+        // If Serial debugging is enabled, output the details to the console
+        if (serialCommDebugging) {
+            System.out.println("[Sent 1 byte]");
+            System.out.println("dec: " + input);
+            System.out.println("char: \"" + (char)input + "\"");
+        }
+        serialWriter.print((char)input); // Adds the byte to the output buffer
+        serialWriter.flush(); // Sends the byte to the output stream
     }
 
-    private boolean translateCacheData(byte data[]) {
-        boolean returnValue = true;
-
-        // Basic Scan
-        if (lastCommand == 132) {
-            String tagID = "";
-            for (byte b: data) {
-                tagID += String.format("%02X", b);
-            }
-            writeToCache("scanBasic=" + tagID, RFIDcacheFilePath);
+    /**
+     * Breaks down a String into individual characters and sends them one-by-one to the device via serial.
+     * @param input is the String to be sent to the device
+     */
+    private void sendStringToDevice(String input) {
+        for (char c : input.toCharArray()) {
+            sendByteToDevice((int)c);
         }
-        // Extensive Scan
-        else if (lastCommand == 133) {
-            String tagID = "";
-            for (byte b: data) {
-                tagID += String.format("%02X", b);
-            }
-            writeToCache("scanExtensive=" + tagID, RFIDcacheFilePath);
-        }
-        // Check GSM
-        else if (lastCommand == 134) {
-            switch ((char)data[0]) {
-                case '0':
-                    writeToCache("gsmStatus=0", RFIDcacheFilePath);
-                    break;
-                case '1':
-                    writeToCache("gsmStatus=1", RFIDcacheFilePath);
-                    break;
-                case '2':
-                    writeToCache("gsmStatus=2", RFIDcacheFilePath);
-                    break;
-                default:
-                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for checkGSM()");
-                    writeToCache("ERR:134", RFIDcacheFilePath);
-                    returnValue = false;
-                    break;
-            }
-        }
-        // Check GSM Signal
-        else if (lastCommand == 135) {
-            String signal = "";
-            for (byte b: data) {
-                signal += (char)b;
-            }
-            writeToCache("gsmSignal=" + signal,"etc/status/rfid-gsm-signal.file");//EDITED
-        }
-        // Check if SMS has sent
-        else if (lastCommand == 136) {
-            switch ((char) data[0]) {
-                case '0':
-                    writeToCache("smsSent=0", RFIDcacheFilePath);
-                    break;
-                case '1':
-                    writeToCache("smsSent=1", RFIDcacheFilePath);
-                    break;
-                default:
-                    if (data[0] == (byte)-118) {
-                        if (smsConfirmationNet == 2) {
-                            lastCommand = 136;
-                            writeDataToCache = true;
-                            smsConfirmationNet--;
-                        }
-                        else {
-                            System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for sendSMS()");
-                            writeToCache("ERR:136", RFIDcacheFilePath);
-                            returnValue = false;
-                        }
-                    }
-                    break;
-            }
-        }
-        // Challenge
-        else if (lastCommand == 139) {
-            switch ((char) data[0]) {
-                case '0':
-                    writeToCache("challengeResult=0", RFIDcacheFilePath);
-                    break;
-                case '1':
-                    writeToCache("challengeResult=1", RFIDcacheFilePath);
-                    break;
-                default:
-                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for challenge()");
-                    writeToCache("ERR:139", RFIDcacheFilePath);
-                    returnValue = false;
-                    break;
-            }
-        }
-        // New PIN
-        else if (lastCommand == 141) {
-            String pin = "";
-            for (byte b: data) {
-                pin += (char)b;
-            }
-            writeToCache("newPIN=" + pin, RFIDcacheFilePath);
-        }
-        // Test Connection
-        else if (lastCommand == 142) {
-            switch ((char) data[0]) {
-                case '0':
-                    writeToCache("connectionStatus=0", "etc/status/rfid-device-signal.file");//EDITED
-                    break;
-                case '1':
-                    writeToCache("connectionStatus=1", "etc/status/rfid-device-signal.file");//EDITED
-                    break;
-                default:
-                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for testConnection()");
-                    writeToCache("ERR:142", RFIDcacheFilePath);
-                    returnValue = false;
-                    break;
-            }
-        }
-        // Test SIM presence
-        else if (lastCommand == 143) {
-            switch ((char)data[0]) {
-                case '0':
-                    writeToCache("SIMpresence=0", RFIDcacheFilePath);
-                    break;
-                case '1':
-                    writeToCache("SIMpresence=1", RFIDcacheFilePath);
-                    break;
-                case '2':
-                    writeToCache("SIMpresence=2", RFIDcacheFilePath);
-                    break;
-                default:
-                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for gsmSIMPresent()");
-                    writeToCache("ERR:143", RFIDcacheFilePath);
-                    returnValue = false;
-                    break;
-            }
-        }
-        // Toggle GSM Power
-        else if (lastCommand == 144) {
-            switch ((char)data[0]) {
-                case '0':
-                    writeToCache("gsmPowerOn=0", RFIDcacheFilePath);
-                    break;
-                case '1':
-                    writeToCache("gsmPowerOn=1", RFIDcacheFilePath);
-                    break;
-                default:
-                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for gsmPowerOn()");
-                    writeToCache("ERR:144", RFIDcacheFilePath);
-                    returnValue = false;
-                    break;
-            }
-        }
-        // Reset GSM Module
-        else if (lastCommand == 145) {
-            switch ((char)data[0]) {
-                case '0':
-                    writeToCache("gsmPowerOff=0", RFIDcacheFilePath);
-                    break;
-                case '1':
-                    writeToCache("gsmPowerOff=1", RFIDcacheFilePath);
-                    break;
-                default:
-                    System.out.println("[translateCacheData] Invalid result \"" + data[0] + "\" for gsmOff()");
-                    writeToCache("ERR:144", RFIDcacheFilePath);
-                    returnValue = false;
-                    break;
-            }
-        }
-
-        if (smsConfirmationNet > 0) {
-            smsConfirmationNet = 0;
-        }
-        else {
-            lastCommand = 0;
-        }
-
-        return returnValue;
     }
 
+    /**
+     * Interprets the received data from the device into human-readable data which will be written to a cache file.
+     * @param data is the byte that will be interpreted
+     */
+    private void interpretReceivedData(byte data[]) {
+        switch (lastCommand) {
+            case 132: // Scan
+                // Writes the UID of the scanned RFID tag
+                writeToCache("scan=" + byteStreamBufferToString(), RFIDCacheFilePath);
+                break;
+
+            case 134: // Get GSM status
+                // Writes either 0 or 1, indicating the availability of the GSM module
+                writeToCache("GSMStatus=" + (char)bytesRead[0], RFIDCacheFilePath);
+                break;
+
+            case 135: // Get signal quality
+                // Writes the signal quality of the GSM module
+                writeToCache("signalQuality=" + byteStreamBufferToString(), RFIDCacheFilePath);
+                break;
+
+            case 139: // PIN Challenge
+                // Writes either 0 or 1, indicating the result of the PIN challenge
+                writeToCache("PINChallenge=" + (char)bytesRead[0], RFIDCacheFilePath);
+                break;
+
+            case 141: // PIN Create
+                // Writes the newly-created 6-digit PIN by the user
+                writeToCache("PINCreate=" + byteStreamBufferToString(), RFIDCacheFilePath);
+                break;
+
+            case 142: // Device connection query
+                writeToCache("deviceConnected=" + (char)bytesRead[0], RFIDCacheFilePath);
+                break;
+
+            case 151: // Get SIM status
+                // Writes either 0 or 1, indicating the status of an inserted SIM card in the GSM module
+                writeToCache("SIMStatus=" + (char)bytesRead[0], RFIDCacheFilePath);
+                break;
+        }
+    }
+
+    /**
+     * This method writes data to a specified cache file.
+     * @param data This will be the data written to the file.
+     * @param path This is where the file is/will be located.
+     */
     private boolean writeToCache(String data, String path) {
-        /**
-         * This method writes data to a specified cache file.
-         * @param data This will be the data written to the file.
-         * @param path This is where the file is/will be located.
-         */
+
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(path));
@@ -459,16 +345,162 @@ public class RFIDReaderInterface {
         return true;
     }
 
+    /**
+     * Cancels the current operation being performed on the device
+     */
+    public void cancelOperation() {
+        sendByteToDevice(131);
+    }
+
+    /**
+     * Sends and SMS
+     * @param recipientNumber is the phone number of the recipient
+     * @param message is the message to be sent to the recipient
+     */
+    public void sendSMS(String recipientNumber, String message) {
+        sendByteToDevice(136); // Sets the device to SMS mode
+        SMSMode = true;
+        SMSRecipientNumber = recipientNumber;
+        SMSContent = message;
+    }
+
+    /**
+     * Prompts the user to scan an RFID card and writes the data to the cache when it is received
+     */
+    public void scan() {
+        sendByteToDevice(132); // Sends the command to the device
+        interpretNextByteStream = true; // Will write the reply to cache
+
+        // Keep track of the last command that was called to help with determining what to write to the cache file
+        lastCommand = 132;
+    }
+
+    /**
+     * Challenges the device's user to match a PIN
+     * @param PIN is the PIN that needs to be matched by the device's user
+     */
+    public void PINChallenge(String PIN) {
+        sendByteToDevice(139);
+        sendStringToDevice(PIN);
+        sendByteToDevice(3);
+
+        interpretNextByte = true; // Will write the reply to cache
+        // Keep track of the last command that was called to help with determining what to write to the cache file
+        lastCommand = 139;
+    }
+
+    /**
+     * Prompts the device's user to enter a PIN twice
+     */
+    public void PINCreate() {
+        sendByteToDevice(141);
+        interpretNextByteStream = true; // Will write the reply to cache
+        // Keep track of the last command that was called to help with determining what to write to the cache file
+        lastCommand = 141;
+    }
+
+    /**
+     * Queries the device of the GSM Module's status and writes to the cache file
+     */
+    public void getGSMStatus() {
+        sendByteToDevice(134);
+        interpretNextByte = true; // Will write the reply to cache
+        // Keep track of the last command that was called to help with determining what to write to the cache file
+        lastCommand = 134;
+    }
+
+    /**
+     * Queries the device of the SIM card's status and writes to the cache file
+     */
+    public void getSIMStatus() {
+        sendByteToDevice(151);
+        interpretNextByte = true; // Will write the reply to cache
+        // Keep track of the last command that was called to help with determining what to write to the cache file
+        lastCommand = 151;
+    }
+
+    /**
+     * Gets the current siqnal quality of the cellular connection
+     */
+    public void getSignalQuality() {
+        sendByteToDevice(135);
+        interpretNextByteStream = true; // Will write the reply to cache
+        // Keep track of the last command that was called to help with determining what to write to the cache file
+        lastCommand = 135;
+    }
+
+    /**
+     * Toggles the GSM module on or off
+     */
+    public void toggleGSMPower() {
+        sendByteToDevice(137);
+    }
+
+    /**
+     * Closes the currently opened serial port
+     */
     public void disconnect() {
         selectedPort.closePort();
     }
 
-    public void clearCache(){
-        writeToCache("",RFIDcacheFilePath);
-    }//EDITED
+    /**
+     * This queries the device's connection status
+     * @return is the connection of the device
+     */
+    public boolean isDeviceReady() {
+        return deviceReady;
+    }
 
+    /**
+     * Clears the main cache file
+     */
+    public void clearCache(){
+        writeToCache("", RFIDCacheFilePath);
+    }
+
+    /**
+     * Clears the device signal and GSM signal cache files
+     */
     public void clearStatusCache(){
-        writeToCache("","etc/status/rfid-device-signal.file");
-        writeToCache("","etc/status/rfid-gsm-signal.file");
-    }//EDITED
+        writeToCache("",DeviceSignalFilePath);
+        writeToCache("",GSMSignalFilePath);
+    }
+
+    /**
+     * Attempts to open a target serial port
+     * @param targetPort is the selected port that this method will attempt to open
+     * @param baudRate will be the baud rate that the serial communications line will use
+     * @return the result of the port opening attempt
+     */
+    private boolean attemptOpeningPort(SerialPort targetPort, int baudRate) {
+        // Set the comp port's parameters in the following order:
+        // Baud Rate, New Data Bits, New Stop Bits, New Parity
+        targetPort.setComPortParameters(baudRate, 8, 1, 0);
+        // Set the timeout behavior
+        targetPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+
+        if (targetPort.openPort()) { // If the target port has been successfully opened
+            selectedPort = targetPort;
+            return true;
+        }
+        else { // If the target port could not be opened
+            return false;
+        }
+    }
+
+    /**
+     * Converts the contents of byteStreamBuffer into a String
+     * @return the String of byteStreamBuffer's values
+     */
+    private String byteStreamBufferToString() {
+        String returnValue = "";
+        for (byte b : byteStreamBuffer) { // Parse each byte in byteStreamBuffer into a char and add it to a String
+            returnValue += (char)b;
+        }
+        return returnValue;
+    }
+
+    public boolean isSMSMode() {
+        return SMSMode;
+    }
 }

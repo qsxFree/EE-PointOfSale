@@ -158,7 +158,7 @@ public class POSReturn extends POSCashier implements Initializable {
 
     private void scanCard() {
         try {
-            Main.rfid.scanExtensive();
+            Main.rfid.scan();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 Scanner scan = null;
                 try {
@@ -168,7 +168,7 @@ public class POSReturn extends POSCashier implements Initializable {
                 }
                 if (scan.hasNextLine()) {
                     String scanned[] = scan.nextLine().split("=");
-                    if (scanned[0].equals("scanExtensive")) {
+                    if (scanned[0].equals("scan")) {
                         cardID = scanned[1];
                         queryCard();
                         Main.rfid.clearCache();

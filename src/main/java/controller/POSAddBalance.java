@@ -125,7 +125,7 @@ public class POSAddBalance extends POSCashier implements Initializable {
 
     private void scanCard(){
         try {
-            Main.rfid.scanBasic();
+            Main.rfid.scan();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 Scanner scan = null;
                 try {
@@ -135,7 +135,7 @@ public class POSAddBalance extends POSCashier implements Initializable {
                 }
                 if (scan.hasNextLine()){
                         String scanned[] = scan.nextLine().split("=");
-                        if (scanned[0].equals("scanBasic")){
+                        if (scanned[0].equals("scan")){
                             cardID = scanned[1];
                             queryCard();
                             Main.rfid.clearCache();

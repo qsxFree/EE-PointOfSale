@@ -451,11 +451,11 @@ public class POSCashier implements Initializable {
 
         gsmSignalThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
-                Main.rfid.gsmSignal();
+                Main.rfid.getSignalQuality();
                 Scanner scan = new Scanner(new FileInputStream("etc/status/rfid-gsm-signal.file"));
                 if (scan.hasNextLine()){
                     String value[] = scan.nextLine().split("=");
-                    if (value[0].equals("gsmSignal")){
+                    if (value[0].equals("signalQuality")){
                         int val = Integer.parseInt(value[1]);
                         String url = "";
                         if (val>=1 && val<=10)
@@ -493,11 +493,11 @@ public class POSCashier implements Initializable {
     private void checkRFIDStatus(){
         rfidStatus = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
-                Main.rfid.testConnection();
+                Main.rfid.queryDevice();
                 Scanner scan = new Scanner(new FileInputStream("etc/status/rfid-device-signal.file"));
                 if (scan.hasNextLine()){
                     String value[] = scan.nextLine().split("=");
-                    if (value[0].equals("connectionStatus")){
+                    if (value[0].equals("deviceConnected")){
                         int val = Integer.parseInt(value[1]);
                         System.out.println("///////////////////////////////////////////////////\n\n"+val);
                         String url = "";

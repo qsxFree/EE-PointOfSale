@@ -130,13 +130,13 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
 
     private void scanForPIN(){
-        Main.rfid.newPIN();
+        Main.rfid.PINCreate();
          pinThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
                 Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                 while (scan.hasNextLine()){
                     String []scanned = scan.nextLine().split("=");
-                    if (scanned[0].equals("newPIN")){
+                    if (scanned[0].equals("PINCreate")){
                         pfPIN.setText(scanned[1]);
                         Main.rfid.clearCache();
                         pinThread.stop();
@@ -239,13 +239,13 @@ public class POSCardInformation extends POSCustomerAccount implements Initializa
 
     private void initCardScan(){
         try {
-            Main.rfid.scanExtensive();
+            Main.rfid.scan();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 try {
                     Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                     while (scan.hasNextLine()){
                         String scanned[] = scan.nextLine().split("=");
-                        if (scanned[0].equals("scanExtensive")){
+                        if (scanned[0].equals("scan")){
                             tfCardID.setText(scanned[1]);
                             Main.rfid.clearCache();
                             scanForPIN();
