@@ -123,14 +123,14 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
         scan = new Scanner(new FileInputStream("etc\\cache-card-info.file"));
         for (int i  = 1; i<=5;i++) System.out.println(scan.nextLine());
         forChallenge=AES.decrypt(scan.nextLine(),POSCustomerAccount.S_KEY);//TODO Under observation
-        Main.rfid.challenge(forChallenge);
+        Main.rfid.PINChallenge(forChallenge);
 
         oldPINThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
                 scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                 while (scan.hasNextLine()){
                     String scanned[] = scan.nextLine().split("=");
-                    if (scanned[0].equals("challengeResult")){
+                    if (scanned[0].equals("PINChallenge")){
                         if (scanned[1].equals("1")){
                             pfOld.setText(forChallenge);
                             Main.rfid.clearCache();
@@ -153,13 +153,13 @@ public class POSSelectedCardInfo extends POSCustomerAccount {
     }
 
     private void scanNewPIN(){
-        Main.rfid.newPIN();
+        Main.rfid.PINCreate();
         newPINThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
                 Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                 while (scan.hasNextLine()){
                     String []scanned = scan.nextLine().split("=");
-                    if (scanned[0].equals("newPIN")){
+                    if (scanned[0].equals("PINCreate")){
                         pfNew.setText(scanned[1]);
                         Main.rfid.clearCache();
                         newPINThread.stop();

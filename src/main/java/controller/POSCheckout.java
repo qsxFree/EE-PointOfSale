@@ -123,9 +123,8 @@ public class POSCheckout extends POSCashier {
 
                 System.out.println("Message\n============================================\n"+message);
                 System.out.println("PhoneNo\n============================================\n"+intPhone);
-                Main.rfid.gsmSendSMS(intPhone,message);
-                System.out.println("Forcing message sending");
-                //Main.rfid.forceSendMessage(message);
+                Main.rfid.sendSMS(intPhone,message);
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -152,13 +151,13 @@ public class POSCheckout extends POSCashier {
 
     private void scanCard(){
         try {
-            Main.rfid.scanBasic();
+            Main.rfid.scan();
             cardIdScannerThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 try {
                     Scanner scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                     while (scan.hasNextLine()){
                         String scanned[] = scan.nextLine().split("=");
-                        if (scanned[0].equals("scanBasic")){
+                        if (scanned[0].equals("scan")){
                             cardID = scanned[1];
                             queryCard();
                             Main.rfid.clearCache();
@@ -191,14 +190,14 @@ public class POSCheckout extends POSCashier {
         scan = new Scanner(new FileInputStream("etc\\cache-checkout-card.file"));
         for (int i  = 1; i<=6;i++) System.out.println(scan.nextLine());
         forChallenge= AES.decrypt(scan.nextLine(),POSCashier.S_KEY);//TODO Under observation
-        Main.rfid.challenge(forChallenge);
+        Main.rfid.PINChallenge(forChallenge);
 
         checkPINThread = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             try {
                 scan = new Scanner(new FileInputStream("etc\\rfid-cache.file"));
                 while (scan.hasNextLine()){
                     String scanned[] = scan.nextLine().split("=");
-                    if (scanned[0].equals("challengeResult")){
+                    if (scanned[0].equals("PINChallenge")){
                         if (scanned[1].equals("1")){
                             populateData();
                             Main.rfid.clearCache();
